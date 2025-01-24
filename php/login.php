@@ -34,16 +34,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt->execute([$session_id, $user['id'], $user['name']]);
 
             // Redirigir según el rol
-            if ($user['role'] === 'admin') {
-                header("Location: admin_dashboard.php");
-                exit; // Asegúrate de salir después de redirigir
-            } elseif ($user['role'] === 'bodega' || $user['role'] === 'jefeBodega') {
-                header("Location: ../Bodega/Bodega.php");
-                exit; // Asegúrate de salir después de redirigir
-            } else {
-                header("Location: user_dashboard.php");
-                exit; // Asegúrate de salir después de redirigir
-            }
+           if ($user['role'] === 'admin') {
+    header("Location: admin_dashboard.php");
+    exit; // Asegúrate de salir después de redirigir
+} elseif ($user['role'] === 'bodega' || $user['role'] === 'jefeBodega') {
+    header("Location: ../Bodega/Bodega.php");
+    exit; // Asegúrate de salir después de redirigir
+} else {
+    header("Location: user_dashboard.php");
+    exit; // Asegúrate de salir después de redirigir
+}
         }
     } else {
         echo "Credenciales incorrectas.";
