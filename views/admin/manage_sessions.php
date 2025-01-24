@@ -1,7 +1,7 @@
 <?php
-include('../php/db.php');
-include('../php/login.php');
-include('../php/validate_session.php');
+include('../../php/db.php');
+include('../../php/login.php');
+include('../../php/validate_session.php');
 // Verificar si el usuario es admin
 if ($_SESSION['user_role'] !== 'admin' && $_SESSION['user_role'] !== 'jefeBodega')  {
     die("Acceso denegado.");
@@ -77,14 +77,14 @@ $sessions = $stmt->fetchAll(PDO::FETCH_ASSOC);
      <!-- Footer Navigation -->
      <nav class="fixed bottom-0 left-0 right-0 bg-white shadow-lg">
         <div class="flex justify-around py-2">
-        <a href="../php/logout_user.php" class="text-blue-500 text-center flex flex-col items-center">
+        <a href="../../php/logout_user.php" class="text-blue-500 text-center flex flex-col items-center">
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
         class="w-6 h-6">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12h18M9 5l7 7-7 7" />
     </svg>
     <span class="text-xs">Salir</span>
 </a>
-            <a href="../php/admin_dashboard.php" class="text-gray-500 text-center flex flex-col items-center">
+            <a href="../../php/admin_dashboard.php" class="text-gray-500 text-center flex flex-col items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                     class="w-6 h-6">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />

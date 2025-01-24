@@ -48,7 +48,7 @@ include('validate_session.php');
                     <i class="fa-solid fa-user text-white"></i>
                 </div>
                 <!-- Etiqueta como enlace -->
-                <a href="../admin/manage_sessions.php" class="text-sm text-gray-700 hover:underline">Usuario Logueado</a>
+                <a href="../views/admin/manage_sessions.php" class="text-sm text-gray-700 hover:underline">Usuario Logueado</a>
             </div>
             <div class="neumorphism p-4 text-center">
                 <!-- Icono de Bodega -->
