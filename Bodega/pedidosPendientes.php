@@ -1,6 +1,7 @@
 <?php
 include('../php/login.php');
 include('../php/validate_session.php');
+include('GuardarFactura.php');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -34,68 +35,14 @@ include('../php/validate_session.php');
     <?php else: ?>
         <h1 class="text-red-600 text-2xl font-bold">No estás autenticado.</h1>
     <?php endif; ?>
-       <h1 class="text-red-600 text-2xl font-bold">Bodega</h1>
+       <h1 class="text-red-600 text-2xl font-bold">Pedidos Pendientes</h1>
     </div>
 
     <!-- Features Section -->
     <div class="w-full max-w-xs">
-        <h2 class="text-center text-lg font-semibold text-gray-700 mb-4">Modulos</h2>
-        <div class="grid grid-cols-3 gap-4">
-            <div class="neumorphism p-4 text-center">
-                <!-- Icono de vendedor -->
-                <div
-                    class="neumorphism-icon w-10 h-10 bg-yellow-400 rounded-full mx-auto mb-2 flex items-center justify-center">
-                    <i class="fa-solid fa-user text-white"></i>
-                </div>
-                <!-- Etiqueta como enlace -->
-                <a href="manage_sessions.php" class="text-sm text-gray-700 hover:underline">Usuario Logueado</a>
-            </div>
-            <div class="neumorphism p-4 text-center">
-                <!-- Icono de Bodega -->
-                <div
-                    class="neumorphism-icon w-10 h-10 bg-orange-400 rounded-full mx-auto mb-2 flex items-center justify-center">
-                    <i class="fa-solid fa-shop text-white"></i>
-                </div>
-                <!-- Etiqueta como enlace -->
-                <a href="#" class="text-sm text-gray-700 hover:underline">Pedidos Pendientes</a>
-            </div>
-            <div class="neumorphism p-4 text-center">
-                <!-- Icono de Bodega -->
-                <div
-                    class="neumorphism-icon w-10 h-10 bg-green-400 rounded-full mx-auto mb-2 flex items-center justify-center">
-                    <i class="fa-solid fa-motorcycle text-white"></i>
-                </div>
-                <!-- Etiqueta como enlace -->
-                <a href="#" class="text-sm text-gray-700 hover:underline">#</a>
-            </div>
-            <div class="neumorphism p-4 text-center">
-                <!-- Icono de Bodega -->
-                <div
-                    class="neumorphism-icon w-10 h-10 bg-red-400 rounded-full mx-auto mb-2 flex items-center justify-center">
-                    <i class="fa-solid fa-lock text-white"></i>
-                </div>
-                <!-- Etiqueta como enlace -->
-                <a href="#" class="text-sm text-gray-700 hover:underline">#</a>
-            </div>
-            <div class="neumorphism p-4 text-center">
-                <!-- Icono de Bodega -->
-                <div
-                    class="neumorphism-icon w-10 h-10 bg-purple-400 rounded-full mx-auto mb-2 flex items-center justify-center">
-                    <i class="fa-solid fa-car text-white"></i>
-                </div>
-                <!-- Etiqueta como enlace -->
-                <a href="#" class="text-sm text-gray-700 hover:underline">#</a>
-            </div>
-            <div class="neumorphism p-4 text-center">
-                <!-- Icono de Bodega -->
-                <div
-                    class="neumorphism-icon w-10 h-10 bg-purple-400 rounded-full mx-auto mb-2 flex items-center justify-center">
-                    <i class="fa-solid fa-car text-white"></i>
-                </div>
-                <!-- Etiqueta como enlace -->
-                <a href="#" class="text-sm text-gray-700 hover:underline">#</a>
-            </div>
-        </div>
+        <h2 class="text-center text-lg font-semibold text-gray-700 mb-4">Pedidos Asignados sin revision</h2>
+        
+    
     </div>
 
 
