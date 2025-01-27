@@ -34,7 +34,7 @@
 
         <!-- Formulario de inicio de sesión -->
         <div class="form-container sign-in-container">
-            <form action="./php/login.php" method="post">
+            <form action="php/login.php" method="post">
                 <h1>Iniciar sesión</h1>
                 <div class="social-container">
                     <a href="#" class="social"><i class="fa fa-facebook"></i></a>

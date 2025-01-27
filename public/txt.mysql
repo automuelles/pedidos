@@ -32,3 +32,17 @@ CREATE TABLE active_sessions (
             fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             UNIQUE (IntTransaccion, IntDocumento)  -- Garantizar que no se repitan combinaciones
         );
+
+
+
+    CREATE TABLE IF NOT EXISTS factura_gestionada (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    factura_id INT NOT NULL,
+    user_id INT NOT NULL,
+    estado VARCHAR(50) DEFAULT 'gestionado',
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (factura_id) REFERENCES factura(id) ON DELETE CASCADE
+);
+
+ALTER TABLE factura_gestionada ADD COLUMN user_name VARCHAR(255);
