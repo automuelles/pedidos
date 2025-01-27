@@ -69,6 +69,7 @@ try {
         }
     }
 
+    echo "Facturas guardadas correctamente.";
 } catch (PDOException $e) {
     echo "Error al guardar las facturas: " . $e->getMessage();
 }
