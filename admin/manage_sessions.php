@@ -64,7 +64,7 @@ $sessions = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <td class="px-4 py-2 border-b"><?= htmlspecialchars($session['user_name']) ?></td>
                         <td class="px-4 py-2 border-b"><?= htmlspecialchars($session['login_time']) ?></td>
                         <td class="px-4 py-2 border-b">
-                            <form action="../../php/logout_user.php" method="POST" class="d-inline">
+                            <form action="../php/logout.php" method="POST" class="d-inline">
                                 <input type="hidden" name="session_id" value="<?= htmlspecialchars($session['session_id']) ?>">
                                 <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 focus:outline-none">Cerrar Sesión</button>
                             </form>
