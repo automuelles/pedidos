@@ -22,7 +22,8 @@ try {
             StrReferencia1 VARCHAR(255),
             StrReferencia3 VARCHAR(255),
             estado VARCHAR(50) DEFAULT 'pendiente',
-            fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE (IntTransaccion, IntDocumento)  -- Garantizar que no se repitan combinaciones
         );
     ";
     $pdo->exec($createTableQuery);
@@ -57,19 +58,32 @@ try {
     ";
     $insertStmt = $pdo->prepare($insertQuery);
 
-    // Insertar cada factura en la tabla factura, filtrando documentos con '-'
+    // Insertar cada factura en la tabla factura, filtrando documentos con '-' y evitando duplicados
     foreach ($facturas as $factura) {
         if (strpos((string)$factura['IntDocumento'], '-') === false) {
-            $insertStmt->execute([
+            // Verificar si la combinación IntTransaccion y IntDocumento ya existe
+            $checkQuery = "
+                SELECT COUNT(*) FROM factura 
+                WHERE IntTransaccion = :IntTransaccion AND IntDocumento = :IntDocumento
+            ";
+            $checkStmt = $pdo->prepare($checkQuery);
+            $checkStmt->execute([
                 ':IntTransaccion' => $factura['IntTransaccion'],
-                ':IntDocumento' => $factura['IntDocumento'],
-                ':StrReferencia1' => $factura['StrReferencia1'],
-                ':StrReferencia3' => $factura['StrReferencia3'],
+                ':IntDocumento' => $factura['IntDocumento']
             ]);
+            $exists = $checkStmt->fetchColumn();
+
+            // Si no existe, insertar
+            if ($exists == 0) {
+                $insertStmt->execute([
+                    ':IntTransaccion' => $factura['IntTransaccion'],
+                    ':IntDocumento' => $factura['IntDocumento'],
+                    ':StrReferencia1' => $factura['StrReferencia1'],
+                    ':StrReferencia3' => $factura['StrReferencia3'],
+                ]);
+            }
         }
     }
-
-    echo "Facturas guardadas correctamente.";
 } catch (PDOException $e) {
     echo "Error al guardar las facturas: " . $e->getMessage();
 }
