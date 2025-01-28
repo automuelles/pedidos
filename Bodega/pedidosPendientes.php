@@ -3,6 +3,9 @@ include('../php/login.php');
 include('../php/validate_session.php');
 include('GuardarFactura.php');
 include('AsignarServicios.php');
+// Obtener los datos de la URL
+$transaccion = isset($_GET['transaccion']) ? htmlspecialchars($_GET['transaccion']) : null;
+$documento = isset($_GET['documento']) ? htmlspecialchars($_GET['documento']) : null;
 ?>
 
 <!DOCTYPE html>
@@ -54,7 +57,7 @@ include('AsignarServicios.php');
                         <p class="text-xs text-gray-500">Fecha: <?php echo htmlspecialchars($factura['fecha']); ?></p>
                     </div>
                     <div>
-                        <form action="picking_factura.php" method="POST">
+                    <form action="picking_factura.php" method="GET">
                             <input type="hidden" name="factura_id" value="<?php echo $factura['factura_id']; ?>">
                             <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md">
                                 Gestionar

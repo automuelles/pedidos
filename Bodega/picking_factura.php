@@ -1,8 +1,70 @@
 <?php
+// Incluir archivos necesarios
 include('../php/login.php');
 include('../php/validate_session.php');
 include('GuardarFactura.php');
 include('AsignarServicios.php');
+
+// Obtener el ID de la factura desde la URL
+$factura_id = isset($_GET['factura_id']) ? (int) $_GET['factura_id'] : 0;
+
+if ($factura_id > 0)
+    // Conexión a MySQL (automuelles_db) para obtener la factura
+    include('../php/db.php'); // Este archivo contiene la conexión a MySQL
+// Consulta para obtener los datos de la factura con el ID proporcionado en la base de datos MySQL
+$sql = "SELECT * FROM factura WHERE id = :factura_id";
+$stmt = $pdo->prepare($sql); // Usamos $pdo porque estamos trabajando con MySQL
+
+// Vincular el parámetro con el valor
+$stmt->bindParam(':factura_id', $factura_id, PDO::PARAM_INT);
+
+// Ejecutar la consulta
+$stmt->execute();
+
+// Verificar si la factura fue encontrada
+if ($stmt->rowCount() > 0) {
+    // Obtener la factura
+    $factura = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    // Obtenemos el número de transacción y documento de la factura
+    $transaccion = $factura['IntTransaccion'];
+    $documento = $factura['IntDocumento'];
+
+    // Consulta SQL para obtener los detalles de la factura en SQL Server
+    $query = "
+            SELECT 
+                d.IntTransaccion, 
+                d.IntDocumento, 
+                d.StrProducto, 
+                p.StrParam1, 
+                d.IntCantidad, 
+                d.StrUnidad, 
+                d.DatFecha1, 
+                d.StrVendedor,
+                doc.StrUsuarioGra, 
+                doc.StrReferencia1,
+                doc.StrReferencia3, 
+                doc.IntTotal
+            FROM TblDetalleDocumentos d
+            LEFT JOIN TblProductos p ON d.StrProducto = p.StrIdProducto
+            LEFT JOIN TblDocumentos doc ON d.IntTransaccion = doc.IntTransaccion AND d.IntDocumento = doc.IntDocumento
+            WHERE d.IntTransaccion = ? AND d.IntDocumento = ?
+            ORDER BY d.IntDocumento";
+
+    // Preparar y ejecutar la consulta de detalle de la factura
+    $stmt_details = $conn->prepare($query); // Usamos la conexión a SQL Server
+    $stmt_details->execute([$transaccion, $documento]);
+
+    // Obtener los resultados
+    $results = $stmt_details->fetchAll(PDO::FETCH_ASSOC);
+    // Cerrar la conexión de MySQL
+    $pdo = null;
+
+    // Cerrar la conexión a SQL Server
+    $conn = null;
+} else {
+    echo "ID de factura inválido.";
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -39,11 +101,42 @@ include('AsignarServicios.php');
         <h1 class="text-red-600 text-2xl font-bold">Bodega</h1>
     </div>
 
-    <!-- Features Section -->
     <div class="w-full max-w-xs">
-        <h2 class="text-center text-lg font-semibold text-gray-700 mb-4">Modulos</h2>
+        <div class="w-full max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md mt-10 pb-24"> <!-- Agregar pb-24 para dar espacio abajo -->
+            <h1 class="text-2xl font-bold text-gray-800 mb-4">Detalles de la Factura</h1>
 
+            <?php
+            // Mostrar el número de factura y la transacción
+            if (isset($factura['IntTransaccion']) && isset($factura['IntDocumento'])) {
+                echo "<h1 class='text-xl font-semibold text-gray-700 mb-4'> " . htmlspecialchars($factura['IntDocumento']) . " - " . htmlspecialchars($factura['IntTransaccion']) . "</h1>";
+            } else {
+                echo "<p class='text-red-500'>No se encontraron los datos de la factura.</p>";
+            }
+            ?>
 
+            <?php
+            // Mostrar los detalles de la factura sin agrupar productos
+            if ($results) {
+                foreach ($results as $factura_detail) {
+                    // Mostrar todos los detalles de la factura
+                    // Casilla de verificación
+                    echo "<input type='checkbox' name='productos[]' value='" . htmlspecialchars($factura_detail['StrProducto']) . "' class='form-checkbox text-blue-500'>";
+                    echo "<p class='text-lg text-gray-700'><strong>Producto:</strong> " . htmlspecialchars($factura_detail['StrProducto']) . "</p>";
+                    echo "<p class='text-lg text-gray-700'><strong>Parámetro:</strong> " . htmlspecialchars($factura_detail['StrParam1']) . "</p>";
+                    echo "<p class='text-lg text-gray-700'><strong>Cantidad:</strong> " . number_format((float) $factura_detail['IntCantidad'], 0, '.', '') . "</p>";
+                    echo "<p class='text-lg text-gray-700'><strong>Unidad:</strong> " . htmlspecialchars($factura_detail['StrUnidad']) . "</p>";
+                    echo "<hr class='my-4' />";
+                }
+            } else {
+                echo "<p class='text-red-500'>No se encontraron detalles para la factura solicitada.</p>";
+            }
+            ?>
+            <button type="button"
+                class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
+                onclick="updateEstado()">
+                Guardar
+            </button>
+        </div>
     </div>
 
 
@@ -79,6 +172,44 @@ include('AsignarServicios.php');
         setInterval(function() {
             location.reload();
         }, 30000); // 30000 milisegundos = 30 segundos
+    </script>
+    <script>
+        function updateEstado() {
+            // Obtener el ID de la factura de la URL (dynamic)
+            const urlParams = new URLSearchParams(window.location.search);
+            const facturaId = urlParams.get('factura_id'); // Obtiene el valor de 'factura_id' de la URL
+
+            if (!facturaId) {
+                alert('No se pudo obtener el ID de la factura.');
+                return;
+            }
+
+            // Crear los datos que se van a enviar
+            var data = new FormData();
+            data.append("factura_id", facturaId);
+            data.append("estado", "picking"); // Cambiar el estado a "picking"
+
+            // Enviar la solicitud al archivo PHP
+            fetch('actualizar_estado.php', {
+                    method: 'POST',
+                    body: data
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Estado actualizado a "picking"');
+                        // Redirigir a la página de pedidos pendientes
+                        window.location.href = 'pedidospendientes.php'; // Redirigir a la página deseada
+                    } else {
+                        console.error('Error en la actualización:', data.message);
+                        alert('Hubo un error al actualizar el estado: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error en la solicitud:', error);
+                    alert('Hubo un error en la solicitud: ' + error.message);
+                });
+        }
     </script>
 </body>
 
