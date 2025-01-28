@@ -10,7 +10,7 @@ if (!isset($_SESSION['user_name']) || ($_SESSION['user_role'] !== 'jefeBodega' &
 // Datos del usuario conectado
 $usuarioConectado = $_SESSION['user_name'];  
 $rolUsuario = $_SESSION['user_role'];        
-$userId = $_SESSION['user_id'];        
+$userId = $_SESSION['user_id'];     
 
 // Función para verificar y asignar servicios
 function asignarServicios($pdo, $userId, $usuarioConectado) {

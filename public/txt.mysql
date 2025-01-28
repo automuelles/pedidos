@@ -1,6 +1,9 @@
 CREATE DATABASE automuelles_db;
 
 USE automuelles_db;
+CREATE USER 'Automuelles'@'localhost' IDENTIFIED BY 'Automuelles2024*';
+GRANT ALL PRIVILEGES ON automuelles_db.* TO 'automuelles'@'localhost';
+FLUSH PRIVILEGES;
 
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
