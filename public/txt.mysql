@@ -57,6 +57,4 @@ CREATE TABLE IF NOT EXISTS estado (
     estado VARCHAR(50) DEFAULT 'gestionado',
     fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     user_name VARCHAR(255),
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (factura_id) REFERENCES factura(id) ON DELETE CASCADE
 );

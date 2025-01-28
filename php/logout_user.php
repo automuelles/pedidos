@@ -2,20 +2,24 @@
 session_start();
 include('db.php');
 
-// Verificar si el usuario está autenticado
-if (isset($_SESSION['user_id']) && isset($_SESSION['user_name'])) {
-    // Obtener el ID de sesión actual
-    $session_id = session_id();
+// Verificar si el usuario tiene privilegios de administrador
+if ($_SESSION['user_role'] !== 'admin' && $_SESSION['user_role'] !== 'jefeBodega') {
+    die("Acceso denegado.");
+}
 
-    // Eliminar la sesión activa de la base de datos
+// Verificar si se envió un session_id
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['session_id'])) {
+    $session_id = $_POST['session_id'];
+
+    // Eliminar la sesión activa de la tabla active_sessions
     $stmt = $pdo->prepare("DELETE FROM active_sessions WHERE session_id = ?");
     $stmt->execute([$session_id]);
 
-    // Destruir la sesión de PHP
-    session_unset(); // Eliminar todas las variables de sesión
-    session_destroy(); // Destruir la sesión actual
+    // Redirigir a la página de gestión de sesiones
+    header("Location: ../Bodega/manage_sessions.php");
+    exit;
+} else {
+    // Redirigir a index si no se proporcionó un session_id válido
+    header("Location: ../index.php");
+    exit;
 }
-
-// Redirigir al formulario de login
-header("Location: ../index.php");
-exit;
