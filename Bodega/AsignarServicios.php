@@ -33,7 +33,7 @@ function asignarServicios($pdo, $userId, $usuarioConectado) {
         // Si tiene menos de 2 servicios que no están en 'picking', puede asignarse un nuevo servicio
         if ($cantidadNoPicking < 2) {
             // Obtener una factura pendiente
-            $stmt = $pdo->prepare("SELECT id FROM factura WHERE estado = 'pendiente' LIMIT 1");
+            $stmt = $pdo->prepare("SELECT id FROM factura WHERE estado = 'pendiente' LIMIT 2");
             $stmt->execute();
             $factura = $stmt->fetch();
 
@@ -74,7 +74,7 @@ function asignarServicios($pdo, $userId, $usuarioConectado) {
 
         if ($cantidadServicios < 2) {
             // Obtener una factura pendiente
-            $stmt = $pdo->prepare("SELECT id FROM factura WHERE estado = 'pendiente' LIMIT 1");
+            $stmt = $pdo->prepare("SELECT id FROM factura WHERE estado = 'pendiente' LIMIT 2");
             $stmt->execute();
             $factura = $stmt->fetch();
 
