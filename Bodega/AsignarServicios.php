@@ -33,7 +33,7 @@ function asignarServicios($pdo, $userId, $usuarioConectado) {
         // Si tiene menos de 2 servicios que no están en 'picking', puede asignarse un nuevo servicio
         if ($cantidadNoPicking < 2) {
             // Obtener una factura pendiente
-            $stmt = $pdo->prepare("SELECT id FROM factura WHERE estado = 'pendiente' LIMIT 2");
+            $stmt = $pdo->prepare("SELECT id FROM factura WHERE estado = 'pendiente' LIMIT 1");
             $stmt->execute();
             $factura = $stmt->fetch();
 
@@ -44,14 +44,6 @@ function asignarServicios($pdo, $userId, $usuarioConectado) {
                     'factura_id' => $factura['id'],
                     'user_id' => $userId,
                     'user_name' => $usuarioConectado  // Guardar el nombre de usuario
-                ]);
-
-                // Insertar en la tabla estado
-                $stmt = $pdo->prepare("INSERT INTO estado (factura_id, user_id, user_name, estado) VALUES (:factura_id, :user_id, :user_name, 'gestionado')");
-                $stmt->execute([
-                    'factura_id' => $factura['id'],
-                    'user_id' => $userId,
-                    'user_name' => $usuarioConectado
                 ]);
 
                 // Actualizar el estado de la factura a 'gestionado'
@@ -74,7 +66,7 @@ function asignarServicios($pdo, $userId, $usuarioConectado) {
 
         if ($cantidadServicios < 2) {
             // Obtener una factura pendiente
-            $stmt = $pdo->prepare("SELECT id FROM factura WHERE estado = 'pendiente' LIMIT 2");
+            $stmt = $pdo->prepare("SELECT id FROM factura WHERE estado = 'pendiente' LIMIT 1");
             $stmt->execute();
             $factura = $stmt->fetch();
 
@@ -85,14 +77,6 @@ function asignarServicios($pdo, $userId, $usuarioConectado) {
                     'factura_id' => $factura['id'],
                     'user_id' => $userId,
                     'user_name' => $usuarioConectado  // Guardar el nombre de usuario
-                ]);
-
-                // Insertar en la tabla estado
-                $stmt = $pdo->prepare("INSERT INTO estado (factura_id, user_id, user_name, estado) VALUES (:factura_id, :user_id, :user_name, 'gestionado')");
-                $stmt->execute([
-                    'factura_id' => $factura['id'],
-                    'user_id' => $userId,
-                    'user_name' => $usuarioConectado
                 ]);
 
                 // Actualizar el estado de la factura a 'gestionado'
@@ -109,7 +93,6 @@ function asignarServicios($pdo, $userId, $usuarioConectado) {
         }
     }
 }
-
 
 // Llamar a la función para asignar servicios
 asignarServicios($pdo, $userId, $usuarioConectado);
