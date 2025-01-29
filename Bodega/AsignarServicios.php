@@ -46,6 +46,14 @@ function asignarServicios($pdo, $userId, $usuarioConectado) {
                     'user_name' => $usuarioConectado  // Guardar el nombre de usuario
                 ]);
 
+                // Insertar en la tabla estado
+                $stmt = $pdo->prepare("INSERT INTO estado (factura_id, user_id, user_name, estado) VALUES (:factura_id, :user_id, :user_name, 'gestionado')");
+                $stmt->execute([
+                    'factura_id' => $factura['id'],
+                    'user_id' => $userId,
+                    'user_name' => $usuarioConectado
+                ]);
+
                 // Actualizar el estado de la factura a 'gestionado'
                 $stmt = $pdo->prepare("UPDATE factura SET estado = 'gestionado' WHERE id = :factura_id");
                 $stmt->execute(['factura_id' => $factura['id']]);
@@ -79,6 +87,14 @@ function asignarServicios($pdo, $userId, $usuarioConectado) {
                     'user_name' => $usuarioConectado  // Guardar el nombre de usuario
                 ]);
 
+                // Insertar en la tabla estado
+                $stmt = $pdo->prepare("INSERT INTO estado (factura_id, user_id, user_name, estado) VALUES (:factura_id, :user_id, :user_name, 'gestionado')");
+                $stmt->execute([
+                    'factura_id' => $factura['id'],
+                    'user_id' => $userId,
+                    'user_name' => $usuarioConectado
+                ]);
+
                 // Actualizar el estado de la factura a 'gestionado'
                 $stmt = $pdo->prepare("UPDATE factura SET estado = 'gestionado' WHERE id = :factura_id");
                 $stmt->execute(['factura_id' => $factura['id']]);
@@ -93,6 +109,7 @@ function asignarServicios($pdo, $userId, $usuarioConectado) {
         }
     }
 }
+
 
 // Llamar a la función para asignar servicios
 asignarServicios($pdo, $userId, $usuarioConectado);

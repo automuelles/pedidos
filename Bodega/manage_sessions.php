@@ -39,13 +39,13 @@ $sessions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <body class="bg-gray-200 min-h-screen flex flex-col items-center justify-center">
     <!-- Header -->
     <div class="bg-white shadow-lg rounded-lg w-full max-w-xs p-6 text-center mb-6">
-        <h1 class="text-blue-600 text-2xl font-bold mb-2">Bienvenido to Automuelles</h1>
+        <h1 class="text-yellow-600 text-2xl font-bold mb-2">Bienvenido to Automuelles</h1>
         <?php if (isset($_SESSION['user_name'])): ?>
-            <h1 class="text-green-600 text-2xl font-bold mb-2"><?php echo htmlspecialchars($_SESSION['user_name']); ?>!</h1>
+            <h1 class="text-black-600 text-2xl font-bold mb-2"><?php echo htmlspecialchars($_SESSION['user_name']); ?>!</h1>
         <?php else: ?>
-            <h1 class="text-red-600 text-2xl font-bold mb-2">No estás autenticado.</h1>
+            <h1 class="text-black-600 text-2xl font-bold mb-2">No estás autenticado.</h1>
         <?php endif; ?>
-        <h1 class="text-red-600 text-2xl font-bold">Desloguear Usuario</h1>
+        <h1 class="text-black-600 text-2xl font-bold">Desloguear Usuario</h1>
     </div>
 
     <!-- Tabla -->
