@@ -55,7 +55,6 @@ $sessions = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <tr>
                     <th class="px-4 py-2 text-left border-b">Nombre</th>
                     <th class="px-4 py-2 text-left border-b">Hora de Inicio de Sesión</th>
-                    <th class="px-4 py-2 text-left border-b">Desloguear Usuario</th>
                 </tr>
             </thead>
             <tbody>
@@ -63,12 +62,6 @@ $sessions = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <tr class="hover:bg-gray-50">
                         <td class="px-4 py-2 border-b"><?= htmlspecialchars($session['user_name']) ?></td>
                         <td class="px-4 py-2 border-b"><?= htmlspecialchars($session['login_time']) ?></td>
-                        <td class="px-4 py-2 border-b">
-                            <form action="" method="POST" class="d-inline">
-                                <input type="hidden" name="session_id" value="<?= htmlspecialchars($session['session_id']) ?>">
-                                <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 focus:outline-none">Cerrar Sesión</button>
-                            </form>
-                        </td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
