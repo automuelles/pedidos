@@ -2,14 +2,22 @@
 include('../php/db.php');
 include('../php/login.php');
 include('../php/validate_session.php');
-
 // Verificar si el usuario es admin
-if ($_SESSION['user_role'] !== 'jefeBodega')  {
+if ($_SESSION['user_role'] !== 'jefeBodega') {
     die("Acceso denegado.");
 }
+try {
+    // Consulta para obtener las facturas en estado "picking"
+    $sql = "SELECT * FROM factura WHERE estado = 'picking'";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
 
+    // Almacenar resultados
+    $facturas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    echo "Error en la consulta: " . $e->getMessage();
+}
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -36,20 +44,41 @@ if ($_SESSION['user_role'] !== 'jefeBodega')  {
 <body class="bg-gray-200 min-h-screen flex flex-col items-center justify-center">
     <!-- Header -->
     <div class="neumorphism w-full max-w-xs p-6 text-center mb-6">
-        <h1 class="text-blue-600 text-2xl font-bold">Bienvenido to Automuelles</h1>
+        <h1 class="text-yellow-600 text-2xl font-bold">Bienvenido to Automuelles</h1>
         <?php if (isset($_SESSION['user_name'])): ?>
-            <h1 class="text-green-600 text-2xl font-bold"><?php echo htmlspecialchars($_SESSION['user_name']); ?>!</h1>
+            <h1 class="text-black-600 text-2xl font-bold"><?php echo htmlspecialchars($_SESSION['user_name']); ?>!</h1>
         <?php else: ?>
-            <h1 class="text-red-600 text-2xl font-bold">No estás autenticado.</h1>
+            <h1 class="text-black-600 text-2xl font-bold">No estás autenticado.</h1>
         <?php endif; ?>
-        <h1 class="text-red-600 text-2xl font-bold">Revision Final</h1>
+        <h1 class="text-black-600 text-2xl font-bold">Revision Final</h1>
     </div>
 
-    <!-- Features Section -->
     <div class="w-full max-w-4xl mx-auto">
-        <h2 class="text-center text-lg font-semibold text-gray-700 mb-6">Realizar separacion de los pedidos</h2>
-        
-    
+        <?php if ($facturas): ?>
+            <div class="space-y-4">
+                <?php foreach ($facturas as $factura): ?>
+                    <div class="flex items-center justify-between p-4 bg-white rounded-lg shadow-md border border-gray-200">
+                        <div>
+                            <p class="text-lg font-medium text-gray-800">Transacción: <?php echo htmlspecialchars($factura['IntTransaccion']); ?></p>
+                            <p class="text-sm text-gray-600">Documento: <?php echo htmlspecialchars($factura['IntDocumento']); ?></p>
+                            <p class="text-sm text-gray-600">Estado: <?php echo htmlspecialchars($factura['estado']); ?></p>
+                            <p class="text-xs text-gray-500">Fecha: <?php echo htmlspecialchars($factura['fecha']); ?></p>
+                        </div>
+                        <div>
+                            <form action="EstadoRevisionFinal.php" method="GET">
+                                <input type="hidden" name="IntTransaccion" value="<?php echo $factura['IntTransaccion']; ?>">
+                                <input type="hidden" name="IntDocumento" value="<?php echo $factura['IntDocumento']; ?>">
+                                <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md">
+                                    Revisar Pedido
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php else: ?>
+            <p class="text-center text-gray-500">No hay facturas registradas.</p>
+        <?php endif; ?>
     </div>
 
     <!-- Footer Navigation -->
