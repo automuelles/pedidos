@@ -150,7 +150,7 @@ if ($transaccion > 0 && $documento > 0) {
                 </svg>
                 <span class="text-xs">Salir</span>
             </a>
-            <a href="Bodega.php" class="text-gray-500 text-center flex flex-col items-center">
+            <a href="pedidosPendientes.php" class="text-gray-500 text-center flex flex-col items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                 </svg>
