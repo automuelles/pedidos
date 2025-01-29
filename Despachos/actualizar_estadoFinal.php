@@ -28,7 +28,7 @@ if ($transaccion > 0 && $documento > 0) {
         $row = $stmt_gestionada->fetch(PDO::FETCH_ASSOC);
         if ($row) {
             $sql_estado = "INSERT INTO estado (factura_id, user_id, estado, fecha, user_name) 
-                           VALUES (:factura_id, :user_id, 'RevisionFinal', NOW(), :user_name)";
+                           VALUES (:factura_id, :user_id, 'Despachos', NOW(), :user_name)";
             $stmt_estado = $pdo->prepare($sql_estado);
             $stmt_estado->bindParam(':factura_id', $row['factura_id'], PDO::PARAM_INT);
             $stmt_estado->bindParam(':user_id', $row['user_id'], PDO::PARAM_INT);
@@ -36,7 +36,7 @@ if ($transaccion > 0 && $documento > 0) {
             $stmt_estado->execute();
         }
         
-        // 4. Actualizar el estado en la tabla 'factura_gestionada' a 'RevisionFinal'
+        // 4. Actualizar el estado en la tabla 'factura_gestionada' a 'Despachos'
         $sql_update_gestionada = "UPDATE factura_gestionada SET estado = 'Despachos' WHERE factura_id IN (SELECT id FROM factura WHERE IntTransaccion = :transaccion AND IntDocumento = :documento)";
         $stmt_update_gestionada = $pdo->prepare($sql_update_gestionada);
         $stmt_update_gestionada->bindParam(':transaccion', $transaccion, PDO::PARAM_INT);
