@@ -7,8 +7,15 @@ if ($_SESSION['user_role'] !== 'despachos') {
     die("Acceso denegado.");
 }
 try {
-    // Consulta para obtener las facturas en estado "picking"
-    $sql = "SELECT * FROM factura WHERE estado = 'RevisionFinal'";
+    // Consulta para obtener las facturas en estado "RevisionFinal" que tienen información en StrReferencia1 y StrReferencia3
+    $sql = "SELECT * FROM factura 
+    WHERE estado = 'RevisionFinal' 
+    AND StrReferencia1 <> '' 
+    AND StrReferencia3 <> '' 
+    AND StrReferencia1 <> '0' 
+    AND StrReferencia3 <> '0' 
+    AND StrReferencia1 REGEXP '[[:alnum:]]' 
+    AND StrReferencia3 REGEXP '[[:alnum:]]'";
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
 
