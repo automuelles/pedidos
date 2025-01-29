@@ -34,7 +34,7 @@ include('../php/validate_session.php');
         <?php else: ?>
             <h1 class="text-black-600 text-2xl font-bold">No estás autenticado.</h1>
         <?php endif; ?>
-        <h1 class="text-black-600 text-2xl font-bold">Bodega</h1>
+        <h1 class="text-black-600 text-2xl font-bold">Despachos</h1>
     </div>
 
     <!-- Features Section -->
@@ -66,7 +66,7 @@ include('../php/validate_session.php');
                     <i class="fa-solid fa-motorcycle text-white"></i>
                 </div>
                 <!-- Etiqueta como enlace -->
-                <a href="ReasignarServicios.php" class="text-sm text-gray-700 hover:underline">Reasignar Servicio</a>
+                <a href="AsignarServicios.php" class="text-sm text-gray-700 hover:underline">Asignar Servicio</a>
             </div>
             <div class="neumorphism p-4 text-center">
                 <!-- Icono de Bodega -->
@@ -75,7 +75,7 @@ include('../php/validate_session.php');
                     <i class="fa-solid fa-lock text-white"></i>
                 </div>
                 <!-- Etiqueta como enlace -->
-                <a href="RevisionFinal.php" class="text-sm text-gray-700 hover:underline">Revision Final</a>
+                <a href="" class="text-sm text-gray-700 hover:underline">Reasignar Servicios</a>
             </div>
             <div class="neumorphism p-4 text-center">
                 <!-- Icono de Bodega -->
@@ -84,7 +84,7 @@ include('../php/validate_session.php');
                     <i class="fa-solid fa-car text-white"></i>
                 </div>
                 <!-- Etiqueta como enlace -->
-                <a href="#" class="text-sm text-gray-700 hover:underline">#</a>
+                <a href="#" class="text-sm text-gray-700 hover:underline">Validar Ubicacion</a>
             </div>
             <div class="neumorphism p-4 text-center">
                 <!-- Icono de Bodega -->

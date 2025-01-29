@@ -41,7 +41,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 } elseif ($user['role'] === 'bodega' || $user['role'] === 'jefeBodega') {
                     header("Location: ../Bodega/Bodega.php");
                     exit; // Asegúrate de salir después de redirigir
-                } else {
+                } elseif ($user['role'] === 'despachos') {
+                    header("Location: ../Despachos/Despachos.php");
+                    exit; // Asegúrate de salir después de redirigir
+                }
+                elseif ($user['role'] === 'mensajeria') {
+                    header("Location: ../Mensajeria/Mensajeria.php");
+                    exit; // Asegúrate de salir después de redirigir
+                }
+                else {
                     header("Location: user_dashboard.php");
                     exit; // Asegúrate de salir después de redirigir
                 }
