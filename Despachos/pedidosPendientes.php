@@ -3,7 +3,7 @@ include('../php/db.php');
 include('../php/login.php');
 include('../php/validate_session.php');
 // Verificar si el usuario es admin
-if ($_SESSION['user_role'] !== 'jefeBodega') {
+if ($_SESSION['user_role'] !== 'despachos') {
     die("Acceso denegado.");
 }
 try {
@@ -53,7 +53,7 @@ try {
         <h1 class="text-black-600 text-2xl font-bold">Revision Final</h1>
     </div>
 
-    <div class="w-full max-w-4xl mx-auto">
+    <div class="w-full max-w-4xl mx-auto py-4 pb-20">
         <?php if ($facturas): ?>
             <div class="space-y-4">
                 <?php foreach ($facturas as $factura): ?>
