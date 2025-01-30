@@ -8,13 +8,16 @@ if ($_SESSION['user_role'] !== 'despachos') {
 }
 
 try {
-    $sql_servicios = "SELECT factura_gestionada.id, factura_gestionada.user_name, factura_gestionada.estado 
-                      FROM factura_gestionada 
-                      WHERE estado = 'Despachos'";
+    // Modificación en el JOIN entre factura_gestionada y factura con la columna correcta
+    $sql_servicios = "SELECT fg.id, fg.user_name, fg.estado, f.StrReferencia1, f.StrReferencia3
+                      FROM factura_gestionada fg
+                      LEFT JOIN factura f ON fg.factura_id = f.id
+                      WHERE fg.estado = 'Despachos'";
     $stmt_servicios = $pdo->prepare($sql_servicios);
     $stmt_servicios->execute();
     $servicios = $stmt_servicios->fetchAll(PDO::FETCH_ASSOC);
 
+    // Obtener los usuarios de mensajería para reasignar
     $sql_usuarios = "SELECT active_sessions.user_name 
                      FROM active_sessions 
                      JOIN users ON active_sessions.user_id = users.id
@@ -33,6 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($servicio_id && !empty($new_user_name)) {
         try {
+            // Actualizar la asignación de usuario en factura_gestionada
             $sql_update = "UPDATE factura_gestionada SET user_name = :user_name WHERE id = :id";
             $stmt_update = $pdo->prepare($sql_update);
             $stmt_update->execute(['user_name' => $new_user_name, 'id' => $servicio_id]);
@@ -45,7 +49,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 
@@ -93,13 +96,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <?php foreach ($servicios as $servicio): ?>
                     <form action="" method="POST" class="bg-white shadow-md rounded-2xl p-4 border border-gray-200">
                         <input type="hidden" name="servicio_id" value="<?= $servicio['id'] ?>">
+                        <p class="text-gray-600"><strong>Referencia 1:</strong> <?= htmlspecialchars($servicio['StrReferencia1']) ?></p>
+                        <p class="text-gray-600"><strong>Referencia 3:</strong> <?= htmlspecialchars($servicio['StrReferencia3']) ?></p>
                         <p class="text-gray-600"><strong>Estado:</strong> <?= htmlspecialchars($servicio['estado']) ?></p>
                         <p class="text-gray-600"><strong>Asignado a:</strong> <?= htmlspecialchars($servicio['user_name']) ?></p>
-
                         <label for="user-select-<?= $servicio['id'] ?>" class="block text-sm font-medium text-gray-700 mt-4">
                             Reasignar a:
                         </label>
-                        <select name="new_user_name" id="user-select-<?= $servicio['id'] ?>" 
+                        <select name="new_user_name" id="user-select-<?= $servicio['id'] ?>"
                             class="w-full mt-2 p-2 border rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500">
                             <option value="">Seleccionar usuario</option>
                             <?php foreach ($usuarios as $usuario): ?>
@@ -120,8 +124,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php endif; ?>
     </div>
     <div id="notification" class="notification"></div>
-     <!-- Footer Navigation -->
-     <nav class="fixed bottom-0 left-0 right-0 bg-white shadow-lg">
+    <!-- Footer Navigation -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white shadow-lg">
         <div class="flex justify-around py-2">
             <a href="../php/logout_user.php" class="text-blue-500 text-center flex flex-col items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
@@ -148,7 +152,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </nav>
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             const message = <?= json_encode($message) ?>;
             if (message) {
                 const notification = document.getElementById("notification");
@@ -164,7 +168,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         setInterval(function() {
             location.reload();
-        }, 30000); 
+        }, 30000);
     </script>
 </body>
 
