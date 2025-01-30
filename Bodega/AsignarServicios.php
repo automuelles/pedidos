@@ -119,8 +119,7 @@ $stmt = $pdo->prepare("
     SELECT f.IntTransaccion, f.IntDocumento, f.fecha, f.id AS factura_id
     FROM factura AS f
     JOIN factura_gestionada AS fg ON f.id = fg.factura_id
-    JOIN users AS u ON fg.user_id = u.id
-    WHERE u.name = :userName AND f.estado = 'gestionado'
+    WHERE fg.user_name = :userName AND f.estado = 'gestionado'
 ");
 $stmt->execute(['userName' => $usuarioConectado]);
 
