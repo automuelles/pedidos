@@ -38,7 +38,7 @@ include('../php/validate_session.php');
     </div>
 
     <!-- Features Section -->
-    <div class="w-full max-w-xs">
+    <div class="w-full max-w-xs pb-16">
         <h2 class="text-center text-lg font-semibold text-gray-700 mb-4">Modulos</h2>
         <div class="grid grid-cols-3 gap-4">
             <div class="neumorphism p-4 text-center">

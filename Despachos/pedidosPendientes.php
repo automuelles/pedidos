@@ -60,7 +60,7 @@ try {
         <h1 class="text-black-600 text-2xl font-bold">Revision Final</h1>
     </div>
 
-    <div class="w-full max-w-4xl mx-auto py-4">
+    <div class="w-full max-w-4xl mx-auto pb-16">
         <?php if ($facturas): ?>
             <div class="space-y-4">
                 <?php foreach ($facturas as $factura): ?>
