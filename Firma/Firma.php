@@ -29,7 +29,7 @@ function buscarFactura($numeroFactura)
 // Función para firmar una factura
 function firmarFactura($numeroFactura, $firmaImagen)
 {
-    $carpetaCompartida = '\\\\SERVAUTOMUELLES\\HgiNetERP\\Temp\\Documentos\\dms\\900950921\\cia1\\emp2\\documentos\\FacturaElectronica\\';
+    $carpetaCompartida = 'z:\\';
     $archivo = $carpetaCompartida . $numeroFactura . '.pdf';
     $pdfFirmadoPath = $carpetaCompartida . $numeroFactura . '_firmado.pdf';
 
@@ -70,7 +70,7 @@ function firmarFactura($numeroFactura, $firmaImagen)
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
-     .modal-dialog {
+        .modal-dialog {
             max-width: 100%;
             width: 100%;
             height: 90vh;
@@ -79,11 +79,13 @@ function firmarFactura($numeroFactura, $firmaImagen)
 
         .modal-body {
             padding: 0;
+            overflow: auto;
+            max-height: 90vh;
         }
 
         #pdfPreview {
             width: 100%;
-            height: 100%;
+            height: 80vh;
         }
 
         .firma-icon {
@@ -99,17 +101,18 @@ function firmarFactura($numeroFactura, $firmaImagen)
             height: 90vh;
             margin: 0;
         }
-    .neumorphism {
-        background: #e0e5ec;
-        border-radius: 15px;
-        box-shadow: 20px 20px 60px #bebebe, -20px -20px 60px #ffffff;
-    }
 
-    .neumorphism-icon {
-        box-shadow: 6px 6px 12px #bebebe, -6px -6px 12px #ffffff;
-    }
+        .neumorphism {
+            background: #e0e5ec;
+            border-radius: 15px;
+            box-shadow: 20px 20px 60px #bebebe, -20px -20px 60px #ffffff;
+        }
+
+        .neumorphism-icon {
+            box-shadow: 6px 6px 12px #bebebe, -6px -6px 12px #ffffff;
+        }
     </style>
-   
+
 </head>
 
 <body class="bg-gray-200 min-h-screen flex flex-col items-center justify-center">
@@ -150,6 +153,7 @@ function firmarFactura($numeroFactura, $firmaImagen)
                 <div class="modal-body">
                     <iframe id="pdfPreview" type="application/pdf" frameborder="0"></iframe>
                     <p>El visor PDF no es compatible con su navegador. Puede descargar el archivo PDF usando el siguiente enlace: <a id="pdfDownloadLink" href="#" target="_blank">Descargar PDF</a></p>
+                    <p><a id="pdfViewLink" href="verPdf.php?numeroFactura=12345" target="_blank">Ver PDF</a></p>
                     <span class="firma-icon" id="firmarIcon" title="Firmar documento"><i class="fas fa-signature"></i></span>
                 </div>
             </div>
@@ -157,23 +161,23 @@ function firmarFactura($numeroFactura, $firmaImagen)
     </div>
 
     <!-- Modal para dibujar firma -->
-<div class="modal fade" id="drawSignatureModal" tabindex="-1" aria-labelledby="drawSignatureModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="drawSignatureModalLabel">Dibujar Firma</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <canvas id="signatureCanvas" width="600" height="200" style="border: 1px solid #000;"></canvas>
-                <div class="mt-3">
-                    <button class="btn btn-primary" id="saveSignature">Guardar Firma</button>
-                    <button class="btn btn-secondary" id="clearSignature">Borrar Firma</button>
+    <div class="modal fade" id="drawSignatureModal" tabindex="-1" aria-labelledby="drawSignatureModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="drawSignatureModalLabel">Dibujar Firma</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <canvas id="signatureCanvas" width="600" height="200" style="border: 1px solid #000;"></canvas>
+                    <div class="mt-3">
+                        <button class="btn btn-primary" id="saveSignature">Guardar Firma</button>
+                        <button class="btn btn-secondary" id="clearSignature">Borrar Firma</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
     <nav class="fixed bottom-0 left-0 right-0 bg-white shadow-lg">
         <div class="flex justify-around py-2">
@@ -194,77 +198,63 @@ function firmarFactura($numeroFactura, $firmaImagen)
                 <span class="text-xs">Facturas Firmadas</span>
             </a>
         </div>
-    <nav>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-    <script>
-        <?php
-        if (isset($_GET['numeroFactura'])) {
-            $numeroFactura = $_GET['numeroFactura'];
-            $archivoBase64 = buscarFactura($numeroFactura);
-            $archivoUrl = "data:application/pdf;base64," . $archivoBase64;
+        <nav>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+            <script>
+                <?php
+                if (isset($_GET['numeroFactura'])) {
+                    $numeroFactura = $_GET['numeroFactura'];
+                    $archivoBase64 = buscarFactura($numeroFactura);
+                    $archivoUrl = "data:application/pdf;base64," . $archivoBase64;
 
-            if ($archivoBase64) {
-                echo "document.getElementById('pdfPreview').src = '$archivoUrl';
+                    if ($archivoBase64) {
+                        echo "document.getElementById('pdfPreview').src = '$archivoUrl';
                 document.getElementById('pdfDownloadLink').href = '$archivoUrl';
                 var myModal = new bootstrap.Modal(document.getElementById('pdfModal'), { backdrop: 'static' });
                 myModal.show();";
-                
-                // Mostrar el ícono de firma
-                echo "document.getElementById('firmarIcon').style.display = 'inline';";
-                
-                // Mostrar el modal para dibujar la firma
-                echo "document.getElementById('firmarIcon').onclick = function() {
+
+                        // Mostrar el ícono de firma
+                        echo "document.getElementById('firmarIcon').style.display = 'inline';";
+
+                        // Mostrar el modal para dibujar la firma
+                        echo "document.getElementById('firmarIcon').onclick = function() {
                     var drawSignatureModal = new bootstrap.Modal(document.getElementById('drawSignatureModal'), { backdrop: 'static' });
                     drawSignatureModal.show();
                 };";
-            } else {
-                echo "alert('Factura no encontrada.');";
-            }
-        }
-        ?>
-    </script>
- <script>
-    let signaturePad;
-
-    document.addEventListener('DOMContentLoaded', () => {
-        const canvas = document.getElementById('signatureCanvas');
-        signaturePad = new SignaturePad(canvas);
-
-        document.getElementById('saveSignature').addEventListener('click', () => {
-            if (signaturePad.isEmpty()) {
-                alert('Por favor, dibuje su firma primero.');
-                return;
-            }
-
-            const signatureDataUrl = signaturePad.toDataURL();
-            const numeroFactura = new URLSearchParams(window.location.search).get('numeroFactura');
-
-            // Enviar la firma al servidor
-            const xhr = new XMLHttpRequest();
-            xhr.open('POST', 'save_signature.php?numeroFactura=' + numeroFactura, true);
-            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    const response = JSON.parse(xhr.responseText);
-                    if (response.signedPdfUrl) {
-                        // Redirigir a la página de búsqueda de facturas firmadas
-                        window.location.href = response.signedPdfUrl;
                     } else {
-                        alert('Error al firmar la factura: ' + response.error);
+                        echo "alert('Factura no encontrada.');";
                     }
-                } else {
-                    alert('Error al conectar con el servidor.');
                 }
-            };
-            xhr.send('signature=' + encodeURIComponent(signatureDataUrl));
-        });
+                ?>
+            </script>
+            <script>
+                let signaturePad;
 
-        document.getElementById('clearSignature').addEventListener('click', () => {
-            signaturePad.clear();
-        });
-    });
-</script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    const canvas = document.getElementById('signatureCanvas');
+                    signaturePad = new SignaturePad(canvas);
+
+                    document.getElementById('saveSignature').addEventListener('click', () => {
+                        if (signaturePad.isEmpty()) {
+                            alert('Por favor, dibuje su firma primero.');
+                            return;
+                        }
+                        const signatureDataUrl = signaturePad.toDataURL();
+                        const numeroFactura = new URLSearchParams(window.location.search).get('numeroFactura');
+
+                        // Enviar la firma al servidor
+                        const xhr = new XMLHttpRequest();
+                        xhr.open('POST', 'save_signature.php?numeroFactura=' + numeroFactura, true);
+                        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                        xhr.send('signature=' + encodeURIComponent(signatureDataUrl));
+                    });
+
+                    document.getElementById('clearSignature').addEventListener('click', () => {
+                        signaturePad.clear();
+                    });
+                });
+            </script>
 </body>
 
 </html>

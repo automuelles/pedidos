@@ -48,7 +48,14 @@ file_put_contents($firmaImagenPath, $firmaImagenData);
     $carpetaCompartida = '\\\\SERVAUTOMUELLES\\HgiNetERP\\Temp\\Documentos\\dms\\900950921\\cia1\\emp2\\documentos\\FacturaElectronica\\';
     $archivo = $carpetaCompartida . $numeroFactura . '.pdf';
     $pdfFirmadoPath = $carpetaCompartida . $numeroFactura . '_firmado.pdf';
+// Ruta local para guardar el PDF firmado
+$carpetaFacturasFirmadas = '../factura_firmada';  
+if (!is_dir($carpetaFacturasFirmadas)) {
+    mkdir($carpetaFacturasFirmadas, 0755, true);  // Crear la carpeta si no existe
+}
 
+// Guardar el PDF firmado en la carpeta local
+$pdfFirmadoPath = $carpetaFacturasFirmadas . '/' . $numeroFactura . '_firmado.pdf'; // Ruta de almacenamiento local
     if (file_exists($archivo)) {
         $pdf = new Fpdi();
         $pdf->AddPage();
