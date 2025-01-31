@@ -107,7 +107,7 @@ if ($factura_id > 0) {
         <h1 class="text-black-600 text-2xl font-bold">Bodega</h1>
     </div>
 
-    <div class="w-full max-w-xs">
+    <div class="w-full max-w-xs pb-16">
         <div class="w-full max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md mt-10 pb-24"> <!-- Agregar pb-24 para dar espacio abajo -->
             <h1 class="text-2xl font-bold text-gray-800 mb-4">Detalles de la Factura</h1>
 

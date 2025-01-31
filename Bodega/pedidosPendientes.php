@@ -44,7 +44,7 @@ $documento = isset($_GET['documento']) ? htmlspecialchars($_GET['documento']) : 
     </div>
 
   <!-- Features Section -->
-<div class="w-full max-w-4xl mx-auto">
+<div class="w-full max-w-4xl mx-auto pb-16">
     <h2 class="text-center text-lg font-semibold text-gray-700 mb-6">Pedidos Asignados sin Revisión</h2>
     
     <?php if ($facturas): ?>
