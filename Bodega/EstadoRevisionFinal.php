@@ -129,7 +129,7 @@ if ($transaccion > 0 && $documento > 0) {
                     echo "<p class='text-lg text-gray-700'><strong>Producto:</strong> " . htmlspecialchars($factura_detail['StrProducto']) . "</p>";
                     echo "<p class='text-lg text-gray-700'><strong>Descripcion:</strong> " . htmlspecialchars($factura_detail['StrDescripcion']) . "</p>";
                     echo "<p class='text-lg text-gray-700'><strong>Parámetro:</strong> " . htmlspecialchars($factura_detail['StrParam1']) . "</p>";
-                    echo "<p class='text-lg text-gray-700'><strong>Cantidad:</strong> " . number_format((float) $factura_detail['IntCantidad'], 0, '.', '') . "</p>";
+                    echo "<p class='text-lg text-gray-700'><strong>Cantidad:</strong> " . number_format((float) $factura_detail['IntCantidad'], 2, '.', '') . "</p>";
                     echo "<p class='text-lg text-gray-700'><strong>Unidad:</strong> " . htmlspecialchars($factura_detail['StrUnidad']) . "</p>";
                     echo "</div><hr class='my-4' />";
                 }

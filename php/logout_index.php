@@ -1,46 +1,21 @@
 <?php
-session_start(); // Inicia la sesión si no está iniciada
+session_start();
+include('db.php');
 
-// Verificar si la variable de sesión está definida
-if (!isset($_SESSION['session_id'])) {
-    echo "No hay session_id en la sesión.";
-} else {
-    require 'db.php'; // Asegurarse de que el archivo de conexión se incluya correctamente
-    
-    $session_id = $_SESSION['session_id'];
-    echo "Session ID: " . $session_id . "<br>"; // Depuración
-
-    $stmt = $pdo->prepare("DELETE FROM active_sessions WHERE session_id = :session_id");
-    $stmt->bindParam(':session_id', $session_id, PDO::PARAM_STR);
-    $stmt->execute();
-
-    if ($stmt->rowCount() > 0) {
-        echo "Sesión eliminada correctamente de la base de datos.<br>";
-    } else {
-        echo "No se encontró la sesión en la base de datos.<br>";
-    }
-    
-    // Cerrar conexión PDO
-    $stmt = null;
-    $pdo = null;
+// Verificar si el usuario tiene privilegios de administrador
+if ($_SESSION['user_role'] !== 'admin' && $_SESSION['user_role'] !== 'jefeBodega') {
+    die("Acceso denegado.");
 }
 
-// Eliminar variables de sesión
-$_SESSION = [];
-session_unset();
+// Verificar si se envió un session_id
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['session_id'])) {
+    $session_id = $_POST['session_id'];
 
-// Destruir la sesión completamente
-session_destroy();
+    // Eliminar la sesión activa de la tabla active_sessions
+    $stmt = $pdo->prepare("DELETE FROM active_sessions WHERE session_id = ?");
+    $stmt->execute([$session_id]);
 
-// Eliminar la cookie de sesión si existe
-if (ini_get("session.use_cookies")) {
-    $params = session_get_cookie_params();
-    setcookie(session_name(), '', time() - 42000, 
-        $params["path"], $params["domain"], 
-        $params["secure"], $params["httponly"]
-    );
-}
-
-// Redirigir al usuario a la página de inicio
-header("Location: ../index.php");
-exit();
+    // Redirigir a la página de gestión de sesiones
+    header("Location: ../index.php");
+    exit;
+} 
