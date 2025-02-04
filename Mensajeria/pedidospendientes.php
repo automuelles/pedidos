@@ -10,21 +10,16 @@ if ($_SESSION['user_role'] !== 'mensajeria') {
 
 $user_name = $_SESSION['user_name'];
 
-// Query to fetch 'despachos' state invoices with StrReferencia1 and StrReferencia3 fields for the authenticated user
-$sql = "SELECT fg.*, f.StrReferencia1, f.StrReferencia3
+// Query to fetch 'despachos' state invoices, including fields from factura table
+$sql = "SELECT fg.*, f.IntTransaccion, f.IntDocumento, f.StrReferencia1, f.StrReferencia3
         FROM factura_gestionada fg
         JOIN factura f ON fg.factura_id = f.id
         WHERE fg.estado = 'despachos' AND fg.user_name = ?";
-$stmt = $pdo->prepare($sql); // Using $pdo for consistency
+$stmt = $pdo->prepare($sql);
 $stmt->execute([$user_name]);
 
 // Fetching all the results into an associative array
 $facturas = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-// If no records found, handle it gracefully
-if (empty($facturas)) {
-    echo "No facturas found for this user.";
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -67,8 +62,8 @@ if (empty($facturas)) {
             <?php foreach ($facturas as $factura): ?>
                 <div class="flex items-center justify-between p-4 bg-white rounded-lg shadow-md border border-gray-200">
                     <div>
-                        <p class="text-lg font-medium text-gray-800">Transacción: <?php echo htmlspecialchars($factura['factura_id']); ?></p>
-                        <p class="text-sm text-gray-600">Documento: <?php echo htmlspecialchars($factura['factura_id']); ?></p>
+                        <p class="text-lg font-medium text-gray-800">Transacción: <?php echo htmlspecialchars($factura['IntTransaccion']); ?></p>
+                        <p class="text-sm text-gray-600">Documento: <?php echo htmlspecialchars($factura['IntDocumento']); ?></p>
                         <p class="text-sm text-gray-600">Estado: <?php echo htmlspecialchars($factura['estado']); ?></p>
                         <p class="text-xs text-gray-500">Fecha: <?php echo htmlspecialchars($factura['fecha']); ?></p>
                         <p class="text-xs text-gray-500">Datos: <?php echo htmlspecialchars($factura['StrReferencia1']); ?></p>
@@ -76,8 +71,8 @@ if (empty($facturas)) {
                     </div>
                     <div>
                         <form action="EstadoRevisionFinal.php" method="GET">
-                            <input type="hidden" name="IntTransaccion" value="<?php echo $factura['factura_id']; ?>">
-                            <input type="hidden" name="IntDocumento" value="<?php echo $factura['factura_id']; ?>">
+                            <input type="hidden" name="IntTransaccion" value="<?php echo $factura['IntTransaccion']; ?>">
+                            <input type="hidden" name="IntDocumento" value="<?php echo $factura['IntDocumento']; ?>">
                             <input type="hidden" name="estado" value="<?php echo $factura['estado']; ?>">
                             <input type="hidden" name="fecha" value="<?php echo $factura['fecha']; ?>">
                             <input type="hidden" name="StrReferencia1" value="<?php echo $factura['StrReferencia1']; ?>">
@@ -104,7 +99,7 @@ if (empty($facturas)) {
                 </svg>
                 <span class="text-xs">Salir</span>
             </a>
-            <a href="Despachos.php" class="text-gray-500 text-center flex flex-col items-center">
+            <a href="mensajeria.php" class="text-gray-500 text-center flex flex-col items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                 </svg>
