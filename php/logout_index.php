@@ -1,21 +1,34 @@
 <?php
 session_start();
-include('db.php');
 
-// Verificar si el usuario tiene privilegios de administrador
-if ($_SESSION['user_role'] !== 'admin' && $_SESSION['user_role'] !== 'jefeBodega') {
-    die("Acceso denegado.");
-}
+// Validar si el usuario está autenticado
+if (isset($_SESSION['user_name'])) {
+    // Incluir archivo de conexión
+    include('db.php');
+    
+    try {
+        // Conectar a la base de datos
+        $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-// Verificar si se envió un session_id
-if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['session_id'])) {
-    $session_id = $_POST['session_id'];
+        // Eliminar la sesión del usuario en la tabla active_sessions
+        $stmt = $pdo->prepare("DELETE FROM active_sessions WHERE user_name = :user_name");
+        $stmt->bindParam(':user_name', $_SESSION['user_name']);
+        $stmt->execute();
+        
+        // Destruir la sesión
+        session_unset();
+        session_destroy();
 
-    // Eliminar la sesión activa de la tabla active_sessions
-    $stmt = $pdo->prepare("DELETE FROM active_sessions WHERE session_id = ?");
-    $stmt->execute([$session_id]);
-
-    // Redirigir a la página de gestión de sesiones
+        // Redirigir a la página de inicio
+        header("Location: ../index.php"); // Cambia esta URL según sea necesario
+        exit();
+    } catch (PDOException $e) {
+        echo "Error: " . $e->getMessage();
+    }
+} else {
+    // Redirigir a la página de login si no está autenticado
     header("Location: ../index.php");
-    exit;
-} 
+    exit();
+}
+?>

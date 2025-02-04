@@ -44,11 +44,53 @@ if ($_SESSION['user_role'] !== 'mensajeria') {
     </div>
 
     <!-- Features Section -->
-<div class="w-full max-w-4xl mx-auto pb-16">
-    <h2 class="text-center text-2xl font-semibold text-gray-700 mb-6">Módulos</h2>
-    
+    <div class="w-full max-w-4xl mx-auto pb-16">
+        <h2 class="text-center text-2xl font-semibold text-gray-700 mb-6">Detalles del Despacho</h2>
+        <!-- Formulario de despacho -->
+        <div class="w-full max-w-4xl mx-auto pb-16">
+
+            <form action="procesar_despacho.php" method="POST" class="space-y-4">
+                <!-- Opciones de recogida -->
+                <div>
+                    <label for="recogida" class="block text-gray-700">Selecciona el tipo de recogida</label>
+                    <select name="recogida" id="recogida" class="w-full p-2 border rounded-lg">
+                        <option value="recogida_bandas">Recogida de Bandas</option>
+                        <option value="recogida_muestras">Recogida de Muestras</option>
+                        <option value="recogida_mercancia_terminal">Recogida Mercancía Terminal</option>
+                        <option value="devolucion_mercancia">Devolución Mercancía</option>
+                    </select>
+                </div>
+
+                <!-- Parqueadero donde recogen la mercancía -->
+                <div>
+                    <label for="parqueadero" class="block text-gray-700">Parqueadero</label>
+                    <input type="text" name="parqueadero" id="parqueadero" class="w-full p-2 border rounded-lg" required>
+                </div>
+
+                <!-- Nombre del vendedor -->
+                <div>
+                    <label for="vendedor" class="block text-gray-700">Nombre del Vendedor</label>
+                    <input type="text" name="vendedor" id="vendedor" class="w-full p-2 border rounded-lg" required>
+                </div>
+
+                <!-- Nombre del cliente que envía -->
+                <div>
+                    <label for="cliente" class="block text-gray-700">Nombre del Cliente que Envía</label>
+                    <input type="text" name="cliente" id="cliente" class="w-full p-2 border rounded-lg" required>
+                </div>
+
+                <div>
+                    <label for="foto" class="block text-gray-700">Toma una foto</label>
+                    <input type="file" name="foto" id="foto" accept="image/*" capture="camera" class="w-full p-2 border rounded-lg">
+                </div>
+                
+                <!-- Botón de enviar -->
+                <div class="text-center">
+                    <button type="submit" class="bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600">Enviar</button>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
 
     <!-- Footer Navigation -->
     <nav class="fixed bottom-0 left-0 right-0 bg-white shadow-lg">
