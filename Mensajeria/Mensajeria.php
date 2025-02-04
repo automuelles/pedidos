@@ -48,7 +48,7 @@ include('../php/validate_session.php');
                     <i class="fa-solid fa-user text-white"></i>
                 </div>
                 <!-- Etiqueta como enlace -->
-                <a href="#" class="text-sm text-gray-700 hover:underline">Pedidos Entregados</a>
+                <a href="pedidosEntregados.php" class="text-sm text-gray-700 hover:underline">Pedidos Entregados</a>
             </div>
             <div class="neumorphism p-4 text-center">
                 <!-- Icono de Bodega -->
@@ -66,7 +66,7 @@ include('../php/validate_session.php');
                     <i class="fa-solid fa-motorcycle text-white"></i>
                 </div>
                 <!-- Etiqueta como enlace -->
-                <a href="#" class="text-sm text-gray-700 hover:underline">#</a>
+                <a href="RegistrarNovedades.php" class="text-sm text-gray-700 hover:underline">Registro Novedades</a>
             </div>
             <div class="neumorphism p-4 text-center">
                 <!-- Icono de Bodega -->
@@ -84,7 +84,7 @@ include('../php/validate_session.php');
                     <i class="fa-solid fa-car text-white"></i>
                 </div>
                 <!-- Etiqueta como enlace -->
-                <a href="#" class="text-sm text-gray-700 hover:underline">Validar Ubicacion</a>
+                <a href="#" class="text-sm text-gray-700 hover:underline">#</a>
             </div>
             <div class="neumorphism p-4 text-center">
                 <!-- Icono de Bodega -->
