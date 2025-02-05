@@ -2,7 +2,9 @@
 include('../php/login.php');
 include('../php/validate_session.php');
 include '../php/db.php';
-
+if ($_SESSION['user_role'] !== 'despachos') {
+    die("Acceso denegado.");
+}
 $facturaEncontrada = false;
 $mensaje = "";
 
@@ -143,7 +145,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['actualizar'])) {
         // Recargar la página cada 30 segundos
         setInterval(function() {
             location.reload();
-        }, 30000); // 30000 milisegundos = 30 segundos
+        }, 60000); // 30000 milisegundos = 30 segundos
     </script>
 </body>
 
