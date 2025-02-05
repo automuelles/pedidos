@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $foto = '';
     if (isset($_FILES['foto']) && $_FILES['foto']['error'] == 0) {
         $fotoNombre = time() . '_' . $_FILES['foto']['name'];
-        $fotoRuta = 'uploads/' . $fotoNombre;
+        $fotoRuta = '../Foto/' . $fotoNombre;
         if (move_uploaded_file($_FILES['foto']['tmp_name'], $fotoRuta)) {
             $foto = $fotoRuta;
         }
@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':user_name' => $user_name,
             ':foto' => $foto
         ]);
-        echo "<script>alert('Registro guardado con éxito'); window.location.href='index.php';</script>";
+        echo "<script>alert('Registro guardado con éxito'); window.location.href='Mensajeria.php';</script>";
     } catch (PDOException $e) {
         echo "Error: " . $e->getMessage();
     }
