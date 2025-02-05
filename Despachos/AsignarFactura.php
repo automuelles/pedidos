@@ -59,6 +59,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+           /* Neumorphism effect */
+           .neumorphism {
+            background: #e0e5ec;
+            border-radius: 15px;
+            box-shadow: 20px 20px 60px #bebebe, -20px -20px 60px #ffffff;
+        }
+
+        .neumorphism-icon {
+            box-shadow: 6px 6px 12px #bebebe, -6px -6px 12px #ffffff;
+        }
         .notification {
             display: none;
             position: fixed;
@@ -90,14 +100,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <div class="container mx-auto p-6 pb-16">
-        <h2 class="text-center text-lg font-semibold text-gray-700 mb-6">Reasignar Servicios Sin Gestión</h2>
         <?php if (!empty($servicios)): ?>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 <?php foreach ($servicios as $servicio): ?>
                     <form action="" method="POST" class="bg-white shadow-md rounded-2xl p-4 border border-gray-200">
                         <input type="hidden" name="servicio_id" value="<?= $servicio['id'] ?>">
-                        <p class="text-gray-600"><strong>Referencia 1:</strong> <?= htmlspecialchars($servicio['StrReferencia1']) ?></p>
-                        <p class="text-gray-600"><strong>Referencia 3:</strong> <?= htmlspecialchars($servicio['StrReferencia3']) ?></p>
+                        <p class="text-gray-600"><strong>Entregar a :</strong> <?= htmlspecialchars($servicio['StrReferencia1']) ?></p>
+                        <p class="text-gray-600"><strong>Forma de Pago:</strong> <?= htmlspecialchars($servicio['StrReferencia3']) ?></p>
                         <p class="text-gray-600"><strong>Estado:</strong> <?= htmlspecialchars($servicio['estado']) ?></p>
                         <p class="text-gray-600"><strong>Asignado a:</strong> <?= htmlspecialchars($servicio['user_name']) ?></p>
                         <label for="user-select-<?= $servicio['id'] ?>" class="block text-sm font-medium text-gray-700 mt-4">

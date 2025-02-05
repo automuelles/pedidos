@@ -94,10 +94,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['actualizar'])) {
                     <input type="hidden" name="IntTransaccion" value="<?= $factura['IntTransaccion'] ?>">
                     <input type="hidden" name="IntDocumento" value="<?= $factura['IntDocumento'] ?>">
 
-                    <label class="block mb-2 text-gray-700 font-medium">Referencia 1:</label>
+                    <label class="block mb-2 text-gray-700 font-medium">Entregar a :</label>
                     <input type="text" name="StrReferencia1" class="w-full p-2 mb-4 border rounded-lg" value="<?= $factura['StrReferencia1'] ?>">
 
-                    <label class="block mb-2 text-gray-700 font-medium">Referencia 3:</label>
+                    <label class="block mb-2 text-gray-700 font-medium">Forma de pago:</label>
                     <input type="text" name="StrReferencia3" class="w-full p-2 mb-4 border rounded-lg" value="<?= $factura['StrReferencia3'] ?>">
 
                     <button type="submit" name="actualizar" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">Actualizar Factura</button>
