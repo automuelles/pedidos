@@ -15,7 +15,7 @@ CREATE TABLE users (
 );
 
 ALTER TABLE users
-MODIFY COLUMN role ENUM('user', 'admin', 'bodega', 'mensajeria', 'despachos', 'cartera', 'tesoreria', 'jefeBodega', 'Vendedor') DEFAULT 'user';
+MODIFY COLUMN role ENUM('user', 'admin', 'bodega', 'mensajeria', 'despachos', 'cartera', 'tesoreria', 'jefeBodega', 'Vendedor', 'JefeCedi') DEFAULT 'user';
 
 CREATE TABLE active_sessions (
     session_id VARCHAR(255) PRIMARY KEY,
