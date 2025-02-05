@@ -49,7 +49,7 @@ if ($_SESSION['user_role'] !== 'mensajeria') {
         <!-- Formulario de despacho -->
         <div class="w-full max-w-4xl mx-auto pb-16">
 
-            <form action="procesar_despacho.php" method="POST" class="space-y-4">
+            <form action="Novedades.php" method="POST" class="space-y-4">
                 <!-- Opciones de recogida -->
                 <div>
                     <label for="recogida" class="block text-gray-700">Selecciona el tipo de recogida</label>
@@ -57,6 +57,7 @@ if ($_SESSION['user_role'] !== 'mensajeria') {
                         <option value="recogida_bandas">Recogida de Bandas</option>
                         <option value="recogida_muestras">Recogida de Muestras</option>
                         <option value="recogida_mercancia_terminal">Recogida Mercancía Terminal</option>
+                        <option value="recogida_mercancia_terminal">Recogida Cores de Baterias</option>
                         <option value="devolucion_mercancia">Devolución Mercancía</option>
                     </select>
                 </div>
@@ -70,7 +71,26 @@ if ($_SESSION['user_role'] !== 'mensajeria') {
                 <!-- Nombre del vendedor -->
                 <div>
                     <label for="vendedor" class="block text-gray-700">Nombre del Vendedor</label>
-                    <input type="text" name="vendedor" id="vendedor" class="w-full p-2 border rounded-lg" required>
+                    <select name="vendedor" id="vendedor" class="w-full p-2 border rounded-lg" required>
+                        <option value="">Seleccione un Vendedor</option>
+                        <?php
+                        // Incluir el archivo de conexión a la base de datos
+                        include 'db.php';
+
+                        // Ejecutar la consulta para obtener los vendedores
+                        $sql = "SELECT id, name FROM users WHERE role = 'Vendedor'";
+                        $stmt = $pdo->query($sql);
+
+                        // Verificar si hay resultados
+                        if ($stmt->rowCount() > 0) {
+                            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                                echo "<option value='" . $row['id'] . "'>" . $row['name'] . "</option>";
+                            }
+                        } else {
+                            echo "<option value=''>No hay vendedores disponibles</option>";
+                        }
+                        ?>
+                    </select>
                 </div>
 
                 <!-- Nombre del cliente que envía -->
@@ -83,7 +103,7 @@ if ($_SESSION['user_role'] !== 'mensajeria') {
                     <label for="foto" class="block text-gray-700">Toma una foto</label>
                     <input type="file" name="foto" id="foto" accept="image/*" capture="camera" class="w-full p-2 border rounded-lg">
                 </div>
-                
+
                 <!-- Botón de enviar -->
                 <div class="text-center">
                     <button type="submit" class="bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600">Enviar</button>
