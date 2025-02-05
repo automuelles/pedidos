@@ -49,6 +49,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     header("Location: ../Mensajeria/Mensajeria.php");
                     exit; // Asegúrate de salir después de redirigir
                 }
+                elseif ($user['role'] === 'Vendedor') {
+                    header("Location: ../Vendedores/Vendedor.php");
+                    exit; // Asegúrate de salir después de redirigir
+                }
                 else {
                     header("Location: user_dashboard.php");
                     exit; // Asegúrate de salir después de redirigir
