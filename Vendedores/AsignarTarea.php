@@ -35,11 +35,13 @@ include('../php/validate_session.php');
             <h1 class="text-black-600 text-2xl font-bold">No estás autenticado.</h1>
         <?php endif; ?>
     </div>
-
+    <h2 class="text-2xl font-bold mb-6 text-gray-800">Formulario de Solicitud de Tareas</h2>
     <!-- Features Section -->
-    <div class="w-full max-w-xs  pb-16">
-        <h2 class="text-center text-lg font-semibold text-gray-700 mb-4">Formulario Para Asignacion de Tarea</h2>
-        <form class="space-y-6">
+    <div class="w-full max-w-lg bg-white p-8 shadow-md rounded-2xl">
+       
+        <form action="guardar_tarea.php" method="POST" class="space-y-6">
+            <!-- Campo oculto para el nombre del usuario -->
+            <input type="hidden" name="user_name" value="<?php echo htmlspecialchars($_SESSION['user_name']); ?>">
 
             <!-- Campo Solicitud Tarea -->
             <div>
@@ -49,10 +51,19 @@ include('../php/validate_session.php');
                 <select id="solicitud-tarea" name="solicitud-tarea" class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <option value="tomar-foto">Tomar Foto</option>
                     <option value="solicitar-medidas">Solicitar Medidas</option>
+                    <option value="otro">Otro</option>
                 </select>
             </div>
 
-            <!-- Campo Ubicación -->
+            <!-- Campo dinámico para "Otro" -->
+            <div id="otro-campo" class="hidden">
+                <label class="block text-sm font-medium text-gray-700 mb-1" for="otro-texto">
+                    Especificar Solicitud
+                </label>
+                <input type="text" id="otro-texto" name="otro-texto" class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Ingrese su solicitud">
+            </div>
+
+            <!-- Otros campos -->
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1" for="ubicacion">
                     Ubicación
@@ -60,7 +71,6 @@ include('../php/validate_session.php');
                 <input type="text" id="ubicacion" name="ubicacion" class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Ingrese la ubicación">
             </div>
 
-            <!-- Campo Referencia -->
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1" for="referencia">
                     Referencia
@@ -68,7 +78,6 @@ include('../php/validate_session.php');
                 <input type="text" id="referencia" name="referencia" class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Ingrese referencia">
             </div>
 
-            <!-- Campo Descripción de Tarea -->
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1" for="descripcion">
                     Descripción de la Tarea
@@ -76,13 +85,11 @@ include('../php/validate_session.php');
                 <textarea id="descripcion" name="descripcion" rows="4" class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Describa la tarea"></textarea>
             </div>
 
-            <!-- Botón Enviar -->
             <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded-xl hover:bg-blue-600 focus:ring-2 focus:ring-blue-500">
                 Enviar Solicitud
             </button>
         </form>
     </div>
-
 
     <!-- Footer Navigation -->
     <nav class="fixed bottom-0 left-0 right-0 bg-white shadow-lg">
@@ -111,6 +118,18 @@ include('../php/validate_session.php');
             </a>
         </div>
     </nav>
+    <script>
+        const solicitudSelect = document.getElementById("solicitud-tarea");
+        const otroCampoDiv = document.getElementById("otro-campo");
+
+        solicitudSelect.addEventListener("change", function() {
+            if (solicitudSelect.value === "otro") {
+                otroCampoDiv.classList.remove("hidden");
+            } else {
+                otroCampoDiv.classList.add("hidden");
+            }
+        });
+    </script>
     <script>
         // Recargar la página cada 30 segundos
         setInterval(function() {
