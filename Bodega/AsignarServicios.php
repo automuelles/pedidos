@@ -3,7 +3,8 @@
 include('../php/db.php');
 
 // Verificar si el usuario está autenticado y tiene el rol adecuado
-if (!isset($_SESSION['user_name']) || ($_SESSION['user_role'] !== 'jefeBodega' && $_SESSION['user_role'] !== 'bodega')) {
+if (!isset($_SESSION['user_name']) || 
+    (!in_array($_SESSION['user_role'], ['jefeBodega', 'bodega', 'JefeCedi']))) {
     die("Acceso denegado: el usuario no tiene el rol adecuado.");
 }
 
@@ -13,7 +14,7 @@ $rolUsuario = $_SESSION['user_role'];
 $userId = $_SESSION['user_id'];     
 
 // Función para verificar y asignar servicios
-function asignarServicios($pdo, $userId, $usuarioConectado) {
+function asignarServicios($pdo, $userId, $usuarioConectado, $rolUsuario) {
     // Verificar si el usuario tiene servicios en estado 'picking'
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM factura_gestionada fg
                            JOIN factura f ON f.id = fg.factura_id
@@ -21,50 +22,23 @@ function asignarServicios($pdo, $userId, $usuarioConectado) {
     $stmt->execute(['user_id' => $userId]);
     $cantidadPicking = $stmt->fetchColumn();
 
-    // Verificar si el usuario tiene menos de 2 servicios asignados y si hay servicios en 'picking'
+    // Si el usuario ya tiene 2 servicios en 'picking', verificar si alguno cambió de estado
     if ($cantidadPicking >= 2) {
-        // Verificar si al menos uno de esos servicios ha cambiado a un estado diferente a 'picking'
         $stmt = $pdo->prepare("SELECT COUNT(*) FROM factura_gestionada fg
                                JOIN factura f ON f.id = fg.factura_id
                                WHERE fg.user_id = :user_id AND f.estado != 'picking'");
         $stmt->execute(['user_id' => $userId]);
         $cantidadNoPicking = $stmt->fetchColumn();
 
-        // Si tiene menos de 2 servicios que no están en 'picking', puede asignarse un nuevo servicio
         if ($cantidadNoPicking < 2) {
-            // Obtener una factura pendiente
-            $stmt = $pdo->prepare("SELECT id FROM factura WHERE estado = 'pendiente' LIMIT 1");
-            $stmt->execute();
-            $factura = $stmt->fetch();
-
+            $factura = obtenerFacturaPendiente($pdo, $rolUsuario);
             if ($factura) {
-                // Asignar esta factura al usuario
-                $stmt = $pdo->prepare("INSERT INTO factura_gestionada (factura_id, user_id, user_name) VALUES (:factura_id, :user_id, :user_name)");
-                $stmt->execute([
-                    'factura_id' => $factura['id'],
-                    'user_id' => $userId,
-                    'user_name' => $usuarioConectado  // Guardar el nombre de usuario
-                ]);
-
-                // Insertar en la tabla estado
-                $stmt = $pdo->prepare("INSERT INTO estado (factura_id, user_id, user_name, estado) VALUES (:factura_id, :user_id, :user_name, 'gestionado')");
-                $stmt->execute([
-                    'factura_id' => $factura['id'],
-                    'user_id' => $userId,
-                    'user_name' => $usuarioConectado
-                ]);
-
-                // Actualizar el estado de la factura a 'gestionado'
-                $stmt = $pdo->prepare("UPDATE factura SET estado = 'gestionado' WHERE id = :factura_id");
-                $stmt->execute(['factura_id' => $factura['id']]);
-
-                // Guardar mensaje en sesión sin mostrarlo directamente
-                $_SESSION['mensaje_servicio'] = "Servicio asignado correctamente.";
+                asignarFactura($pdo, $factura['id'], $userId, $usuarioConectado);
             } else {
-                $_SESSION['mensaje_servicio'] = "No hay facturas pendientes para asignar.";
+                $_SESSION['mensaje_servicio'] = "No hay facturas pendientes disponibles.";
             }
         } else {
-            $_SESSION['mensaje_servicio'] = "El usuario ya tiene 2 servicios en estado 'picking' y no puede asignarse más.";
+            $_SESSION['mensaje_servicio'] = "El usuario ya tiene 2 servicios en 'picking' y no puede asignarse más.";
         }
     } else {
         // Si el usuario tiene menos de 2 servicios en 'picking', proceder con la asignación
@@ -73,36 +47,11 @@ function asignarServicios($pdo, $userId, $usuarioConectado) {
         $cantidadServicios = $stmt->fetchColumn();
 
         if ($cantidadServicios < 2) {
-            // Obtener una factura pendiente
-            $stmt = $pdo->prepare("SELECT id FROM factura WHERE estado = 'pendiente' LIMIT 1");
-            $stmt->execute();
-            $factura = $stmt->fetch();
-
+            $factura = obtenerFacturaPendiente($pdo, $rolUsuario);
             if ($factura) {
-                // Asignar esta factura al usuario
-                $stmt = $pdo->prepare("INSERT INTO factura_gestionada (factura_id, user_id, user_name) VALUES (:factura_id, :user_id, :user_name)");
-                $stmt->execute([
-                    'factura_id' => $factura['id'],
-                    'user_id' => $userId,
-                    'user_name' => $usuarioConectado  // Guardar el nombre de usuario
-                ]);
-
-                // Insertar en la tabla estado
-                $stmt = $pdo->prepare("INSERT INTO estado (factura_id, user_id, user_name, estado) VALUES (:factura_id, :user_id, :user_name, 'gestionado')");
-                $stmt->execute([
-                    'factura_id' => $factura['id'],
-                    'user_id' => $userId,
-                    'user_name' => $usuarioConectado
-                ]);
-
-                // Actualizar el estado de la factura a 'gestionado'
-                $stmt = $pdo->prepare("UPDATE factura SET estado = 'gestionado' WHERE id = :factura_id");
-                $stmt->execute(['factura_id' => $factura['id']]);
-
-                // Guardar mensaje en sesión sin mostrarlo directamente
-                $_SESSION['mensaje_servicio'] = "Servicio asignado correctamente.";
+                asignarFactura($pdo, $factura['id'], $userId, $usuarioConectado);
             } else {
-                $_SESSION['mensaje_servicio'] = "No hay facturas pendientes para asignar.";
+                $_SESSION['mensaje_servicio'] = "No hay facturas pendientes disponibles.";
             }
         } else {
             $_SESSION['mensaje_servicio'] = "El usuario ya tiene 2 servicios asignados.";
@@ -110,9 +59,41 @@ function asignarServicios($pdo, $userId, $usuarioConectado) {
     }
 }
 
+// Función para obtener una factura pendiente según el rol
+function obtenerFacturaPendiente($pdo, $rolUsuario) {
+    if ($rolUsuario === 'JefeCedi') {
+        $stmt = $pdo->prepare("SELECT id FROM factura WHERE estado = 'pendiente' AND IntTransaccion IN (88, 42) LIMIT 1");
+    } else {
+        $stmt = $pdo->prepare("SELECT id FROM factura WHERE estado = 'pendiente' LIMIT 1");
+    }
+    $stmt->execute();
+    return $stmt->fetch();
+}
 
-// Llamar a la función para asignar servicios
-asignarServicios($pdo, $userId, $usuarioConectado);
+// Función para asignar una factura a un usuario
+function asignarFactura($pdo, $facturaId, $userId, $usuarioConectado) {
+    $stmt = $pdo->prepare("INSERT INTO factura_gestionada (factura_id, user_id, user_name) VALUES (:factura_id, :user_id, :user_name)");
+    $stmt->execute([
+        'factura_id' => $facturaId,
+        'user_id' => $userId,
+        'user_name' => $usuarioConectado
+    ]);
+
+    $stmt = $pdo->prepare("INSERT INTO estado (factura_id, user_id, user_name, estado) VALUES (:factura_id, :user_id, :user_name, 'gestionado')");
+    $stmt->execute([
+        'factura_id' => $facturaId,
+        'user_id' => $userId,
+        'user_name' => $usuarioConectado
+    ]);
+
+    $stmt = $pdo->prepare("UPDATE factura SET estado = 'gestionado' WHERE id = :factura_id");
+    $stmt->execute(['factura_id' => $facturaId]);
+
+    $_SESSION['mensaje_servicio'] = "Servicio asignado correctamente.";
+}
+
+// Llamar a la función de asignación
+asignarServicios($pdo, $userId, $usuarioConectado, $rolUsuario);
 
 // Consultar las facturas asignadas al usuario y que estén en estado 'gestionado'
 $stmt = $pdo->prepare("

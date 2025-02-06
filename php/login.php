@@ -38,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 if ($user['role'] === 'admin') {
                     header("Location: admin_dashboard.php");
                     exit; // Asegúrate de salir después de redirigir
-                } elseif ($user['role'] === 'bodega' || $user['role'] === 'jefeBodega') {
+                } elseif ($user['role'] === 'bodega' || $user['role'] === 'jefeBodega' || $user['role'] === 'JefeCedi') {
                     header("Location: ../Bodega/Bodega.php");
                     exit; // Asegúrate de salir después de redirigir
                 } elseif ($user['role'] === 'despachos') {

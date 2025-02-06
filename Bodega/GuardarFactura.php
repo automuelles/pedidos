@@ -1,7 +1,8 @@
 <?php
 
 // Verificar si el usuario está conectado y tiene el rol adecuado
-if (!isset($_SESSION['user_name']) || ($_SESSION['user_role'] !== 'jefeBodega' && $_SESSION['user_role'] !== 'bodega')) {
+if (!isset($_SESSION['user_name']) || 
+    (!in_array($_SESSION['user_role'], ['jefeBodega', 'bodega', 'JefeCedi']))) {
     die("Acceso denegado: el usuario no tiene el rol adecuado.");
 }
 

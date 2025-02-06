@@ -3,7 +3,7 @@ include('../php/db.php');
 include('../php/login.php');
 include('../php/validate_session.php');
 // Verificar si el usuario es admin
-if ($_SESSION['user_role'] !== 'jefeBodega') {
+if ($_SESSION['user_role'] !== 'jefeBodega'  || $_SESSION['user_role'] !== 'JefeCedi') {
     die("Acceso denegado.");
 }
 try {
