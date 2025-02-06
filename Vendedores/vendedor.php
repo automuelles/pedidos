@@ -57,7 +57,7 @@ include('../php/validate_session.php');
                     <i class="fa-solid fa-motorcycle text-white"></i>
                 </div>
                 <!-- Etiqueta como enlace -->
-                <a href="ModificarDomicilio.php" class="text-sm text-gray-700 hover:underline">Notificar Domicilio</a>
+                <a href="ModificarDomicilio.php" class="text-sm text-gray-700 hover:underline">Modificar Datos del Domicilio</a>
             </div>
             <div class="neumorphism p-4 text-center">
                 <!-- Icono de Bodega -->

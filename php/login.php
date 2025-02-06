@@ -3,13 +3,13 @@ session_start();
 include('db.php');
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (isset($_POST['email']) && isset($_POST['password'])) {
-        $email = $_POST['email'];
+    if (isset($_POST['name']) && isset($_POST['password'])) {
+        $name = $_POST['name'];
         $password = $_POST['password'];
 
         // Consultar usuario por email
-        $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
-        $stmt->execute([$email]);
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE name = ?");
+        $stmt->execute([$name]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         // Verificar la contraseña

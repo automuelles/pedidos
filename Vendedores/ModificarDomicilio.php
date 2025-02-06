@@ -2,7 +2,7 @@
 include('../php/login.php');
 include('../php/validate_session.php');
 include '../php/db.php';
-if ($_SESSION['user_role'] !== 'despachos') {
+if ($_SESSION['user_role'] !== 'Vendedor') {
     die("Acceso denegado.");
 }
 $facturaEncontrada = false;
@@ -75,7 +75,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['actualizar'])) {
     </div>
 
     <!-- Features Section -->
-    <div class="w-full max-w-lg mx-auto bg-white p-8 shadow-md rounded-2xl mt-10">
+    <div class="w-full max-w-lg mx-auto bg-white p-8 shadow-md rounded-2xl mt-10 pb-16">
         <h2 class="text-2xl font-bold mb-6 text-gray-800">Notificar o Modificar Datos del Domicilio</h2>
 
         <!-- Formulario de búsqueda -->

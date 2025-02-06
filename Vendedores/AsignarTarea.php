@@ -37,7 +37,7 @@ include('../php/validate_session.php');
     </div>
     <h2 class="text-2xl font-bold mb-6 text-gray-800">Formulario de Solicitud de Tareas</h2>
     <!-- Features Section -->
-    <div class="w-full max-w-lg bg-white p-8 shadow-md rounded-2xl">
+    <div class="w-full max-w-lg bg-white p-8 shadow-md rounded-2xl pb-16">
        
         <form action="guardar_tarea.php" method="POST" class="space-y-6">
             <!-- Campo oculto para el nombre del usuario -->

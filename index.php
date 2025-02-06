@@ -42,7 +42,7 @@
                     <a href="#" class="social"><i class="fa fa-linkedin"></i></a>
                 </div>
                 <span>o usa tu cuenta</span>
-                <input type="email" name="email" placeholder="Correo electrónico" required />
+                <input type="text" name="name" placeholder="Correo electrónico" required />
                 <input type="password" name="password" placeholder="Contraseña" required />
                 <a href="./views/RecuperarContraseña.php">¿Olvidaste tu contraseña?</a>
                 <button type="submit">Iniciar sesión</button>
