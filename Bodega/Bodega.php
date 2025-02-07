@@ -41,16 +41,7 @@ include('../php/validate_session.php');
     <div class="w-full max-w-xs  pb-16">
         <h2 class="text-center text-lg font-semibold text-gray-700 mb-4">Modulos</h2>
         <div class="grid grid-cols-3 gap-4">
-            <div class="neumorphism p-4 text-center">
-                <!-- Icono de vendedor -->
-                <div
-                    class="neumorphism-icon w-10 h-10 bg-yellow-400 rounded-full mx-auto mb-2 flex items-center justify-center">
-                    <i class="fa-solid fa-user text-white"></i>
-                </div>
-                <!-- Etiqueta como enlace -->
-                <a href="manage_sessions.php" class="text-sm text-gray-700 hover:underline">Usuario Logueado</a>
-            </div>
-            <div class="neumorphism p-4 text-center">
+        <div class="neumorphism p-4 text-center">
                 <!-- Icono de Bodega -->
                 <div
                     class="neumorphism-icon w-10 h-10 bg-orange-400 rounded-full mx-auto mb-2 flex items-center justify-center">
@@ -60,13 +51,23 @@ include('../php/validate_session.php');
                 <a href="pedidosPendientes.php" class="text-sm text-gray-700 hover:underline">Pedidos Pendientes</a>
             </div>
             <div class="neumorphism p-4 text-center">
+                <!-- Icono de vendedor -->
+                <div
+                    class="neumorphism-icon w-10 h-10 bg-yellow-400 rounded-full mx-auto mb-2 flex items-center justify-center">
+                    <i class="fa-solid fa-user text-white"></i>
+                </div>
+                <!-- Etiqueta como enlace -->
+                <a href="" class="text-sm text-gray-700 hover:underline"></a>
+            </div>
+            
+            <div class="neumorphism p-4 text-center">
                 <!-- Icono de Bodega -->
                 <div
                     class="neumorphism-icon w-10 h-10 bg-green-400 rounded-full mx-auto mb-2 flex items-center justify-center">
                     <i class="fa-solid fa-motorcycle text-white"></i>
                 </div>
                 <!-- Etiqueta como enlace -->
-                <a href="ReasignarServicios.php" class="text-sm text-gray-700 hover:underline">Reasignar Servicio</a>
+                <a href="" class="text-sm text-gray-700 hover:underline"></a>
             </div>
             <div class="neumorphism p-4 text-center">
                 <!-- Icono de Bodega -->
