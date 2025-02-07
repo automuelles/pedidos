@@ -63,7 +63,11 @@ function asignarServicios($pdo, $userId, $usuarioConectado, $rolUsuario) {
 function obtenerFacturaPendiente($pdo, $rolUsuario) {
     if ($rolUsuario === 'JefeCedi') {
         $stmt = $pdo->prepare("SELECT id FROM factura WHERE estado = 'pendiente' AND IntTransaccion IN (88, 42) LIMIT 1");
-    } else {
+    } 
+    elseif ($rolUsuario === 'jefeBodega') {
+        $stmt = $pdo->prepare("SELECT id FROM factura WHERE estado = 'pendiente' AND IntTransaccion IN (88, 42) LIMIT 1");
+    } 
+    else {
         $stmt = $pdo->prepare("SELECT id FROM factura WHERE estado = 'pendiente' LIMIT 1");
     }
     $stmt->execute();
