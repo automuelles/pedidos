@@ -2,6 +2,8 @@
 // Incluir archivos necesarios
 include('../php/login.php');
 include('../php/validate_session.php');
+include('GuardarFactura.php');
+include('AsignarServicios.php');
 
 // Obtener el ID de la factura desde la URL
 $factura_id = isset($_GET['factura_id']) ? (int) $_GET['factura_id'] : 0;
@@ -9,7 +11,7 @@ $factura_id = isset($_GET['factura_id']) ? (int) $_GET['factura_id'] : 0;
 if ($factura_id > 0) {
     // Conexión a MySQL (automuelles_db) para obtener la factura
     include('../php/db.php'); // Este archivo contiene la conexión a MySQL
-    
+
     // Consulta para obtener los datos de la factura con el ID proporcionado en la base de datos MySQL
     $sql = "SELECT * FROM factura WHERE id = :factura_id";
     $stmt = $pdo->prepare($sql); // Usamos $pdo porque estamos trabajando con MySQL
@@ -41,6 +43,7 @@ if ($factura_id > 0) {
                     d.StrUnidad, 
                     d.DatFecha1, 
                     d.StrVendedor,
+                    doc.StrObservaciones,
                     doc.StrUsuarioGra, 
                     doc.StrReferencia1,
                     doc.StrReferencia3, 
@@ -130,6 +133,7 @@ if ($factura_id > 0) {
                     echo "<p class='text-lg text-gray-700'><strong>Descripcion:</strong> " . htmlspecialchars($factura_detail['StrDescripcion']) . "</p>";
                     echo "<p class='text-lg text-gray-700'><strong>Ubicación:</strong> " . htmlspecialchars($factura_detail['StrParam1']) . "</p>";
                     echo "<p class='text-lg text-gray-700'><strong>Vendedor:</strong> " . htmlspecialchars($factura_detail['StrUsuarioGra']) . "</p>";
+                    echo "<p class='text-lg text-gray-700'><strong>Observaciones:</strong> " . htmlspecialchars($factura_detail['StrObservaciones']) . "</p>";
                     echo "<hr class='my-4' />";
                 }
             } else {
@@ -137,10 +141,15 @@ if ($factura_id > 0) {
             }
             ?>
             <button type="button"
-    class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
-    onclick="updateEstado()">
-    Guardar
-</button>
+                class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
+                onclick="updateEstado()">
+                Guardar
+            </button>
+            <button type="button"
+                class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
+                onclick="window.open('ReportesNovedades.php', '_blank')">
+                Reportar Novedad
+            </button>
         </div>
     </div>
 
@@ -178,50 +187,50 @@ if ($factura_id > 0) {
             location.reload();
         }, 30000); // 30000 milisegundos = 30 segundos
     </script>
-   <script>
-    function updateEstado() {
-        // Obtener el ID de la factura de la URL (dynamic)
-        const urlParams = new URLSearchParams(window.location.search);
-        const facturaId = urlParams.get('factura_id'); // Obtiene el valor de 'factura_id' de la URL
+    <script>
+        function updateEstado() {
+            // Obtener el ID de la factura de la URL (dynamic)
+            const urlParams = new URLSearchParams(window.location.search);
+            const facturaId = urlParams.get('factura_id'); // Obtiene el valor de 'factura_id' de la URL
 
-        if (!facturaId) {
-            alert('No se pudo obtener el ID de la factura.');
-            return;
-        }
-
-        // Crear los datos que se van a enviar
-        var data = new FormData();
-        data.append("factura_id", facturaId);
-        data.append("estado", "picking"); // Cambiar el estado a "picking"
-
-        // Enviar la solicitud al archivo PHP
-        fetch('actualizar_estado.php', {
-            method: 'POST',
-            body: data
-        })
-        .then(response => response.text())  // Cambiar a .text() para ver la respuesta como texto
-        .then(responseText => {
-            console.log(responseText);  // Imprimir la respuesta para inspeccionarla
-            try {
-                const data = JSON.parse(responseText);  // Intentar convertir a JSON
-                if (data.success) {
-                    alert('Estado actualizado a "picking"');
-                    window.location.href = 'pedidosPendientes.php'; // Redirigir a la página deseada
-                } else {
-                    console.error('Error en la actualización:', data.message);
-                    alert('Hubo un error al actualizar el estado: ' + data.message);
-                }
-            } catch (error) {
-                console.error('Error al analizar la respuesta como JSON:', error);
-                alert('Hubo un error en la solicitud: ' + error.message);
+            if (!facturaId) {
+                alert('No se pudo obtener el ID de la factura.');
+                return;
             }
-        })
-        .catch(error => {
-            console.error('Error en la solicitud:', error);
-            alert('Hubo un error en la solicitud: ' + error.message);
-        });
-    }
-</script>
+
+            // Crear los datos que se van a enviar
+            var data = new FormData();
+            data.append("factura_id", facturaId);
+            data.append("estado", "picking"); // Cambiar el estado a "picking"
+
+            // Enviar la solicitud al archivo PHP
+            fetch('actualizar_estado.php', {
+                    method: 'POST',
+                    body: data
+                })
+                .then(response => response.text()) // Cambiar a .text() para ver la respuesta como texto
+                .then(responseText => {
+                    console.log(responseText); // Imprimir la respuesta para inspeccionarla
+                    try {
+                        const data = JSON.parse(responseText); // Intentar convertir a JSON
+                        if (data.success) {
+                            alert('Estado actualizado a "picking"');
+                            window.location.href = 'pedidospendientes.php'; // Redirigir a la página deseada
+                        } else {
+                            console.error('Error en la actualización:', data.message);
+                            alert('Hubo un error al actualizar el estado: ' + data.message);
+                        }
+                    } catch (error) {
+                        console.error('Error al analizar la respuesta como JSON:', error);
+                        alert('Hubo un error en la solicitud: ' + error.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error en la solicitud:', error);
+                    alert('Hubo un error en la solicitud: ' + error.message);
+                });
+        }
+    </script>
 </body>
 
 </html>

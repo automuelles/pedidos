@@ -31,7 +31,7 @@ if ($transaccion > 0 && $documento > 0) {
 
         // Consulta SQL para obtener los detalles de la factura en SQL Server
         $query = "
-                SELECT 
+               SELECT 
                     d.IntTransaccion, 
                     d.IntDocumento, 
                     d.StrProducto,
@@ -41,6 +41,7 @@ if ($transaccion > 0 && $documento > 0) {
                     d.StrUnidad, 
                     d.DatFecha1, 
                     d.StrVendedor,
+                    doc.StrObservaciones,
                     doc.StrUsuarioGra, 
                     doc.StrReferencia1,
                     doc.StrReferencia3, 
@@ -130,6 +131,7 @@ if ($transaccion > 0 && $documento > 0) {
                     echo "<p class='text-lg text-gray-700'><strong>Descripcion:</strong> " . htmlspecialchars($factura_detail['StrDescripcion']) . "</p>";
                     echo "<p class='text-lg text-gray-700'><strong>Ubicación:</strong> " . htmlspecialchars($factura_detail['StrParam1']) . "</p>";
                     echo "<p class='text-lg text-gray-700'><strong>Vendedor:</strong> " . htmlspecialchars($factura_detail['StrUsuarioGra']) . "</p>";
+                    echo "<p class='text-lg text-gray-700'><strong>Observaciones:</strong> " . htmlspecialchars($factura_detail['StrObservaciones']) . "</p>";
                     echo "<hr class='my-4' />";
                 }
             } else {
@@ -140,6 +142,11 @@ if ($transaccion > 0 && $documento > 0) {
             <button type="button"
                 class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
                 onclick="updateEstado()">Guardar</button>
+            <button type="button"
+                class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
+                onclick="window.open('ReportesNovedades.php', '_blank')">
+                Reportar Novedad
+            </button>
         </div>
     </div>
     <!-- Footer Navigation -->
@@ -166,15 +173,16 @@ if ($transaccion > 0 && $documento > 0) {
         </div>
     </nav>
     <script>
-    function updateEstado() {
-        // Obtener los parámetros de la URL (IntTransaccion y IntDocumento)
-        const urlParams = new URLSearchParams(window.location.search);
-        const IntTransaccion = urlParams.get('IntTransaccion');
-        const IntDocumento = urlParams.get('IntDocumento');
-        
-        // Redirigir a un archivo PHP que maneje la actualización y copia de datos
-        window.location.href = 'actualizar_estadoFinal.php?IntTransaccion=' + IntTransaccion + '&IntDocumento=' + IntDocumento;
-    }
-</script>
+        function updateEstado() {
+            // Obtener los parámetros de la URL (IntTransaccion y IntDocumento)
+            const urlParams = new URLSearchParams(window.location.search);
+            const IntTransaccion = urlParams.get('IntTransaccion');
+            const IntDocumento = urlParams.get('IntDocumento');
+
+            // Redirigir a un archivo PHP que maneje la actualización y copia de datos
+            window.location.href = 'actualizar_estadoFinal.php?IntTransaccion=' + IntTransaccion + '&IntDocumento=' + IntDocumento;
+        }
+    </script>
 </body>
+
 </html>
