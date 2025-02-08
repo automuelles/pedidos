@@ -56,7 +56,7 @@ $nueva_factura = ($facturas_gestionadas > $facturas_anterior);
 
     <!-- Features Section -->
     <?php if ($facturas_gestionadas > 0): ?>
-    <div style="display: flex; align-items: center; background-color: #dc3545; color: white; padding: 8px 12px; border-radius: 20px; font-weight: bold;">
+    <div style="display: flex; align-items: center; background-color: #007bff; color: white; padding: 8px 12px; border-radius: 20px; font-weight: bold;">
         <i class="fas fa-file-invoice" style="margin-right: 8px;"></i> <!-- Ícono de factura -->
         Facturas asignadas: 
         <span style="background-color: white; color: #dc3545; font-weight: bold; padding: 4px 8px; border-radius: 50%; margin-left: 8px;">
