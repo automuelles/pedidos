@@ -124,14 +124,13 @@ if ($transaccion > 0 && $documento > 0) {
             if ($results) {
                 foreach ($results as $factura_detail) {
                     // Mostrar todos los detalles de la factura
-                    echo "<div class='mb-4'>";
                     echo "<input type='checkbox' name='productos[]' value='" . htmlspecialchars($factura_detail['StrProducto']) . "' class='form-checkbox text-blue-500'>";
+                    echo "<p class='text-lg text-gray-700'><strong>Cantidad:</strong> " . number_format((float) $factura_detail['IntCantidad'], 2, '.', '') . "</p>";
                     echo "<p class='text-lg text-gray-700'><strong>Producto:</strong> " . htmlspecialchars($factura_detail['StrProducto']) . "</p>";
                     echo "<p class='text-lg text-gray-700'><strong>Descripcion:</strong> " . htmlspecialchars($factura_detail['StrDescripcion']) . "</p>";
-                    echo "<p class='text-lg text-gray-700'><strong>Parámetro:</strong> " . htmlspecialchars($factura_detail['StrParam1']) . "</p>";
-                    echo "<p class='text-lg text-gray-700'><strong>Cantidad:</strong> " . number_format((float) $factura_detail['IntCantidad'], 2, '.', '') . "</p>";
-                    echo "<p class='text-lg text-gray-700'><strong>Unidad:</strong> " . htmlspecialchars($factura_detail['StrUnidad']) . "</p>";
-                    echo "</div><hr class='my-4' />";
+                    echo "<p class='text-lg text-gray-700'><strong>Ubicación:</strong> " . htmlspecialchars($factura_detail['StrParam1']) . "</p>";
+                    echo "<p class='text-lg text-gray-700'><strong>Vendedor:</strong> " . htmlspecialchars($factura_detail['StrUsuarioGra']) . "</p>";
+                    echo "<hr class='my-4' />";
                 }
             } else {
                 echo "<p class='text-red-500'>No se encontraron detalles para la factura solicitada.</p>";
