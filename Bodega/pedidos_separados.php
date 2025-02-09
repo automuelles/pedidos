@@ -1,6 +1,8 @@
 <?php
 include('../php/login.php');
 include('../php/validate_session.php');
+include('../php/db.php');
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -34,12 +36,61 @@ include('../php/validate_session.php');
         <?php else: ?>
             <h1 class="text-black-600 text-2xl font-bold">No estás autenticado.</h1>
         <?php endif; ?>
-        <h1 class="text-black-600 text-2xl font-bold">Pedidos Separados</h1>
     </div>
 
     <!-- Features Section -->
-    <div class="w-full max-w-xs  pb-16">
-        
+    <div class="w-full max-w-3xl pb-16 px-4 mx-auto">
+        <?php
+        try {
+            // Consulta para obtener los registros donde user_id o user_name coincidan
+            $sql = "
+            SELECT DISTINCT e.*, f.IntTransaccion, f.IntDocumento
+            FROM estado e
+            INNER JOIN factura f ON e.factura_id = f.id
+            WHERE e.user_id = :user_id OR e.user_name = :user_name
+        ";
+            $stmt = $pdo->prepare($sql);
+            $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+            $stmt->bindParam(':user_name', $user_name, PDO::PARAM_STR);
+            $stmt->execute();
+
+            // Almacena los resultados
+            $registros = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            if (count($registros) > 0) {
+                echo "<h2 class='text-xl font-semibold text-gray-800 mb-4 text-center'> Estos son los pedidos y gestiones realizados el día de hoy <?php echo htmlspecialchars($user_id); ?></h2>";
+                echo "<table class='min-w-full bg-white shadow-md rounded-lg overflow-hidden'>
+                    <thead>
+                        <tr class='bg-gray-100'>
+                            <th class='px-4 py-2 border-b text-left text-sm text-gray-600'>IntTransaccion</th>
+                            <th class='px-4 py-2 border-b text-left text-sm text-gray-600'>IntDocumento</th>
+                            <th class='px-4 py-2 border-b text-left text-sm text-gray-600'>Estado</th>
+                            <th class='px-4 py-2 border-b text-left text-sm text-gray-600'>Fecha</th>
+                            <th class='px-4 py-2 border-b text-left text-sm text-gray-600'>User Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>";
+
+                    foreach ($registros as $registro) {
+                        // Reemplazar 'gestionado' por 'asignado' en el estado
+                        $estado = str_replace('gestionado', 'asignado', $registro['estado']);
+                        echo "<tr class='border-b hover:bg-gray-50'>
+                            <td class='px-4 py-2 text-sm text-gray-700'>" . htmlspecialchars($registro['IntTransaccion']) . "</td>
+                            <td class='px-4 py-2 text-sm text-gray-700'>" . htmlspecialchars($registro['IntDocumento']) . "</td>
+                            <td class='px-4 py-2 text-sm text-gray-700'>" . htmlspecialchars($estado) . "</td>
+                            <td class='px-4 py-2 text-sm text-gray-700'>" . htmlspecialchars($registro['fecha']) . "</td>
+                            <td class='px-4 py-2 text-sm text-gray-700'>" . htmlspecialchars($registro['user_name']) . "</td>
+                        </tr>";
+                }
+
+                echo "</tbody></table>";
+            } else {
+                echo "<p class='text-gray-600'>No se encontraron registros para $user_name.</p>";
+            }
+        } catch (PDOException $e) {
+            echo "<p class='text-red-500'>Error al obtener los registros: " . $e->getMessage() . "</p>";
+        }
+        ?>
     </div>
 
 

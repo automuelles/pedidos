@@ -92,7 +92,7 @@ $nueva_factura = ($facturas_gestionadas > $facturas_anterior);
                     <i class="fa-solid fa-user text-white"></i>
                 </div>
                 <!-- Etiqueta como enlace -->
-                <a href="pedidos_separados.php" class="text-sm text-gray-700 hover:underline">Picking Facturas Hoy</a>
+                <a href="pedidos_separados.php" class="text-sm text-gray-700 hover:underline">Facturas Gestionadas Hoy</a>
             </div>
             
             <div class="neumorphism p-4 text-center">
