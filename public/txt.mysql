@@ -79,3 +79,15 @@ CREATE TABLE NovedadesMensajeria (
     user_name VARCHAR(255) NOT NULL,
     foto VARCHAR(255) DEFAULT NULL
 );
+
+CREATE TABLE IF NOT EXISTS Novedades_Bodega (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    factura_id INT NOT NULL,
+    user_id INT NOT NULL,
+    estado VARCHAR(50) DEFAULT 'sin gestion',
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    novedad VARCHAR(255) NOT NULL,
+    descripcion TEXT,
+    FOREIGN KEY (factura_id) REFERENCES factura(id),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);

@@ -3,7 +3,6 @@
 include('../php/login.php');
 include('../php/validate_session.php');
 include('GuardarFactura.php');
-include('AsignarServicios.php');
 
 // Obtener el ID de la factura desde la URL
 $factura_id = isset($_GET['factura_id']) ? (int) $_GET['factura_id'] : 0;
@@ -140,7 +139,7 @@ if ($factura_id > 0) {
                 echo "<p class='text-red-500'>No se encontraron detalles para la factura solicitada.</p>";
             }
             ?>
-            <form class="bg-white p-6 rounded-lg shadow-md">
+            <form action="procesar_reporte.php?factura_id=<?php echo htmlspecialchars($factura_id); ?>" method="POST" class="bg-white p-6 rounded-lg shadow-md">
                 <div class="mb-4">
                     <label for="vendedor" class="block text-gray-700 text-sm font-bold mb-2">Vendedor</label>
                     <input type="text" id="vendedor" name="vendedor" value="<?php echo htmlspecialchars($factura_detail['StrUsuarioGra']); ?>" class="w-full border border-gray-300 p-2 rounded-md" readonly>
@@ -150,9 +149,9 @@ if ($factura_id > 0) {
                     <select id="novedad" name="novedad" class="w-full border border-gray-300 p-2 rounded-md">
                         <option value="sin_inventario">Sin Inventario</option>
                         <option value="mercancia_no_encontrada">Mercancía No Encontrada</option>
-                        <option value="mercancia_no_encontrada">Ubicacion Mercancia Cedi</option>
-                        <option value="mercancia_no_encontrada">Ubicacion Mercancia Sede Principal</option>
-                        <option value="mercancia_no_encontrada">Ubicacion Mercancia Ambas Sedes</option>
+                        <option value="ubicacion_cedi">Ubicación Mercancía Cedi</option>
+                        <option value="ubicacion_sede_principal">Ubicación Mercancía Sede Principal</option>
+                        <option value="ubicacion_ambas_sedes">Ubicación Mercancía Ambas Sedes</option>
                     </select>
                 </div>
                 <div class="mb-4">
@@ -194,4 +193,5 @@ if ($factura_id > 0) {
         </div>
     </nav>
 </body>
+
 </html>

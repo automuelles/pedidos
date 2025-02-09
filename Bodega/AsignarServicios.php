@@ -22,15 +22,15 @@ function asignarServicios($pdo, $userId, $usuarioConectado, $rolUsuario) {
     $stmt->execute(['user_id' => $userId]);
     $cantidadPicking = $stmt->fetchColumn();
 
-    // Si el usuario ya tiene 2 servicios en 'picking', verificar si alguno cambió de estado
-    if ($cantidadPicking >= 2) {
+    // Si el usuario ya tiene 1 servicios en 'picking', verificar si alguno cambió de estado
+    if ($cantidadPicking >= 1) {
         $stmt = $pdo->prepare("SELECT COUNT(*) FROM factura_gestionada fg
                                JOIN factura f ON f.id = fg.factura_id
                                WHERE fg.user_id = :user_id AND f.estado != 'picking'");
         $stmt->execute(['user_id' => $userId]);
         $cantidadNoPicking = $stmt->fetchColumn();
 
-        if ($cantidadNoPicking < 2) {
+        if ($cantidadNoPicking < 1) {
             $factura = obtenerFacturaPendiente($pdo, $rolUsuario);
             if ($factura) {
                 asignarFactura($pdo, $factura['id'], $userId, $usuarioConectado);
@@ -38,15 +38,15 @@ function asignarServicios($pdo, $userId, $usuarioConectado, $rolUsuario) {
                 $_SESSION['mensaje_servicio'] = "No hay facturas pendientes disponibles.";
             }
         } else {
-            $_SESSION['mensaje_servicio'] = "El usuario ya tiene 2 servicios en 'picking' y no puede asignarse más.";
+            $_SESSION['mensaje_servicio'] = "El usuario ya tiene 1 servicios en 'picking' y no puede asignarse más.";
         }
     } else {
-        // Si el usuario tiene menos de 2 servicios en 'picking', proceder con la asignación
+        // Si el usuario tiene menos de 1 servicios en 'picking', proceder con la asignación
         $stmt = $pdo->prepare("SELECT COUNT(*) FROM factura_gestionada WHERE user_id = :user_id");
         $stmt->execute(['user_id' => $userId]);
         $cantidadServicios = $stmt->fetchColumn();
 
-        if ($cantidadServicios < 2) {
+        if ($cantidadServicios < 1) {
             $factura = obtenerFacturaPendiente($pdo, $rolUsuario);
             if ($factura) {
                 asignarFactura($pdo, $factura['id'], $userId, $usuarioConectado);
@@ -54,7 +54,7 @@ function asignarServicios($pdo, $userId, $usuarioConectado, $rolUsuario) {
                 $_SESSION['mensaje_servicio'] = "No hay facturas pendientes disponibles.";
             }
         } else {
-            $_SESSION['mensaje_servicio'] = "El usuario ya tiene 2 servicios asignados.";
+            $_SESSION['mensaje_servicio'] = "El usuario ya tiene 1 servicios asignados.";
         }
     }
 }
@@ -65,7 +65,7 @@ function obtenerFacturaPendiente($pdo, $rolUsuario) {
         $stmt = $pdo->prepare("SELECT id FROM factura WHERE estado = 'pendiente' AND IntTransaccion IN (88, 42) LIMIT 1");
     } 
     elseif ($rolUsuario === 'jefeBodega') {
-        $stmt = $pdo->prepare("SELECT id FROM factura WHERE estado = 'pendiente' AND IntTransaccion IN (88, 42) LIMIT 1");
+        $stmt = $pdo->prepare("SELECT id FROM factura WHERE estado = 'pendiente' AND IntTransaccion IN (40, 90) LIMIT 1");
     } 
     else {
         $stmt = $pdo->prepare("SELECT id FROM factura WHERE estado = 'pendiente' LIMIT 1");
