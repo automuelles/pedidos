@@ -1,9 +1,7 @@
 CREATE DATABASE automuelles_db;
 
 USE automuelles_db;
-CREATE USER 'Automuelles'@'localhost' IDENTIFIED BY 'Automuelles2024*';
-GRANT ALL PRIVILEGES ON automuelles_db.* TO 'automuelles'@'localhost';
-FLUSH PRIVILEGES;
+
 
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -56,7 +54,7 @@ CREATE TABLE IF NOT EXISTS estado (
     user_id INT NOT NULL,
     estado VARCHAR(50) DEFAULT 'gestionado',
     fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    user_name VARCHAR(255),
+    user_name VARCHAR(255)
 );
 
 CREATE TABLE IF NOT EXISTS tareas (
@@ -71,7 +69,7 @@ CREATE TABLE IF NOT EXISTS tareas (
 );
 
 
-CREATE TABLE Novedades (
+CREATE TABLE NovedadesMensajeria (
     id INT AUTO_INCREMENT PRIMARY KEY,
     recogida VARCHAR(255) NOT NULL,
     parqueadero VARCHAR(255) NOT NULL,
