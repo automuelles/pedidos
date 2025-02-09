@@ -91,3 +91,14 @@ CREATE TABLE IF NOT EXISTS Novedades_Bodega (
     FOREIGN KEY (factura_id) REFERENCES factura(id),
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
+
+CREATE TABLE IF NOT EXISTS Novedades_Finales (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    inttransaccion INT NOT NULL,
+    intdocumento INT NOT NULL,
+    user_id INT NOT NULL,
+    estado VARCHAR(50) DEFAULT 'sin gestion',
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    novedad VARCHAR(255) NOT NULL,
+    descripcion TEXT,
+);

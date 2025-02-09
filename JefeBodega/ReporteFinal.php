@@ -138,19 +138,34 @@ if ($transaccion > 0 && $documento > 0) {
                 echo "<p class='text-red-500'>No se encontraron detalles para la factura solicitada.</p>";
             }
             ?>
-
-            <button type="button"
-                class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
-                onclick="updateEstado()">Guardar</button>
-                <?php
+            <?php
+            // Obtener los valores de IntTransaccion e IntDocumento
             $intTransaccion = htmlspecialchars($factura['IntTransaccion']);
             $intDocumento = htmlspecialchars($factura['IntDocumento']);
             ?>
-            <button type="button"
-                class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
-                onclick="window.open('ReporteFinal.php?IntTransaccion=<?php echo $intTransaccion; ?>&IntDocumento=<?php echo $intDocumento; ?>', '_blank')">
-                Reportar Novedad
-            </button>
+            <form action="NovedadFinal.php?IntTransaccion=<?php echo $intTransaccion; ?>&IntDocumento=<?php echo $intDocumento; ?>" method="POST" class="bg-white p-6 rounded-lg shadow-md">
+                <div class="mb-4">
+                    <label for="vendedor" class="block text-gray-700 text-sm font-bold mb-2">Vendedor</label>
+                    <input type="text" id="vendedor" name="vendedor" value="<?php echo htmlspecialchars($factura_detail['StrUsuarioGra']); ?>" class="w-full border border-gray-300 p-2 rounded-md" readonly>
+                </div>
+                <div class="mb-4">
+                    <label for="novedad" class="block text-gray-700 text-sm font-bold mb-2">Tipo de Novedad</label>
+                    <select id="novedad" name="novedad" class="w-full border border-gray-300 p-2 rounded-md">
+                        <option value="sin_inventario">Sin Inventario</option>
+                        <option value="mercancia_no_encontrada">Mercancía No Encontrada</option>
+                        <option value="ubicacion_cedi">Ubicación Mercancía Cedi</option>
+                        <option value="ubicacion_sede_principal">Ubicación Mercancía Sede Principal</option>
+                        <option value="ubicacion_ambas_sedes">Ubicación Mercancía Ambas Sedes</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="descripcion" class="block text-gray-700 text-sm font-bold mb-2">Descripción</label>
+                    <textarea id="descripcion" name="descripcion" rows="4" class="w-full border border-gray-300 p-2 rounded-md" placeholder="Ingrese una descripción detallada"></textarea>
+                </div>
+                <div class="flex items-center justify-between">
+                    <button type="submit" class="bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700">Enviar Reporte</button>
+                </div>
+            </form>
         </div>
     </div>
     <!-- Footer Navigation -->
@@ -176,17 +191,6 @@ if ($transaccion > 0 && $documento > 0) {
             </a>
         </div>
     </nav>
-    <script>
-        function updateEstado() {
-            // Obtener los parámetros de la URL (IntTransaccion y IntDocumento)
-            const urlParams = new URLSearchParams(window.location.search);
-            const IntTransaccion = urlParams.get('IntTransaccion');
-            const IntDocumento = urlParams.get('IntDocumento');
-
-            // Redirigir a un archivo PHP que maneje la actualización y copia de datos
-            window.location.href = 'actualizar_estadoFinal.php?IntTransaccion=' + IntTransaccion + '&IntDocumento=' + IntDocumento;
-        }
-    </script>
 </body>
 
 </html>

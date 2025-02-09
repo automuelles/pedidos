@@ -81,10 +81,10 @@ include('../php/validate_session.php');
                 <!-- Icono de Bodega -->
                 <div
                     class="neumorphism-icon w-10 h-10 bg-purple-400 rounded-full mx-auto mb-2 flex items-center justify-center">
-                    <i class="fa-solid fa-car text-white"></i>
+                    <i class="fa-solid fa-newspaper text-white"></i></i>
                 </div>
                 <!-- Etiqueta como enlace -->
-                <a href="#" class="text-sm text-gray-700 hover:underline">#</a>
+                <a href="#" class="text-sm text-gray-700 hover:underline">Novedades Reportadas</a>
             </div>
             <div class="neumorphism p-4 text-center">
                 <!-- Icono de Bodega -->
