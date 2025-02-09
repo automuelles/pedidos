@@ -150,6 +150,9 @@ if ($factura_id > 0) {
                     <select id="novedad" name="novedad" class="w-full border border-gray-300 p-2 rounded-md">
                         <option value="sin_inventario">Sin Inventario</option>
                         <option value="mercancia_no_encontrada">Mercancía No Encontrada</option>
+                        <option value="mercancia_no_encontrada">Ubicacion Mercancia Cedi</option>
+                        <option value="mercancia_no_encontrada">Ubicacion Mercancia Sede Principal</option>
+                        <option value="mercancia_no_encontrada">Ubicacion Mercancia Ambas Sedes</option>
                     </select>
                 </div>
                 <div class="mb-4">
@@ -190,13 +193,5 @@ if ($factura_id > 0) {
             </a>
         </div>
     </nav>
-    <script>
-        // Recargar la página cada 30 segundos
-        setInterval(function() {
-            location.reload();
-        }, 30000); // 30000 milisegundos = 30 segundos
-    </script>
-
 </body>
-
 </html>
