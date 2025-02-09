@@ -92,24 +92,24 @@ $nueva_factura = ($facturas_gestionadas > $facturas_anterior);
                     <i class="fa-solid fa-user text-white"></i>
                 </div>
                 <!-- Etiqueta como enlace -->
-                <a href="" class="text-sm text-gray-700 hover:underline">Pedidos Separados</a>
+                <a href="pedidos_separados.php" class="text-sm text-gray-700 hover:underline">Picking Facturas Hoy</a>
             </div>
             
             <div class="neumorphism p-4 text-center">
                 <!-- Icono de Bodega -->
                 <div
                     class="neumorphism-icon w-10 h-10 bg-green-400 rounded-full mx-auto mb-2 flex items-center justify-center">
-                    <i class="fa-solid fa-motorcycle text-white"></i>
+                    <i"></i>
                 </div>
                 <!-- Etiqueta como enlace -->
-                <a href="" class="text-sm text-gray-700 hover:underline"></a>
+                <a href="" class="text-sm text-gray-700 hover:underline">#</a>
             </div>
            
             <div class="neumorphism p-4 text-center">
                 <!-- Icono de Bodega -->
                 <div
                     class="neumorphism-icon w-10 h-10 bg-purple-400 rounded-full mx-auto mb-2 flex items-center justify-center">
-                    <i class="fa-solid fa-car text-white"></i>
+                    <i"></i>
                 </div>
                 <!-- Etiqueta como enlace -->
                 <a href="#" class="text-sm text-gray-700 hover:underline">#</a>
@@ -118,7 +118,7 @@ $nueva_factura = ($facturas_gestionadas > $facturas_anterior);
                 <!-- Icono de Bodega -->
                 <div
                     class="neumorphism-icon w-10 h-10 bg-purple-400 rounded-full mx-auto mb-2 flex items-center justify-center">
-                    <i class="fa-solid fa-car text-white"></i>
+                    <i"></i>
                 </div>
                 <!-- Etiqueta como enlace -->
                 <a href="#" class="text-sm text-gray-700 hover:underline">#</a>
