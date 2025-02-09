@@ -105,7 +105,7 @@ if ($factura_id > 0) {
         <?php else: ?>
             <h1 class="text-black-600 text-2xl font-bold">No estás autenticado.</h1>
         <?php endif; ?>
-        <h1 class="text-black-600 text-2xl font-bold">Bodega</h1>
+        <h1 class="text-black-600 text-2xl font-bold">Reporte de novedades Bodega</h1>
     </div>
 
     <div class="w-full max-w-xs pb-16">
@@ -140,20 +140,29 @@ if ($factura_id > 0) {
                 echo "<p class='text-red-500'>No se encontraron detalles para la factura solicitada.</p>";
             }
             ?>
-            <button type="button"
-                class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
-                onclick="updateEstado()">
-                Guardar
-            </button>
-            <button type="button"
-                class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
-                onclick="window.open('ReportesNovedades.php?factura_id=1', '_blank')">
-                Reportar Novedad
-            </button>
+            <form class="bg-white p-6 rounded-lg shadow-md">
+                <div class="mb-4">
+                    <label for="vendedor" class="block text-gray-700 text-sm font-bold mb-2">Vendedor</label>
+                    <input type="text" id="vendedor" name="vendedor" value="<?php echo htmlspecialchars($factura_detail['StrUsuarioGra']); ?>" class="w-full border border-gray-300 p-2 rounded-md" readonly>
+                </div>
+                <div class="mb-4">
+                    <label for="novedad" class="block text-gray-700 text-sm font-bold mb-2">Tipo de Novedad</label>
+                    <select id="novedad" name="novedad" class="w-full border border-gray-300 p-2 rounded-md">
+                        <option value="sin_inventario">Sin Inventario</option>
+                        <option value="mercancia_no_encontrada">Mercancía No Encontrada</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="descripcion" class="block text-gray-700 text-sm font-bold mb-2">Descripción</label>
+                    <textarea id="descripcion" name="descripcion" rows="4" class="w-full border border-gray-300 p-2 rounded-md" placeholder="Ingrese una descripción detallada"></textarea>
+                </div>
+                <div class="flex items-center justify-between">
+                    <button type="submit" class="bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700">Enviar Reporte</button>
+                </div>
+            </form>
+
         </div>
     </div>
-
-
     <!-- Footer Navigation -->
     <nav class="fixed bottom-0 left-0 right-0 bg-white shadow-lg">
         <div class="flex justify-around py-2">
@@ -187,50 +196,7 @@ if ($factura_id > 0) {
             location.reload();
         }, 30000); // 30000 milisegundos = 30 segundos
     </script>
-    <script>
-        function updateEstado() {
-            // Obtener el ID de la factura de la URL (dynamic)
-            const urlParams = new URLSearchParams(window.location.search);
-            const facturaId = urlParams.get('factura_id'); // Obtiene el valor de 'factura_id' de la URL
 
-            if (!facturaId) {
-                alert('No se pudo obtener el ID de la factura.');
-                return;
-            }
-
-            // Crear los datos que se van a enviar
-            var data = new FormData();
-            data.append("factura_id", facturaId);
-            data.append("estado", "picking"); // Cambiar el estado a "picking"
-
-            // Enviar la solicitud al archivo PHP
-            fetch('actualizar_estado.php', {
-                    method: 'POST',
-                    body: data
-                })
-                .then(response => response.text()) // Cambiar a .text() para ver la respuesta como texto
-                .then(responseText => {
-                    console.log(responseText); // Imprimir la respuesta para inspeccionarla
-                    try {
-                        const data = JSON.parse(responseText); // Intentar convertir a JSON
-                        if (data.success) {
-                            alert('Estado actualizado a "picking"');
-                            window.location.href = 'pedidospendientes.php'; // Redirigir a la página deseada
-                        } else {
-                            console.error('Error en la actualización:', data.message);
-                            alert('Hubo un error al actualizar el estado: ' + data.message);
-                        }
-                    } catch (error) {
-                        console.error('Error al analizar la respuesta como JSON:', error);
-                        alert('Hubo un error en la solicitud: ' + error.message);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error en la solicitud:', error);
-                    alert('Hubo un error en la solicitud: ' + error.message);
-                });
-        }
-    </script>
 </body>
 
 </html>
