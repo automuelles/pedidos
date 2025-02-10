@@ -84,7 +84,7 @@ include('../php/validate_session.php');
                     <i class="fa-solid fa-newspaper text-white"></i></i>
                 </div>
                 <!-- Etiqueta como enlace -->
-                <a href="#" class="text-sm text-gray-700 hover:underline">Novedades Reportadas</a>
+                <a href="NovedadesReportadas.php" class="text-sm text-gray-700 hover:underline">Novedades Reportadas</a>
             </div>
             <div class="neumorphism p-4 text-center">
                 <!-- Icono de Bodega -->
