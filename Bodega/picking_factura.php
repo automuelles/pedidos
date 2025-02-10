@@ -147,7 +147,7 @@ if ($factura_id > 0) {
             </button>
             <button type="button"
                 class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
-                onclick="window.open('ReportesNovedades.php?factura_id=1', '_blank')">
+                onclick="reportarNovedad(<?php echo $factura['id']; ?>)">
                 Reportar Novedad
             </button>
         </div>
@@ -231,6 +231,15 @@ if ($factura_id > 0) {
                 });
         }
     </script>
+    <script>
+    function reportarNovedad(facturaId) {
+        if (!facturaId) {
+            alert('No se pudo obtener el ID de la factura.');
+            return;
+        }
+        window.open('ReportesNovedades.php?factura_id=' + facturaId, '_blank');
+    }
+</script>
 </body>
 
 </html>
