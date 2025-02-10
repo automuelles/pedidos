@@ -88,8 +88,6 @@ CREATE TABLE IF NOT EXISTS Novedades_Bodega (
     fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     novedad VARCHAR(255) NOT NULL,
     descripcion TEXT,
-    FOREIGN KEY (factura_id) REFERENCES factura(id),
-    FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 CREATE TABLE IF NOT EXISTS Novedades_Finales (
