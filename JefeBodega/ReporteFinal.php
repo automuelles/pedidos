@@ -153,9 +153,7 @@ if ($transaccion > 0 && $documento > 0) {
                     <select id="novedad" name="novedad" class="w-full border border-gray-300 p-2 rounded-md">
                         <option value="sin_inventario">Sin Inventario</option>
                         <option value="mercancia_no_encontrada">Mercancía No Encontrada</option>
-                        <option value="ubicacion_cedi">Ubicación Mercancía Cedi</option>
-                        <option value="ubicacion_sede_principal">Ubicación Mercancía Sede Principal</option>
-                        <option value="ubicacion_ambas_sedes">Ubicación Mercancía Ambas Sedes</option>
+                        <option value="mercancia_no_encontrada">Referencias Equivocadas</option>
                     </select>
                 </div>
                 <div class="mb-4">

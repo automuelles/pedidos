@@ -142,9 +142,13 @@ if ($transaccion > 0 && $documento > 0) {
             <button type="button"
                 class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
                 onclick="updateEstado()">Guardar</button>
+                <?php
+            $intTransaccion = htmlspecialchars($factura['IntTransaccion']);
+            $intDocumento = htmlspecialchars($factura['IntDocumento']);
+            ?>
             <button type="button"
                 class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
-                onclick="window.open('ReportesNovedades.php', '_blank')">
+                onclick="window.open('ReporteFinal.php?IntTransaccion=<?php echo $intTransaccion; ?>&IntDocumento=<?php echo $intDocumento; ?>', '_blank')">
                 Reportar Novedad
             </button>
         </div>

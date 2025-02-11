@@ -1,32 +1,88 @@
 <?php
-include('../php/db.php');
+// Incluir archivos necesarios
 include('../php/login.php');
 include('../php/validate_session.php');
-// Verificar si el usuario es admin
+include('GuardarFactura.php');
+include('AsignarServicios.php');
 
-try {
-    // Consulta para obtener las facturas en estado "picking"
-    $sql = "SELECT * FROM factura WHERE estado = 'picking'";
-    $stmt = $pdo->prepare($sql);
+// Obtener los valores de los parámetros desde la URL
+$transaccion = isset($_GET['IntTransaccion']) ? (int) $_GET['IntTransaccion'] : 0;
+$documento = isset($_GET['IntDocumento']) ? (int) $_GET['IntDocumento'] : 0;
+
+if ($transaccion > 0 && $documento > 0) {
+    // Conexión a MySQL (automuelles_db) para obtener la factura
+    include('../php/db.php'); // Este archivo contiene la conexión a MySQL
+
+    // Consulta SQL para obtener la factura con los parámetros proporcionados
+    $sql = "SELECT * FROM factura WHERE IntTransaccion = :transaccion AND IntDocumento = :documento";
+    $stmt = $pdo->prepare($sql); // Usamos $pdo porque estamos trabajando con MySQL
+
+    // Vincular los parámetros con los valores
+    $stmt->bindParam(':transaccion', $transaccion, PDO::PARAM_INT);
+    $stmt->bindParam(':documento', $documento, PDO::PARAM_INT);
+
+    // Ejecutar la consulta
     $stmt->execute();
 
-    // Almacenar resultados
-    $facturas = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    echo "Error en la consulta: " . $e->getMessage();
+    // Verificar si la factura fue encontrada
+    if ($stmt->rowCount() > 0) {
+        // Obtener la factura
+        $factura = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // Consulta SQL para obtener los detalles de la factura en SQL Server
+        $query = "
+               SELECT 
+                    d.IntTransaccion, 
+                    d.IntDocumento, 
+                    d.StrProducto,
+                    p.StrDescripcion, 
+                    p.StrParam1, 
+                    d.IntCantidad, 
+                    d.StrUnidad, 
+                    d.DatFecha1, 
+                    d.StrVendedor,
+                    doc.StrObservaciones,
+                    doc.StrUsuarioGra, 
+                    doc.StrReferencia1,
+                    doc.StrReferencia3, 
+                    doc.IntTotal
+                FROM TblDetalleDocumentos d
+                LEFT JOIN TblProductos p ON d.StrProducto = p.StrIdProducto
+                LEFT JOIN TblDocumentos doc ON d.IntTransaccion = doc.IntTransaccion AND d.IntDocumento = doc.IntDocumento
+                WHERE d.IntTransaccion = ? AND d.IntDocumento = ?
+                ORDER BY d.IntDocumento";
+
+        // Preparar y ejecutar la consulta de detalle de la factura
+        $stmt_details = $conn->prepare($query); // Usamos la conexión a SQL Server
+        $stmt_details->execute([$transaccion, $documento]);
+
+        // Obtener los resultados
+        $results = $stmt_details->fetchAll(PDO::FETCH_ASSOC);
+
+        // Cerrar la conexión de MySQL
+        $pdo = null;
+
+        // Cerrar la conexión a SQL Server
+        $conn = null;
+    } else {
+        echo "No se encontró la factura con el número de transacción y documento especificados.";
+    }
+} else {
+    echo "ID de transacción o documento inválido.";
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pagina Principal Automuelles</title>
+    <title>Detalles de la Factura</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* Neumorphism effect */
+        /* Estilo neumorfismo */
         .neumorphism {
             background: #e0e5ec;
             border-radius: 15px;
@@ -42,43 +98,74 @@ try {
 <body class="bg-gray-200 min-h-screen flex flex-col items-center justify-center">
     <!-- Header -->
     <div class="neumorphism w-full max-w-xs p-6 text-center mb-6">
-        <h1 class="text-yellow-600 text-2xl font-bold">Bienvenido to Automuelles</h1>
+        <h1 class="text-yellow-600 text-2xl font-bold">Bienvenido a Automuelles</h1>
         <?php if (isset($_SESSION['user_name'])): ?>
             <h1 class="text-black-600 text-2xl font-bold"><?php echo htmlspecialchars($_SESSION['user_name']); ?>!</h1>
         <?php else: ?>
             <h1 class="text-black-600 text-2xl font-bold">No estás autenticado.</h1>
         <?php endif; ?>
-        <h1 class="text-black-600 text-2xl font-bold">Revision Final</h1>
+        <h1 class="text-black-600 text-2xl font-bold">Bodega</h1>
     </div>
 
-    <div class="w-full max-w-4xl mx-auto pb-16">
-        <?php if ($facturas): ?>
-            <div class="space-y-4">
-                <?php foreach ($facturas as $factura): ?>
-                    <div class="flex items-center justify-between p-4 bg-white rounded-lg shadow-md border border-gray-200">
-                        <div>
-                            <p class="text-lg font-medium text-gray-800">Transacción: <?php echo htmlspecialchars($factura['IntTransaccion']); ?></p>
-                            <p class="text-sm text-gray-600">Documento: <?php echo htmlspecialchars($factura['IntDocumento']); ?></p>
-                            <p class="text-sm text-gray-600">Estado: <?php echo htmlspecialchars($factura['estado']); ?></p>
-                            <p class="text-xs text-gray-500">Fecha: <?php echo htmlspecialchars($factura['fecha']); ?></p>
-                        </div>
-                        <div>
-                            <form action="EstadoRevisionFinal.php" method="GET">
-                                <input type="hidden" name="IntTransaccion" value="<?php echo $factura['IntTransaccion']; ?>">
-                                <input type="hidden" name="IntDocumento" value="<?php echo $factura['IntDocumento']; ?>">
-                                <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md">
-                                    Revisar Pedido
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-        <?php else: ?>
-            <p class="text-center text-gray-500">No hay facturas registradas.</p>
-        <?php endif; ?>
-    </div>
+    <div class="w-full max-w-xs pb-16">
+        <div class="w-full max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md mt-10 pb-24"> <!-- Agregar pb-24 para dar espacio abajo -->
+            <h1 class="text-2xl font-bold text-gray-800 mb-4">Detalles de la Factura</h1>
 
+            <?php
+            // Mostrar el número de factura y la transacción
+            if (isset($factura['IntTransaccion']) && isset($factura['IntDocumento'])) {
+                echo "<h1 class='text-xl font-semibold text-gray-700 mb-4'> " . htmlspecialchars($factura['IntDocumento']) . " -  " . htmlspecialchars($factura['IntTransaccion']) . "</h1>";
+            } else {
+                echo "<p class='text-red-500'>No se encontraron los datos de la factura.</p>";
+            }
+            ?>
+
+            <?php
+            // Mostrar los detalles de la factura sin agrupar productos
+            if ($results) {
+                foreach ($results as $factura_detail) {
+                    // Mostrar todos los detalles de la factura
+                    echo "<input type='checkbox' name='productos[]' value='" . htmlspecialchars($factura_detail['StrProducto']) . "' class='form-checkbox text-blue-500'>";
+                    echo "<p class='text-lg text-gray-700'><strong>Cantidad:</strong> " . number_format((float) $factura_detail['IntCantidad'], 2, '.', '') . "</p>";
+                    echo "<p class='text-lg text-gray-700'><strong>Producto:</strong> " . htmlspecialchars($factura_detail['StrProducto']) . "</p>";
+                    echo "<p class='text-lg text-gray-700'><strong>Descripcion:</strong> " . htmlspecialchars($factura_detail['StrDescripcion']) . "</p>";
+                    echo "<p class='text-lg text-gray-700'><strong>Ubicación:</strong> " . htmlspecialchars($factura_detail['StrParam1']) . "</p>";
+                    echo "<p class='text-lg text-gray-700'><strong>Vendedor:</strong> " . htmlspecialchars($factura_detail['StrUsuarioGra']) . "</p>";
+                    echo "<p class='text-lg text-gray-700'><strong>Observaciones:</strong> " . htmlspecialchars($factura_detail['StrObservaciones']) . "</p>";
+                    echo "<hr class='my-4' />";
+                }
+            } else {
+                echo "<p class='text-red-500'>No se encontraron detalles para la factura solicitada.</p>";
+            }
+            ?>
+            <?php
+            // Obtener los valores de IntTransaccion e IntDocumento
+            $intTransaccion = htmlspecialchars($factura['IntTransaccion']);
+            $intDocumento = htmlspecialchars($factura['IntDocumento']);
+            ?>
+            <form action="NovedadFinal.php?IntTransaccion=<?php echo $intTransaccion; ?>&IntDocumento=<?php echo $intDocumento; ?>" method="POST" class="bg-white p-6 rounded-lg shadow-md">
+                <div class="mb-4">
+                    <label for="vendedor" class="block text-gray-700 text-sm font-bold mb-2">Vendedor</label>
+                    <input type="text" id="vendedor" name="vendedor" value="<?php echo htmlspecialchars($factura_detail['StrUsuarioGra']); ?>" class="w-full border border-gray-300 p-2 rounded-md" readonly>
+                </div>
+                <div class="mb-4">
+                    <label for="novedad" class="block text-gray-700 text-sm font-bold mb-2">Tipo de Novedad</label>
+                    <select id="novedad" name="novedad" class="w-full border border-gray-300 p-2 rounded-md">
+                        <option value="sin_inventario">Sin Inventario</option>
+                        <option value="mercancia_no_encontrada">Mercancía No Encontrada</option>
+                        <option value="mercancia_no_encontrada">Referencias Equivocadas</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="descripcion" class="block text-gray-700 text-sm font-bold mb-2">Descripción</label>
+                    <textarea id="descripcion" name="descripcion" rows="4" class="w-full border border-gray-300 p-2 rounded-md" placeholder="Ingrese una descripción detallada"></textarea>
+                </div>
+                <div class="flex items-center justify-between">
+                    <button type="submit" class="bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700">Enviar Reporte</button>
+                </div>
+            </form>
+        </div>
+    </div>
     <!-- Footer Navigation -->
     <nav class="fixed bottom-0 left-0 right-0 bg-white shadow-lg">
         <div class="flex justify-around py-2">
@@ -102,13 +189,6 @@ try {
             </a>
         </div>
     </nav>
-
-    <script>
-        // Recargar la página cada 30 segundos
-        setInterval(function() {
-            location.reload();
-        }, 30000); // 30000 milisegundos = 30 segundos
-    </script>
 </body>
 
 </html>
