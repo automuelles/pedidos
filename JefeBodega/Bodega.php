@@ -93,7 +93,7 @@ include('../php/validate_session.php');
                     <i class="fa-solid fa-car text-white"></i>
                 </div>
                 <!-- Etiqueta como enlace -->
-                <a href="PedidosGestionados.php" class="text-sm text-gray-700 hover:underline">Pedidos Gestionados</a>
+                <a href="PedidosGestionados.php" class="text-sm text-gray-700 hover:underline">Historial Domicilios</a>
             </div>
         </div>
     </div>
