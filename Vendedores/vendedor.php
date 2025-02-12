@@ -75,7 +75,7 @@ include('../php/validate_session.php');
                     <i class="fa-solid fa-lock text-white"></i>
                 </div>
                 <!-- Etiqueta como enlace -->
-                <a href="#" class="text-sm text-gray-700 hover:underline">#</a>
+                <a href="pedidosGestionados.php" class="text-sm text-gray-700 hover:underline">Historial Facturas</a>
             </div>
             <div class="neumorphism p-4 text-center">
                 <!-- Icono de Bodega -->
