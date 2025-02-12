@@ -11,9 +11,13 @@ if ($_SESSION['user_role'] !== 'mensajeria') {
 $user_name = $_SESSION['user_name'];
 
 // Query to fetch 'despachos' state invoices, including fields from factura table
-$sql = "SELECT fg.*, f.IntTransaccion, f.IntDocumento, f.StrReferencia1, f.StrReferencia3
+$sql = "SELECT fg.*, 
+               f.IntTransaccion, f.IntDocumento, f.StrReferencia1, f.StrReferencia3, 
+               n.novedad, n.descripcion
         FROM factura_gestionada fg
         JOIN factura f ON fg.factura_id = f.id
+        LEFT JOIN Novedades_Despachos n 
+        ON f.IntTransaccion = n.inttransaccion AND f.IntDocumento = n.intdocumento
         WHERE fg.estado = 'despachos' AND fg.user_name = ?";
 $stmt = $pdo->prepare($sql);
 $stmt->execute([$user_name]);
@@ -59,35 +63,35 @@ $facturas = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <div class="w-full max-w-4xl mx-auto pb-16">
     <?php if ($facturas): ?>
         <div class="space-y-4">
-            <?php foreach ($facturas as $factura): ?>
-                <div class="flex items-center justify-between p-4 bg-white rounded-lg shadow-md border border-gray-200">
-                    <div>
-                        <p class="text-lg font-medium text-gray-800">Transacción: <?php echo htmlspecialchars($factura['IntTransaccion']); ?></p>
-                        <p class="text-sm text-gray-600">Documento: <?php echo htmlspecialchars($factura['IntDocumento']); ?></p>
-                        <p class="text-sm text-gray-600">Estado: <?php echo htmlspecialchars($factura['estado']); ?></p>
-                        <p class="text-xs text-gray-500">Fecha: <?php echo htmlspecialchars($factura['fecha']); ?></p>
-                        <p class="text-xs text-gray-500">Datos: <?php echo htmlspecialchars($factura['StrReferencia1']); ?></p>
-                        <p class="text-xs text-gray-500">Forma de pago: <?php echo htmlspecialchars($factura['StrReferencia3']); ?></p>
-                    </div>
-                    <div>
-                        <form action="EstadoRevisionFinal.php" method="GET">
-                            <input type="hidden" name="IntTransaccion" value="<?php echo $factura['IntTransaccion']; ?>">
-                            <input type="hidden" name="IntDocumento" value="<?php echo $factura['IntDocumento']; ?>">
-                            <input type="hidden" name="estado" value="<?php echo $factura['estado']; ?>">
-                            <input type="hidden" name="fecha" value="<?php echo $factura['fecha']; ?>">
-                            <input type="hidden" name="StrReferencia1" value="<?php echo $factura['StrReferencia1']; ?>">
-                            <input type="hidden" name="StrReferencia3" value="<?php echo $factura['StrReferencia3']; ?>">
-                            <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md">
-                                Revisar Pedido
-                            </button>
-                        </form>
-                    </div>
+        <?php foreach ($facturas as $factura): ?>
+            <div class="flex items-center justify-between p-4 bg-white rounded-lg shadow-md border border-gray-200">
+                <div>
+                    <p class="text-lg font-medium text-gray-800">Transacción: <?php echo htmlspecialchars($factura['IntTransaccion']); ?></p>
+                    <p class="text-sm text-gray-600">Documento: <?php echo htmlspecialchars($factura['IntDocumento']); ?></p>
+                    <p class="text-sm text-gray-600">Estado: <?php echo htmlspecialchars($factura['estado']); ?></p>
+                    <p class="text-xs text-gray-500">Fecha: <?php echo htmlspecialchars($factura['fecha']); ?></p>
+                    <p class="text-xs text-gray-500">Datos: <?php echo htmlspecialchars($factura['StrReferencia1']); ?></p>
+                    <p class="text-xs text-gray-500">Forma de pago: <?php echo htmlspecialchars($factura['StrReferencia3']); ?></p>
+                    <p class="text-xs text-gray-500">Novedad: <?php echo htmlspecialchars($factura['novedad'] ?? 'N/A'); ?></p>
+                    <p class="text-xs text-gray-500">Descripción: <?php echo htmlspecialchars($factura['descripcion'] ?? 'N/A'); ?></p>
                 </div>
-            <?php endforeach; ?>
-        </div>
-    <?php else: ?>
-        <p class="text-center text-gray-500">No hay facturas registradas.</p>
-    <?php endif; ?>
+                <div>
+                    <form action="EstadoRevisionFinal.php" method="GET">
+                        <input type="hidden" name="IntTransaccion" value="<?php echo $factura['IntTransaccion']; ?>">
+                        <input type="hidden" name="IntDocumento" value="<?php echo $factura['IntDocumento']; ?>">
+                        <input type="hidden" name="estado" value="<?php echo $factura['estado']; ?>">
+                        <input type="hidden" name="fecha" value="<?php echo $factura['fecha']; ?>">
+                        <input type="hidden" name="StrReferencia1" value="<?php echo $factura['StrReferencia1']; ?>">
+                        <input type="hidden" name="StrReferencia3" value="<?php echo $factura['StrReferencia3']; ?>">
+                        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md">
+                            Revisar Pedido
+                        </button>
+                    </form>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+<?php endif; ?>
 </div>
 
     <!-- Footer Navigation -->
