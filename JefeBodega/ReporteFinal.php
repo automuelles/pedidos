@@ -144,7 +144,7 @@ if ($transaccion > 0 && $documento > 0) {
                     <select id="novedad" name="novedad" class="w-full border border-gray-300 p-2 rounded-md">
                         <option value="sin_inventario">Sin Inventario</option>
                         <option value="mercancia_no_encontrada">Mercancía No Encontrada</option>
-                        <option value="mercancia_no_encontrada">Referencias Equivocadas</option>
+                        <option value="Referencias_Equivocadas">Referencias Equivocadas</option>
                     </select>
                 </div>
                 <div class="mb-4">

@@ -142,7 +142,7 @@ if ($transaccion > 0 && $documento > 0) {
                     <label for="novedad" class="block text-gray-700 text-sm font-bold mb-2">Tipo de Novedad</label>
                     <select id="novedad" name="novedad" class="w-full border border-gray-300 p-2 rounded-md">
                         <option value="sin_inventario">Sin Inventario</option>
-                        <option value="mercancia_no_encontrada">Referencias Equivocadas</option>
+                        <option value="Referencias_Equivocadas">Referencias Equivocadas</option>
                     </select>
                 </div>
                 <div class="mb-4">

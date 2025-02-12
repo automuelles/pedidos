@@ -141,8 +141,11 @@ if ($transaccion > 0 && $documento > 0) {
                 <div class="mb-4">
                     <label for="novedad" class="block text-gray-700 text-sm font-bold mb-2">Tipo de Novedad</label>
                     <select id="novedad" name="novedad" class="w-full border border-gray-300 p-2 rounded-md">
-                        <option value="sin_inventario">Sin Inventario</option>
-                        <option value="mercancia_no_encontrada">Referencias Equivocadas</option>
+                        <option value="pago en efectivo">pago en efectivo</option>
+                        <option value="pago en tranferencia">pago en tranferencia</option>
+                        <option value="Credito">Credito</option>
+                        <option value="Despachador autoriza entrega (No pago">Despachador autoriza entrega (No pago)</option>
+                        <option value="Vendedor autoriza entrega (No pago)">Vendedor autoriza entrega (No pago)</option>
                     </select>
                 </div>
                 <div class="mb-4">
