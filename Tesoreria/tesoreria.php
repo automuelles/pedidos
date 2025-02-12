@@ -48,7 +48,7 @@ include('../php/validate_session.php');
                     <i class="fa-solid fa-user text-white"></i>
                 </div>
                 <!-- Etiqueta como enlace -->
-                <a href="PedidosGestionados.php" class="text-sm text-gray-700 hover:underline">Facturas Creadas</a>
+                <a href="PedidosGestionados.php" class="text-sm text-gray-700 hover:underline">Facturas Entregadas</a>
             </div>
             <div class="neumorphism p-4 text-center">
                 <!-- Icono de Bodega -->
@@ -57,7 +57,7 @@ include('../php/validate_session.php');
                     <i class="fa-solid fa-shop text-white"></i>
                 </div>
                 <!-- Etiqueta como enlace -->
-                <a href="ReportarPago.php" class="text-sm text-gray-700 hover:underline">Reporte Pago Mensajero</a>
+                <a href="ReporteMensajero.php" class="text-sm text-gray-700 hover:underline">Reporte Pago Mensajero</a>
             </div>
             <div class="neumorphism p-4 text-center">
                 <!-- Icono de Bodega -->

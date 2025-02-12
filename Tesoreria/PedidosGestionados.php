@@ -9,7 +9,7 @@ $query = "SELECT f.id, f.IntTransaccion, f.IntDocumento, f.estado AS factura_est
                  e.estado AS estado_actual, e.fecha AS estado_fecha, e.user_name
           FROM factura f
           LEFT JOIN estado e ON f.id = e.factura_id
-          WHERE (e.estado = 'mensajeria' OR e.estado = 'vendedor')";
+          WHERE (e.estado = 'mensajeria' OR e.estado = 'vendedor' OR e.estado = 'RevisionFinal')";
 
 $params = [];
 if (!empty($transaccion)) {
