@@ -42,6 +42,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     header("Location: ../JefeBodega/Bodega.php");
                     exit; // Asegúrate de salir después de redirigir
                 } 
+                elseif ($user['role'] === 'tesoreria' || $user['role'] === 'JefeCedi') {
+                    header("Location: ../Tesoreria/tesoreria.php");
+                    exit; // Asegúrate de salir después de redirigir
+                } 
                 elseif ($user['role'] === 'bodega') {
                     header("Location: ../Bodega/Bodega.php");
                     exit; // Asegúrate de salir después de redirigir
