@@ -18,7 +18,7 @@ try {
     $sql_usuarios = "SELECT active_sessions.user_name 
                      FROM active_sessions 
                      JOIN users ON active_sessions.user_id = users.id
-                     WHERE users.role IN ('bodega', 'jefeBodega')";
+                     WHERE users.role IN ('bodega', 'jefeBodega', 'jefeCedi')";
     $stmt_usuarios = $pdo->prepare($sql_usuarios);
     $stmt_usuarios->execute();
     $usuarios = $stmt_usuarios->fetchAll(PDO::FETCH_COLUMN);
