@@ -1,6 +1,7 @@
 <?php
 include('../php/login.php');
 include('../php/validate_session.php');
+include('GuardarFactura.php');
 // Obtener los datos de la URL
 $transaccion = isset($_GET['transaccion']) ? htmlspecialchars($_GET['transaccion']) : null;
 $documento = isset($_GET['documento']) ? htmlspecialchars($_GET['documento']) : null;

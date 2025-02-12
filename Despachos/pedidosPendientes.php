@@ -1,6 +1,7 @@
 <?php
 include('../php/db.php');
 include('../php/login.php');
+include('GuardarFactura.php');
 include('../php/validate_session.php');
 // Verificar si el usuario es admin
 if ($_SESSION['user_role'] !== 'despachos') {

@@ -1,6 +1,7 @@
 <?php
 include('../php/login.php');
 include('../php/validate_session.php');
+include('GuardarFactura.php');
 ?>
 <!DOCTYPE html>
 <html lang="en">
