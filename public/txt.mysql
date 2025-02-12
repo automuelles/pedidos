@@ -122,3 +122,14 @@ CREATE TABLE IF NOT EXISTS Reporte_pago (
     novedad VARCHAR(255) NOT NULL,
     descripcion TEXT
 );
+
+CREATE TABLE IF NOT EXISTS Reporte_pago_vendedor (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    inttransaccion INT NOT NULL,
+    intdocumento INT NOT NULL,
+    user_id INT NOT NULL,
+    estado VARCHAR(50) DEFAULT 'sin gestion',
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    novedad VARCHAR(255) NOT NULL,
+    descripcion TEXT
+);

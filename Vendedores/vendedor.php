@@ -48,7 +48,7 @@ include('../php/validate_session.php');
                     <i class="fa-solid fa-list-check text-white"></i>
                 </div>
                 <!-- Etiqueta como enlace -->
-                <a href="AsignarTarea.php" class="text-sm text-gray-700 hover:underline">Asignar Tarea</a>
+                <a href="#" class="text-sm text-gray-700 hover:underline">Asignar Tarea</a>
             </div>
             <div class="neumorphism p-4 text-center">
                 <!-- Icono de Bodega -->
@@ -66,7 +66,7 @@ include('../php/validate_session.php');
                     <i class="fa-solid fa-motorcycle text-white"></i>
                 </div>
                 <!-- Etiqueta como enlace -->
-                <a href="#" class="text-sm text-gray-700 hover:underline">#</a>
+                <a href="pedidosPendientes.php" class="text-sm text-gray-700 hover:underline">Entregar Pedido</a>
             </div>
             <div class="neumorphism p-4 text-center">
                 <!-- Icono de Bodega -->
