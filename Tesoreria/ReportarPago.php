@@ -2,6 +2,7 @@
 include('../php/login.php');
 include('../php/validate_session.php');
 require_once '../php/db.php'; // Conexión a la base de datos
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -40,51 +41,95 @@ require_once '../php/db.php'; // Conexión a la base de datos
 
     <!-- Tabla de datos -->
     <div class="neumorphism w-full max-w-4xl p-6 mb-6">
-        <?php
-        try {
-            // Consulta SQL para unir las tablas
-            $sql = "SELECT 
-                        f.IntTransaccion, 
-                        f.IntDocumento, 
-                        rp.novedad, 
-                        rp.descripcion
-                    FROM 
-                        factura f
-                    INNER JOIN 
-                        Reporte_pago rp
-                    ON 
-                        f.IntTransaccion = rp.inttransaccion 
-                        AND f.IntDocumento = rp.intdocumento";
-            
-            // Ejecutar la consulta
-            $stmt = $pdo->query($sql);
+    <?php
+// Conexión a la base de datos MySQL
+$host = "localhost";
+$dbname = "automuelles_db";
+$username = "root";
+$password = "";
 
-            // Mostrar los resultados en una tabla HTML
-            echo "<table class='min-w-full table-auto border-collapse border border-gray-300'>";
-            echo "<thead>";
-            echo "<tr class='bg-gray-100 text-gray-700 text-left'>";
-            echo "<th class='border border-gray-300 px-4 py-2'>IntTransaccion</th>";
-            echo "<th class='border border-gray-300 px-4 py-2'>IntDocumento</th>";
-            echo "<th class='border border-gray-300 px-4 py-2'>Novedad</th>";
-            echo "<th class='border border-gray-300 px-4 py-2'>Descripción</th>";
-            echo "</tr>";
-            echo "</thead>";
-            echo "<tbody class='text-gray-600'>";
-            
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                echo "<tr class='border-b hover:bg-gray-50'>";
-                echo "<td class='border border-gray-300 px-4 py-2'>{$row['IntTransaccion']}</td>";
-                echo "<td class='border border-gray-300 px-4 py-2'>{$row['IntDocumento']}</td>";
-                echo "<td class='border border-gray-300 px-4 py-2'>{$row['novedad']}</td>";
-                echo "<td class='border border-gray-300 px-4 py-2'>{$row['descripcion']}</td>";
-                echo "</tr>";
-            }
-            echo "</tbody>";
-            echo "</table>";
-        } catch (PDOException $e) {
-            echo "<p class='text-red-600 font-semibold'>Error al mostrar los datos: " . $e->getMessage() . "</p>";
-        }
-        ?>
+try {
+    $pdoMySQL = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+    $pdoMySQL->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    echo "Connection failed to MySQL: " . $e->getMessage();
+}
+
+// Conexión a la base de datos SQL Server
+$serverName = "SERVAUTOMUELLES\SQLEXPRESS";
+$connectionOptions = array(
+    "Database" => "AutomuellesDiesel1",
+    "Uid" => "AutomuellesDiesel",
+    "PWD" => "Complex@2024Pass!"
+);
+
+try {
+    $pdoSQLServer = new PDO("sqlsrv:server=$serverName;Database=AutomuellesDiesel1", $connectionOptions["Uid"], $connectionOptions["PWD"]);
+    $pdoSQLServer->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("Error de conexión a SQL Server: " . $e->getMessage());
+}
+
+// Consulta en MySQL
+$sqlMySQL = "SELECT 
+                f.IntTransaccion, 
+                f.IntDocumento, 
+                rp.novedad, 
+                rp.descripcion
+            FROM 
+                factura f
+            INNER JOIN 
+                Reporte_pago rp
+            ON 
+                f.IntTransaccion = rp.inttransaccion 
+                AND f.IntDocumento = rp.intdocumento";
+
+$stmtMySQL = $pdoMySQL->query($sqlMySQL);
+
+// Mostrar los resultados en una tabla HTML
+echo "<table class='min-w-full table-auto border-collapse border border-gray-300'>";
+echo "<thead>";
+echo "<tr class='bg-gray-100 text-gray-700 text-left'>";
+echo "<th class='border border-gray-300 px-4 py-2'>IntTransaccion</th>";
+echo "<th class='border border-gray-300 px-4 py-2'>IntDocumento</th>";
+echo "<th class='border border-gray-300 px-4 py-2'>Novedad</th>";
+echo "<th class='border border-gray-300 px-4 py-2'>Descripción</th>";
+echo "<th class='border border-gray-300 px-4 py-2'>Total</th>";
+echo "<th class='border border-gray-300 px-4 py-2'>Usuario</th>";
+echo "</tr>";
+echo "</thead>";
+echo "<tbody class='text-gray-600'>";
+
+// Recorremos los resultados de la consulta en MySQL
+while ($rowMySQL = $stmtMySQL->fetch(PDO::FETCH_ASSOC)) {
+    // Ahora realizamos la consulta en SQL Server para obtener los valores de IntTotal y StrUsuarioGra
+    $sqlSQLServer = "SELECT IntTotal, StrUsuarioGra
+                     FROM TblDocumentos
+                     WHERE IntTransaccion = :transaccion AND IntDocumento = :documento";
+
+    $stmtSQLServer = $pdoSQLServer->prepare($sqlSQLServer);
+    $stmtSQLServer->execute([
+        ':transaccion' => $rowMySQL['IntTransaccion'],
+        ':documento' => $rowMySQL['IntDocumento']
+    ]);
+
+    // Obtener los datos de SQL Server
+    $rowSQLServer = $stmtSQLServer->fetch(PDO::FETCH_ASSOC);
+
+    // Mostrar los datos en la tabla
+    echo "<tr class='border-b hover:bg-gray-50'>";
+    echo "<td class='border border-gray-300 px-4 py-2'>{$rowMySQL['IntTransaccion']}</td>";
+    echo "<td class='border border-gray-300 px-4 py-2'>{$rowMySQL['IntDocumento']}</td>";
+    echo "<td class='border border-gray-300 px-4 py-2'>{$rowMySQL['novedad']}</td>";
+    echo "<td class='border border-gray-300 px-4 py-2'>{$rowMySQL['descripcion']}</td>";
+    echo "<td class='border border-gray-300 px-4 py-2'>" . number_format($rowSQLServer['IntTotal'], 0) . "</td>";
+    echo "<td class='border border-gray-300 px-4 py-2'>{$rowSQLServer['StrUsuarioGra']}</td>";
+    echo "</tr>";
+}
+
+echo "</tbody>";
+echo "</table>";
+?>
     </div>
 
     <!-- Footer Navigation -->
