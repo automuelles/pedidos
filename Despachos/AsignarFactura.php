@@ -9,7 +9,7 @@ if ($_SESSION['user_role'] !== 'despachos') {
 
 try {
     // Modificación en el JOIN entre factura_gestionada y factura con la columna correcta
-    $sql_servicios = "SELECT fg.id, fg.user_name, fg.estado, f.StrReferencia1, f.StrReferencia3
+    $sql_servicios = "SELECT fg.id, fg.user_name, fg.estado, f.StrReferencia1, f.StrReferencia3, f.IntTransaccion, f.IntDocumento
                       FROM factura_gestionada fg
                       LEFT JOIN factura f ON fg.factura_id = f.id
                       WHERE fg.estado = 'Despachos'";
@@ -105,6 +105,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <?php foreach ($servicios as $servicio): ?>
                     <form action="" method="POST" class="bg-white shadow-md rounded-2xl p-4 border border-gray-200">
                         <input type="hidden" name="servicio_id" value="<?= $servicio['id'] ?>">
+                        <p class="text-gray-600"><strong>Transaccion :</strong> <?= htmlspecialchars($servicio['IntTransaccion']) ?></p>
+                        <p class="text-gray-600"><strong>Documento :</strong> <?= htmlspecialchars($servicio['IntDocumento']) ?></p>
                         <p class="text-gray-600"><strong>Entregar a :</strong> <?= htmlspecialchars($servicio['StrReferencia1']) ?></p>
                         <p class="text-gray-600"><strong>Forma de Pago:</strong> <?= htmlspecialchars($servicio['StrReferencia3']) ?></p>
                         <p class="text-gray-600"><strong>Estado:</strong> <?= htmlspecialchars($servicio['estado']) ?></p>
