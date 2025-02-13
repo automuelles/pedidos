@@ -38,13 +38,13 @@ function asignarServicios($pdo, $userId, $usuarioConectado, $rolUsuario) {
 // Función para obtener una factura pendiente según el rol
 function obtenerFacturaPendiente($pdo, $rolUsuario) {
     if ($rolUsuario === 'JefeCedi') {
-        $stmt = $pdo->prepare("SELECT id FROM factura WHERE estado = 'pendiente' AND IntTransaccion IN (88, 42) LIMIT 1");
+        $stmt = $pdo->prepare("SELECT id FROM factura WHERE estado = 'pendiente' AND IntTransaccion IN (88, 42) LIMIT 2");
     } elseif ($rolUsuario === 'jefeBodega') {
-        $stmt = $pdo->prepare("SELECT id FROM factura WHERE estado = 'pendiente' AND IntTransaccion IN (90, 40) LIMIT 1");
+        $stmt = $pdo->prepare("SELECT id FROM factura WHERE estado = 'pendiente' AND IntTransaccion IN (90, 40) LIMIT 2");
     } elseif ($rolUsuario === 'bodega') {
-        $stmt = $pdo->prepare("SELECT id FROM factura WHERE estado = 'pendiente' AND IntTransaccion IN (90, 40, 88, 42) LIMIT 1");
+        $stmt = $pdo->prepare("SELECT id FROM factura WHERE estado = 'pendiente' AND IntTransaccion IN (90, 40, 88, 42) LIMIT 2");
     } else {
-        $stmt = $pdo->prepare("SELECT id FROM factura WHERE estado = 'pendiente' LIMIT 1");
+        $stmt = $pdo->prepare("SELECT id FROM factura WHERE estado = 'pendiente' LIMIT 2");
     }
     $stmt->execute();
     return $stmt->fetch();
@@ -77,12 +77,23 @@ asignarServicios($pdo, $userId, $usuarioConectado, $rolUsuario);
 
 // Consultar las facturas asignadas al usuario y que estén en estado 'gestionado'
 $stmt = $pdo->prepare("
-    SELECT f.IntTransaccion, f.IntDocumento, f.fecha, f.id AS factura_id
-    FROM factura AS f
-    JOIN factura_gestionada AS fg ON f.id = fg.factura_id
-    WHERE fg.user_name = :userName AND f.estado = 'gestionado'
+    SELECT 
+        f.IntTransaccion, 
+        f.IntDocumento, 
+        f.fecha, 
+        f.id AS factura_id, 
+        f.StrReferencia1, 
+        f.StrReferencia3
+    FROM 
+        factura AS f
+    JOIN 
+        factura_gestionada AS fg ON f.id = fg.factura_id
+    WHERE 
+        fg.user_name = :userName 
+        AND f.estado = 'gestionado'
 ");
 $stmt->execute(['userName' => $usuarioConectado]);
+
 
 // Obtener los resultados
 $facturas = $stmt->fetchAll();

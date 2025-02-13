@@ -6,6 +6,7 @@ include('AsignarServicios.php');
 // Obtener los datos de la URL
 $transaccion = isset($_GET['transaccion']) ? htmlspecialchars($_GET['transaccion']) : null;
 $documento = isset($_GET['documento']) ? htmlspecialchars($_GET['documento']) : null;
+
 ?>
 
 <!DOCTYPE html>
@@ -43,34 +44,36 @@ $documento = isset($_GET['documento']) ? htmlspecialchars($_GET['documento']) : 
         <h1 class="text-black-600 text-2xl font-bold">Pedidos Pendientes</h1>
     </div>
 
-  <!-- Features Section -->
-<div class="w-full max-w-4xl mx-auto pb-16">
-    <h2 class="text-center text-lg font-semibold text-gray-700 mb-6">Pedidos Asignados sin Revisión</h2>
-    
-    <?php if ($facturas): ?>
-        <div class="space-y-4">
-            <?php foreach ($facturas as $factura): ?>
-                <div class="flex items-center justify-between p-4 bg-white rounded-lg shadow-md border border-gray-200">
-                    <div>
-                        <p class="text-lg font-medium text-gray-800">Transacción: <?php echo htmlspecialchars($factura['IntTransaccion']); ?></p>
-                        <p class="text-sm text-gray-600">Documento: <?php echo htmlspecialchars($factura['IntDocumento']); ?></p>
-                        <p class="text-xs text-gray-500">Fecha: <?php echo htmlspecialchars($factura['fecha']); ?></p>
+    <!-- Features Section -->
+    <div class="w-full max-w-4xl mx-auto pb-16">
+        <h2 class="text-center text-lg font-semibold text-gray-700 mb-6">Pedidos Asignados sin Revisión</h2>
+
+        <?php if ($facturas): ?>
+            <div class="space-y-4">
+                <?php foreach ($facturas as $factura): ?>
+                    <div class="flex items-center justify-between p-4 bg-white rounded-lg shadow-md border border-gray-200">
+                        <div>
+                            <p class="text-lg font-medium text-gray-800">Transacción: <?php echo htmlspecialchars($factura['IntTransaccion']); ?></p>
+                            <p class="text-sm text-gray-600">Documento: <?php echo htmlspecialchars($factura['IntDocumento']); ?></p>
+                            <p class="text-xs text-gray-500">Fecha: <?php echo htmlspecialchars($factura['fecha']); ?></p>
+                            <p class="text-xs text-gray-500">Datos: <?php echo htmlspecialchars($factura['StrReferencia1']); ?></p>
+                            <p class="text-xs text-gray-500">Forma de pago: <?php echo htmlspecialchars($factura['StrReferencia3']); ?></p>
+                        </div>
+                        <div>
+                            <form action="picking_factura.php" method="GET">
+                                <input type="hidden" name="factura_id" value="<?php echo $factura['factura_id']; ?>">
+                                <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md">
+                                    Gestionar
+                                </button>
+                            </form>
+                        </div>
                     </div>
-                    <div>
-                    <form action="picking_factura.php" method="GET">
-                            <input type="hidden" name="factura_id" value="<?php echo $factura['factura_id']; ?>">
-                            <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md">
-                                Gestionar
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            <?php endforeach; ?>
-        </div>
-    <?php else: ?>
-        <p class="text-center text-gray-500">No hay pedidos asignados sin revisión.</p>
-    <?php endif; ?>
-</div>
+                <?php endforeach; ?>
+            </div>
+        <?php else: ?>
+            <p class="text-center text-gray-500">No hay pedidos asignados sin revisión.</p>
+        <?php endif; ?>
+    </div>
 
     <!-- Footer Navigation -->
     <nav class="fixed bottom-0 left-0 right-0 bg-white shadow-lg">
