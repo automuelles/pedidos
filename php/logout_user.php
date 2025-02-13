@@ -15,8 +15,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['session_id'])) {
     $stmt = $pdo->prepare("DELETE FROM active_sessions WHERE session_id = ?");
     $stmt->execute([$session_id]);
 
-    // Redirigir a la página de gestión de sesiones
-    header("Location: ../");
+    // Redirigir a la misma página
+    header("Location: " . $_SERVER['PHP_SELF']);
     exit;
 } else {
     // Redirigir a index si no se proporcionó un session_id válido
