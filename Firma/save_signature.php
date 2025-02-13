@@ -1,96 +1,57 @@
 <?php
-session_start();
-require_once('fpdi/src/autoload.php');
-require_once('fpdf/fpdf.php');
-use setasign\Fpdi\Fpdi;
+// Conectar a la base de datos
+$host = "localhost";
+$dbname = "automuelles_db";
+$username = "root";
+$password = "";
 
-// Parámetros de conexión a la base de datos
-$host = 'localhost';
-$user = 'root';
-$password = '';
-$database = 'automuelles_db';
-
-// Conexión a la base de datos
-$conn = new mysqli($host, $user, $password, $database);
-
-// Verificar conexión
-if ($conn->connect_error) {
-    die("Conexión fallida: " . $conn->connect_error);
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    echo "Connection failed: " . $e->getMessage();
 }
 
-function obtenerNombreDeUsuario()
-{
-    return isset($_SESSION['usuario']) ? strtoupper($_SESSION['usuario']) : "ADMIN";
-}
+// Verificar si los datos fueron enviados
+if (isset($_POST['signature']) && isset($_POST['documentNumber']) && isset($_POST['transactionNumber'])) {
+    $signatureDataUrl = $_POST['signature'];
+    $documentNumber = $_POST['documentNumber'];
+    $transactionNumber = $_POST['transactionNumber'];
 
-$response = ['signedPdfUrl' => false];
+    // Eliminar el encabezado de la imagen Base64
+    $signatureDataUrl = str_replace('data:image/png;base64,', '', $signatureDataUrl);
+    $signatureDataUrl = str_replace(' ', '+', $signatureDataUrl); // Reemplazar espacios por +
 
-if (isset($_POST['signature']) && isset($_GET['numeroFactura'])) {
-    $numeroFactura = $_GET['numeroFactura'];
-    $firmaImagen = $_POST['signature'];
+    // Decodificar la imagen base64
+    $signatureImage = base64_decode($signatureDataUrl);
 
-    // Decodificar la imagen de la firma
-    $firmaImagen = str_replace('data:image/png;base64,', '', $firmaImagen);
-    $firmaImagen = str_replace(' ', '+', $firmaImagen);
-    $firmaImagenData = base64_decode($firmaImagen);
+    // Crear el nombre de archivo usando el número de documento y número de transacción
+    $signatureFileName = $documentNumber . '-' . $transactionNumber . '.png';
+    $filePath = 'imagenes_firmas/' . $signatureFileName;
 
-    // Crear la carpeta si no existe
-$carpetaFirmas = 'imagenes_firmas';
-if (!is_dir($carpetaFirmas)) {
-    mkdir($carpetaFirmas, 0755, true);
-}
+    // Guardar la imagen en la carpeta
+    if (file_put_contents($filePath, $signatureImage)) {
+        // Guardar los datos de la firma en la base de datos
+        $stmt = $pdo->prepare("INSERT INTO firmas (nombre, documento, transaccion, archivo) VALUES (:name, :documentNumber, :transactionNumber, :signatureFileName)");
+        $stmt->bindParam(':name', $_POST['name']);
+        $stmt->bindParam(':documentNumber', $documentNumber);
+        $stmt->bindParam(':transactionNumber', $transactionNumber);
+        $stmt->bindParam(':signatureFileName', $signatureFileName);
 
-// Guardar la imagen de la firma en la carpeta
-$firmaImagenPath = $carpetaFirmas . '/firma_' . time() . '.png';
-file_put_contents($firmaImagenPath, $firmaImagenData);
-
-    // Crear el PDF firmado
-    $carpetaCompartida = '\\\\SERVAUTOMUELLES\\HgiNetERP\\Temp\\Documentos\\dms\\900950921\\cia1\\emp2\\documentos\\FacturaElectronica\\';
-    $archivo = $carpetaCompartida . $numeroFactura . '.pdf';
-    $pdfFirmadoPath = $carpetaCompartida . $numeroFactura . '_firmado.pdf';
-
-    if (file_exists($archivo)) {
-        $pdf = new Fpdi();
-        $pdf->AddPage();
-        $pdf->setSourceFile($archivo);
-        $templateId = $pdf->importPage(1);
-        $pdf->useTemplate($templateId);
-
-        // Agregar la firma en la posición deseada
-        $pdf->Image($firmaImagenPath,50, 170, 100); // Ajusta la posición y el tamaño de la firma
-
-        // Agregar el nombre del usuario
-        $pdf->SetFont('Helvetica', '', 12);
-        $pdf->SetXY(10, 10);
-        $pdf->Write(0, 'Firmado por: ' . obtenerNombreDeUsuario());
-
-        // Guardar el PDF firmado
-        $pdf->Output('F', $pdfFirmadoPath);
-
-        // Leer el PDF firmado y codificarlo en base64
-        $pdfFirmadoContenido = base64_encode(file_get_contents($pdfFirmadoPath));
-
-        // Guardar el PDF firmado en la base de datos junto con el nombre del usuario
-        $nombreUsuario = obtenerNombreDeUsuario();
-        $stmt = $conn->prepare("INSERT INTO facturas_firmadas (numero_factura, pdf, usuario) VALUES (?, ?, ?)");
-        $stmt->bind_param("sss", $numeroFactura, $pdfFirmadoContenido, $nombreUsuario);
-
+        // Ejecutar la inserción
         if ($stmt->execute()) {
-            $response['signedPdfUrl'] = 'buscar_factura_firmada.php';
+            // Responder con la URL del archivo firmado
+            echo json_encode(['signedPdfUrl' => 'ruta/a/la/firma/' . $signatureFileName]);
         } else {
-            $response['error'] = 'Error al guardar la factura firmada en la base de datos.';
+            echo json_encode(['error' => 'Error al guardar la firma en la base de datos.']);
         }
-
-        $stmt->close();
     } else {
-        $response['error'] = 'Factura no encontrada.';
+        echo json_encode(['error' => 'Error al guardar la imagen de la firma.']);
     }
-
-    // Eliminar el archivo temporal de la firma
-    unlink($firmaImagenPath);
+} else {
+    echo json_encode(['error' => 'La firma se guardó correctamente.']);
 }
 
-$conn->close();
-header('Content-Type: application/json');
-echo json_encode($response);
+$pdo = null; // Cerrar la conexión PDO
+
 ?>
