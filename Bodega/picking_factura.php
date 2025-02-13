@@ -135,10 +135,11 @@ if ($factura_id > 0) {
                     echo "<p class='text-lg text-gray-700'><strong>Bodega:</strong> " . htmlspecialchars($factura_detail['IntBodega']) . "</p>";
                     echo "<p class='text-lg text-gray-700'><strong>Ubicación:</strong> " . htmlspecialchars($factura_detail['StrParam1']) . "</p>";
                     echo "<p class='text-lg text-gray-700'><strong>Vendedor:</strong> " . htmlspecialchars($factura_detail['StrUsuarioGra']) . "</p>";
-                    echo "<p class='text-lg text-gray-700'><strong>Observaciones:</strong> " . htmlspecialchars($factura_detail['StrObservaciones']) . "</p>";
                     echo "<hr class='my-4' />";
                 }
-            } else {
+                echo "<p class='text-lg text-gray-700'><strong>Observaciones:</strong> " . htmlspecialchars($factura_detail['StrObservaciones']) . "</p>";
+            } 
+            else {
                 echo "<p class='text-red-500'>No se encontraron detalles para la factura solicitada.</p>";
             }
             ?>
