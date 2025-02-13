@@ -38,13 +38,15 @@ if ($transaccion > 0 && $documento > 0) {
                     p.StrDescripcion, 
                     p.StrParam1, 
                     d.IntCantidad, 
-                    d.StrUnidad, 
+                    d.StrUnidad,
+                    d.IntBodega, 
                     d.DatFecha1, 
                     d.StrVendedor,
                     doc.StrObservaciones,
                     doc.StrUsuarioGra, 
                     doc.StrReferencia1,
-                    doc.StrReferencia3, 
+                    doc.StrReferencia3,
+                  
                     doc.IntTotal
                 FROM TblDetalleDocumentos d
                 LEFT JOIN TblProductos p ON d.StrProducto = p.StrIdProducto
@@ -129,6 +131,7 @@ if ($transaccion > 0 && $documento > 0) {
                     echo "<p class='text-lg text-gray-700'><strong>Cantidad:</strong> " . number_format((float) $factura_detail['IntCantidad'], 2, '.', '') . "</p>";
                     echo "<p class='text-lg text-gray-700'><strong>Producto:</strong> " . htmlspecialchars($factura_detail['StrProducto']) . "</p>";
                     echo "<p class='text-lg text-gray-700'><strong>Descripcion:</strong> " . htmlspecialchars($factura_detail['StrDescripcion']) . "</p>";
+                    echo "<p class='text-lg text-gray-700'><strong>Bodega:</strong> " . htmlspecialchars($factura_detail['IntBodega']) . "</p>";
                     echo "<p class='text-lg text-gray-700'><strong>Ubicación:</strong> " . htmlspecialchars($factura_detail['StrParam1']) . "</p>";
                     echo "<p class='text-lg text-gray-700'><strong>Vendedor:</strong> " . htmlspecialchars($factura_detail['StrUsuarioGra']) . "</p>";
                     echo "<p class='text-lg text-gray-700'><strong>Observaciones:</strong> " . htmlspecialchars($factura_detail['StrObservaciones']) . "</p>";
