@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $descripcion = $_POST['descripcion'];
 
     // Prepara la consulta SQL para insertar los datos
-    $sql = "INSERT INTO Reporte_pago_vendedor (inttransaccion, intdocumento, user_id, estado, fecha, novedad, descripcion)
+    $sql = "INSERT INTO Reporte_pago (inttransaccion, intdocumento, user_id, estado, fecha, novedad, descripcion)
             VALUES (:inttransaccion, :intdocumento, :user_id, :estado, :fecha, :novedad, :descripcion)";
 
     // Prepara la declaración
