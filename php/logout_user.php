@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['session_id'])) {
     $stmt->execute([$session_id]);
 
     // Redirigir a la página de gestión de sesiones
-    header("Location: ../Bodega/manage_sessions.php");
+    header("Location: ../");
     exit;
 } else {
     // Redirigir a index si no se proporcionó un session_id válido
