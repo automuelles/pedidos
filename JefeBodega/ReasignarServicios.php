@@ -8,9 +8,10 @@ if ($_SESSION['user_role'] !== 'jefeBodega') {
 }
 
 try {
-    $sql_servicios = "SELECT factura_gestionada.id, factura_gestionada.user_name, factura_gestionada.estado 
-                      FROM factura_gestionada 
-                      WHERE estado = 'gestionado'";
+    $sql_servicios = "SELECT fg.id, fg.user_name, fg.estado, f.StrReferencia1, f.StrReferencia3, f.IntTransaccion, f.IntDocumento
+                      FROM factura_gestionada fg
+                      LEFT JOIN factura f ON fg.factura_id = f.id
+                      WHERE fg.estado = 'gestionado'";
     $stmt_servicios = $pdo->prepare($sql_servicios);
     $stmt_servicios->execute();
     $servicios = $stmt_servicios->fetchAll(PDO::FETCH_ASSOC);
@@ -93,6 +94,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <?php foreach ($servicios as $servicio): ?>
                     <form action="" method="POST" class="bg-white shadow-md rounded-2xl p-4 border border-gray-200">
                         <input type="hidden" name="servicio_id" value="<?= $servicio['id'] ?>">
+                        <p class="text-gray-600"><strong>Transaccion:</strong> <?= htmlspecialchars($servicio['IntTransaccion']) ?></p>
+                        <p class="text-gray-600"><strong>Numero de Factura:</strong> <?= htmlspecialchars($servicio['IntDocumento']) ?></p>
                         <p class="text-gray-600"><strong>Estado:</strong> <?= htmlspecialchars($servicio['estado']) ?></p>
                         <p class="text-gray-600"><strong>Asignado a:</strong> <?= htmlspecialchars($servicio['user_name']) ?></p>
 
