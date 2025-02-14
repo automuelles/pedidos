@@ -1,5 +1,8 @@
 <?php
 
+// Configurar la zona horaria de Colombia
+date_default_timezone_set('America/Bogota');
+
 // Verificar si el usuario está conectado y tiene el rol adecuado
 if (!isset($_SESSION['user_name']) || 
     (!in_array($_SESSION['user_role'], ['jefeBodega', 'bodega', 'JefeCedi']))) {
@@ -29,6 +32,9 @@ try {
     ";
     $pdo->exec($createTableQuery);
 
+    // Obtener la fecha actual en la zona horaria de Colombia
+    $fechaActual = date('Y-m-d');
+
     // Consulta para obtener las facturas de las transacciones 40, 42, 88 y 90 de la fecha actual
     $query = "
         SELECT 
@@ -40,7 +46,7 @@ try {
         FROM TblDetalleDocumentos d
         LEFT JOIN TblProductos p ON d.StrProducto = p.StrIdProducto
         LEFT JOIN TblDocumentos doc ON d.IntTransaccion = doc.IntTransaccion AND d.IntDocumento = doc.IntDocumento
-        WHERE CONVERT(DATE, d.DatFecha1) = CONVERT(DATE, GETDATE())
+        WHERE DATE(d.DatFecha1) = :fechaActual
         AND d.IntTransaccion IN (40, 42, 88, 90)
         AND d.IntTransaccion >= 0
         AND d.IntDocumento >= 0
@@ -49,7 +55,7 @@ try {
 
     // Ejecutar la consulta
     $stmt = $conn->prepare($query);
-    $stmt->execute();
+    $stmt->execute([':fechaActual' => $fechaActual]);
     $facturas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     // Preparar la consulta para insertar en la tabla factura
