@@ -145,6 +145,7 @@ if ($transaccion > 0 && $documento > 0) {
                         <option value="sin_inventario">Sin Inventario</option>
                         <option value="mercancia_no_encontrada">Mercancía No Encontrada</option>
                         <option value="Referencias_Equivocadas">Referencias Equivocadas</option>
+                        <option value="Referencias_Equivocadas">Mercancia de Mostrador</option>
                     </select>
                 </div>
                 <div class="mb-4">
