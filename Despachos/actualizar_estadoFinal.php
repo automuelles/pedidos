@@ -56,7 +56,7 @@ if ($transaccion > 0 && $documento > 0) {
         // Mostrar alerta y redirigir a 'RevisionFinal.php'
         echo "<script>
        alert('Estado actualizado a \"Despachos\" en factura y factura gestionada correctamente.');
-       window.location.href = 'RevisionFinal.php';
+       window.location.href = 'pedidosPendientes.php';
      </script>";
     } catch (Exception $e) {
         // En caso de error, revertir la transacción

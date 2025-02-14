@@ -32,7 +32,7 @@ if ($transaccion > 0 && $documento > 0) {
         $row = $stmt_gestionada->fetch(PDO::FETCH_ASSOC);
         if ($row) {
             $sql_estado = "INSERT INTO estado (factura_id, user_id, estado, fecha, user_name) 
-                           VALUES (:factura_id, :user_id, 'Mensajeria', NOW(), :user_name)";
+                           VALUES (:factura_id, :user_id, 'Vendedor', NOW(), :user_name)";
             $stmt_estado = $pdo->prepare($sql_estado);
             $stmt_estado->bindParam(':factura_id', $row['factura_id'], PDO::PARAM_INT);
             $stmt_estado->bindParam(':user_id', $row['user_id'], PDO::PARAM_INT);
@@ -56,7 +56,7 @@ if ($transaccion > 0 && $documento > 0) {
         // Mostrar alerta y redirigir a 'RevisionFinal.php'
         echo "<script>
        alert('Estado actualizado a \"Vendedor\" en factura y factura gestionada correctamente.');
-       window.location.href = 'RevisionFinal.php';
+       window.location.href = 'pedidosPendientes.php';
      </script>";
     } catch (Exception $e) {
         // En caso de error, revertir la transacción
