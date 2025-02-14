@@ -73,7 +73,7 @@ try {
                     <p class="text-xs text-gray-500">Descripción: <?php echo htmlspecialchars($factura['descripcion'] ?? 'N/A'); ?></p>
                 </div>
                 <div>
-                    <form action="EstadoRevisionFinal.php" method="GET">
+                    <form action="RevisarMostrador.php" method="GET">
                         <input type="hidden" name="IntTransaccion" value="<?php echo $factura['IntTransaccion']; ?>">
                         <input type="hidden" name="IntDocumento" value="<?php echo $factura['IntDocumento']; ?>">
                         <input type="hidden" name="estado" value="<?php echo $factura['estado']; ?>">
