@@ -40,7 +40,7 @@ function asignarServicios($pdo, $userId, $usuarioConectado, $rolUsuario) {
 // Función para obtener facturas pendientes según el rol
 function obtenerFacturasPendientes($pdo, $rolUsuario, $limite) {
     if ($rolUsuario === 'JefeCedi') {
-        $stmt = $pdo->prepare("SELECT id FROM factura WHERE estado = 'pendiente' AND IntTransaccion IN (88, 42, 90, 40) LIMIT :limite");
+        $stmt = $pdo->prepare("SELECT id FROM factura WHERE estado = 'pendiente' AND IntTransaccion IN (88, 42) LIMIT :limite");
     } elseif ($rolUsuario === 'jefeBodega') {
         $stmt = $pdo->prepare("SELECT id FROM factura WHERE estado = 'pendiente' AND IntTransaccion IN (90, 40) LIMIT :limite");
     } elseif ($rolUsuario === 'bodega') {
