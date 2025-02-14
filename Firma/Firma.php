@@ -7,6 +7,7 @@ $connectionOptions = array(
     "PWD" => "Complex@2024Pass!"
 );
 
+// Establecer conexión con PDO
 try {
     $conn = new PDO("sqlsrv:server=$serverName;Database=AutomuellesDiesel1", $connectionOptions["Uid"], $connectionOptions["PWD"]);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -14,278 +15,281 @@ try {
     die("Error de conexión: " . $e->getMessage());
 }
 
-// Filtro de búsqueda (obtenemos los valores si están presentes)
-$transaccion = isset($_GET['transaccion']) ? $_GET['transaccion'] : '';
-$documento = isset($_GET['documento']) ? $_GET['documento'] : '';
+// Inicializar variables
+$documentos = [];
+$terceros = [];
 
-// Verificar si se aplicaron filtros
-if ($transaccion || $documento) {
-    // Consultas con filtros aplicados
-    $query1 = "SELECT TOP (1000) 
-        [IntEmpresa],
-        [IntTransaccion],
-        [IntDocumento],
-        [StrProducto],
-        [StrLote],
-        [StrTalla],
-        [StrColor],
-        [IntBodega],
-        [StrSerie],
-        [StrSerie1],
-        [StrSerie2],
-        [StrSerie3],
-        [IntId],
-        [IntCantidadDoc],
-        [IntCantidad],
-        [StrUnidad],
-        [IntFactor],
-        [IntValorUnitario],
-        [IntValorTotal],
-        [IntPorDescuento],
-        [IntValorDescuento],
-        [IntValorIva],
-        [IntVrImpuesto1],
-        [IntValorCosto],
-        [IntValorUnitarioW],
-        [IntDocRefD],
-        [IntCostoAgregado],
-        [IntReteFte],
-        [IntSaldoI],
-        [IntVUSaldoI],
-        [IntSaldoF],
-        [IntVUSaldoF],
-        [DatFecha1],
-        [DatFecha2],
-        [StrSucursal],
-        [StrCCosto],
-        [StrSubCCosto],
-        [StrDescripcion1],
-        [StrTercero],
-        [StrVinculado],
-        [StrVendedor],
-        [IntTipo],
-        [IntImpresion],
-        [IntGratis],
-        [IntVlrBaseImpto],
-        [IntBienCubierto],
-        [IdSeguridad],
-        [StrUbicacion],
-        [StrActivoFijo],
-        [IntRegistroTransporte],
-        [IntValorImpPlastico],
-        [IntVrImpuesto2]
-    FROM [AutomuellesDiesel1].[dbo].[TblDetalleDocumentos]
-    WHERE [IntTransaccion] LIKE :transaccion
-    AND [IntDocumento] LIKE :documento";
+// Comprobamos si se han enviado los datos de filtro
+if (isset($_POST['IntTransaccion']) && isset($_POST['IntDocumento'])) {
+    $IntTransaccion = $_POST['IntTransaccion'];
+    $IntDocumento = $_POST['IntDocumento'];
 
-    $stmt1 = $conn->prepare($query1);
-    $stmt1->bindValue(':transaccion', '%' . $transaccion . '%', PDO::PARAM_STR);
-    $stmt1->bindValue(':documento', '%' . $documento . '%', PDO::PARAM_STR);
-    $stmt1->execute();
-    $tblDetalleDocumentos = $stmt1->fetchAll(PDO::FETCH_ASSOC);
+    // Consulta principal para obtener datos de TblDocumentos
+    $sql = "
+    SELECT 
+        D.[IntEmpresa], D.[IntTransaccion], D.[IntDocumento], D.[DatFecha], D.[DatVencimiento], 
+        D.[StrTercero], D.[IntValor], D.[IntSubtotal], D.[IntIva], D.[IntTotal], 
+        T.[StrNombre], T.[StrDireccion], T.[StrTelefono],
+        dp.[StrProducto], p.[StrDescripcion], dp.[IntCantidad]
+    FROM [AutomuellesDiesel1].[dbo].[TblDocumentos] D
+    JOIN [AutomuellesDiesel1].[dbo].[TblTerceros] T
+        ON D.StrTercero = T.StrIdTercero
+    LEFT JOIN [AutomuellesDiesel1].[dbo].[TblDetalleDocumentos] dp
+        ON D.IntTransaccion = dp.IntTransaccion AND D.IntDocumento = dp.IntDocumento
+    LEFT JOIN [AutomuellesDiesel1].[dbo].[TblProductos] p
+        ON dp.StrProducto = p.StrIdProducto
+    WHERE D.IntTransaccion = :IntTransaccion
+      AND D.IntDocumento = :IntDocumento";
 
-    // Consultas para la tabla TblTerceros
-    $query2 = "SELECT TOP (1000) 
-        [StrIdTercero],
-        [StrNombre],
-        [StrTipoId],
-        [IntIdentificacion],
-        [IntDv],
-        [IntDvC],
-        [StrApellido1],
-        [StrApellido2],
-        [StrNombre1],
-        [StrNombre2],
-        [StrNombreComercial],
-        [StrDireccion],
-        [StrDireccion2],
-        [StrCodPostal],
-        [StrTelefono],
-        [StrCelular]
-    FROM [AutomuellesDiesel1].[dbo].[TblTerceros]";
-    $stmt2 = $conn->prepare($query2);
-    $stmt2->execute();
-    $tblTerceros = $stmt2->fetchAll(PDO::FETCH_ASSOC);
-} else {
-    // Si no hay filtros, no se realiza la consulta
-    $tblDetalleDocumentos = [];
+    // Preparar y ejecutar la consulta
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':IntTransaccion', $IntTransaccion, PDO::PARAM_INT);
+    $stmt->bindParam(':IntDocumento', $IntDocumento, PDO::PARAM_INT);
+    $stmt->execute();
+    $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
-    <title>Datos de Facturas y Terceros</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factura Electrónica</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
 
-<h2>Filtrar Datos</h2>
-<form method="get" action="">
-    <label for="transaccion">Transacción:</label>
-    <input type="text" name="transaccion" value="<?php echo htmlspecialchars($transaccion); ?>" />
-    
-    <label for="documento">Documento:</label>
-    <input type="text" name="documento" value="<?php echo htmlspecialchars($documento); ?>" />
-    
-    <input type="submit" value="Filtrar" />
-</form>
+<body class="bg-gray-100 font-sans">
+    <!-- Formulario de filtros -->
+    <div class="p-5 max-w-3xl mx-auto bg-white rounded-lg shadow-md">
+        <form method="POST" action="">
+            <div class="mb-5">
+                <label for="IntTransaccion" class="block text-lg font-medium text-gray-700">Número de Transacción</label>
+                <input type="number" id="IntTransaccion" name="IntTransaccion" required class="mt-1 p-2 w-full border rounded-md shadow-sm">
+            </div>
+            <div class="mb-5">
+                <label for="IntDocumento" class="block text-lg font-medium text-gray-700">Número de Documento</label>
+                <input type="number" id="IntDocumento" name="IntDocumento" required class="mt-1 p-2 w-full border rounded-md shadow-sm">
+            </div>
+            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Filtrar</button>
+        </form>
+    </div>
 
-<h2>Tabla TblDetalleDocumentos</h2>
-<table border="1">
-    <tr>
-        <th>IntEmpresa</th>
-        <th>IntTransaccion</th>
-        <th>IntDocumento</th>
-        <th>StrProducto</th>
-        <th>StrLote</th>
-        <th>StrTalla</th>
-        <th>StrColor</th>
-        <th>IntBodega</th>
-        <th>StrSerie</th>
-        <th>StrSerie1</th>
-        <th>StrSerie2</th>
-        <th>StrSerie3</th>
-        <th>IntId</th>
-        <th>IntCantidadDoc</th>
-        <th>IntCantidad</th>
-        <th>StrUnidad</th>
-        <th>IntFactor</th>
-        <th>IntValorUnitario</th>
-        <th>IntValorTotal</th>
-        <th>IntPorDescuento</th>
-        <th>IntValorDescuento</th>
-        <th>IntValorIva</th>
-        <th>IntVrImpuesto1</th>
-        <th>IntValorCosto</th>
-        <th>IntValorUnitarioW</th>
-        <th>IntDocRefD</th>
-        <th>IntCostoAgregado</th>
-        <th>IntReteFte</th>
-        <th>IntSaldoI</th>
-        <th>IntVUSaldoI</th>
-        <th>IntSaldoF</th>
-        <th>IntVUSaldoF</th>
-        <th>DatFecha1</th>
-        <th>DatFecha2</th>
-        <th>StrSucursal</th>
-        <th>StrCCosto</th>
-        <th>StrSubCCosto</th>
-        <th>StrDescripcion1</th>
-        <th>StrTercero</th>
-        <th>StrVinculado</th>
-        <th>StrVendedor</th>
-        <th>IntTipo</th>
-        <th>IntImpresion</th>
-        <th>IntGratis</th>
-        <th>IntVlrBaseImpto</th>
-        <th>IntBienCubierto</th>
-        <th>IdSeguridad</th>
-        <th>StrUbicacion</th>
-        <th>StrActivoFijo</th>
-        <th>IntRegistroTransporte</th>
-        <th>IntValorImpPlastico</th>
-        <th>IntVrImpuesto2</th>
-    </tr>
-    <?php foreach ($tblDetalleDocumentos as $row) { ?>
-        <tr>
-            <td><?php echo $row['IntEmpresa']; ?></td>
-            <td><?php echo $row['IntTransaccion']; ?></td>
-            <td><?php echo $row['IntDocumento']; ?></td>
-            <td><?php echo $row['StrProducto']; ?></td>
-            <td><?php echo $row['StrLote']; ?></td>
-            <td><?php echo $row['StrTalla']; ?></td>
-            <td><?php echo $row['StrColor']; ?></td>
-            <td><?php echo $row['IntBodega']; ?></td>
-            <td><?php echo $row['StrSerie']; ?></td>
-            <td><?php echo $row['StrSerie1']; ?></td>
-            <td><?php echo $row['StrSerie2']; ?></td>
-            <td><?php echo $row['StrSerie3']; ?></td>
-            <td><?php echo $row['IntId']; ?></td>
-            <td><?php echo $row['IntCantidadDoc']; ?></td>
-            <td><?php echo $row['IntCantidad']; ?></td>
-            <td><?php echo $row['StrUnidad']; ?></td>
-            <td><?php echo $row['IntFactor']; ?></td>
-            <td><?php echo $row['IntValorUnitario']; ?></td>
-            <td><?php echo $row['IntValorTotal']; ?></td>
-            <td><?php echo $row['IntPorDescuento']; ?></td>
-            <td><?php echo $row['IntValorDescuento']; ?></td>
-            <td><?php echo $row['IntValorIva']; ?></td>
-            <td><?php echo $row['IntVrImpuesto1']; ?></td>
-            <td><?php echo $row['IntValorCosto']; ?></td>
-            <td><?php echo $row['IntValorUnitarioW']; ?></td>
-            <td><?php echo $row['IntDocRefD']; ?></td>
-            <td><?php echo $row['IntCostoAgregado']; ?></td>
-            <td><?php echo $row['IntReteFte']; ?></td>
-            <td><?php echo $row['IntSaldoI']; ?></td>
-            <td><?php echo $row['IntVUSaldoI']; ?></td>
-            <td><?php echo $row['IntSaldoF']; ?></td>
-            <td><?php echo $row['IntVUSaldoF']; ?></td>
-            <td><?php echo $row['DatFecha1']; ?></td>
-            <td><?php echo $row['DatFecha2']; ?></td>
-            <td><?php echo $row['StrSucursal']; ?></td>
-            <td><?php echo $row['StrCCosto']; ?></td>
-            <td><?php echo $row['StrSubCCosto']; ?></td>
-            <td><?php echo $row['StrDescripcion1']; ?></td>
-            <td><?php echo $row['StrTercero']; ?></td>
-            <td><?php echo $row['StrVinculado']; ?></td>
-            <td><?php echo $row['StrVendedor']; ?></td>
-            <td><?php echo $row['IntTipo']; ?></td>
-            <td><?php echo $row['IntImpresion']; ?></td>
-            <td><?php echo $row['IntGratis']; ?></td>
-            <td><?php echo $row['IntVlrBaseImpto']; ?></td>
-            <td><?php echo $row['IntBienCubierto']; ?></td>
-            <td><?php echo $row['IdSeguridad']; ?></td>
-            <td><?php echo $row['StrUbicacion']; ?></td>
-            <td><?php echo $row['StrActivoFijo']; ?></td>
-            <td><?php echo $row['IntRegistroTransporte']; ?></td>
-            <td><?php echo $row['IntValorImpPlastico']; ?></td>
-            <td><?php echo $row['IntVrImpuesto2']; ?></td>
-        </tr>
-    <?php } ?>
-</table>
-<?php if (!empty($tblTerceros)) { ?>
-    <h2>Tabla TblTerceros</h2>
-    <table border="1">
-        <tr>
-            <th>StrIdTercero</th>
-            <th>StrNombre</th>
-            <th>StrTipoId</th>
-            <th>IntIdentificacion</th>
-            <th>IntDv</th>
-            <th>IntDvC</th>
-            <th>StrApellido1</th>
-            <th>StrApellido2</th>
-            <th>StrNombre1</th>
-            <th>StrNombre2</th>
-            <th>StrNombreComercial</th>
-            <th>StrDireccion</th>
-            <th>StrDireccion2</th>
-            <th>StrCodPostal</th>
-            <th>StrTelefono</th>
-            <th>StrCelular</th>
-        </tr>
-        <?php foreach ($tblTerceros as $row) { ?>
-            <tr>
-                <td><?php echo $row['StrIdTercero']; ?></td>
-                <td><?php echo $row['StrNombre']; ?></td>
-                <td><?php echo $row['StrTipoId']; ?></td>
-                <td><?php echo $row['IntIdentificacion']; ?></td>
-                <td><?php echo $row['IntDv']; ?></td>
-                <td><?php echo $row['IntDvC']; ?></td>
-                <td><?php echo $row['StrApellido1']; ?></td>
-                <td><?php echo $row['StrApellido2']; ?></td>
-                <td><?php echo $row['StrNombre1']; ?></td>
-                <td><?php echo $row['StrNombre2']; ?></td>
-                <td><?php echo $row['StrNombreComercial']; ?></td>
-                <td><?php echo $row['StrDireccion']; ?></td>
-                <td><?php echo $row['StrDireccion2']; ?></td>
-                <td><?php echo $row['StrCodPostal']; ?></td>
-                <td><?php echo $row['StrTelefono']; ?></td>
-                <td><?php echo $row['StrCelular']; ?></td>
-            </tr>
-        <?php } ?>
-    </table>
-<?php } ?>
+    <div class="container mx-auto mt-10 p-5 bg-white rounded-lg shadow-md">
+        <div class="text-center mb-5">
+            <h1 class="text-3xl font-bold">COMPROBANTE DE ENTREGA</h1>
+            <p class="text-gray-700">Automuelles Diesel SAS</p>
+            <p class="text-gray-600">NIT: 811021438-4</p>
+            <p class="text-gray-600">Dirección: Cra 61 # 45-04 Medellin (Antioquia)</p>
+            <p class="text-gray-600">Teléfono: 4483179</p>
+            <p class="text-gray-600">Email: automuellesdiesel@outlook.com</p>
+        </div>
+        <div class="mt-10 w-full">
+            <p><span class="font-semibold">Transaccion:</span> <?= htmlspecialchars($documentos[0]['IntTransaccion']) ?></p>
+            <p><span class="font-semibold">Numero de Factura:</span> <?= htmlspecialchars($documentos[0]['IntDocumento']) ?></p>
+        </div>
+        <div>
+            <!-- Detalles del tercero -->
+            <h3 class="text-xl font-bold mb-2">Detalles del Cliente</h3>
+            <p><span class="font-semibold">Nombre:</span> <?= htmlspecialchars($documentos[0]['StrNombre']) ?></p>
+            <p><span class="font-semibold">Dirección:</span> <?= htmlspecialchars($documentos[0]['StrDireccion']) ?></p>
+            <p><span class="font-semibold">Teléfono:</span> <?= htmlspecialchars($documentos[0]['StrTelefono']) ?></p>
+        </div>
+        <div class="mt-10 w-full">
+            <table class="w-full border-collapse border border-gray-300 text-center table-fixed">
+                <thead>
+                    <tr class="bg-gray-100">
+                        <th class="border border-gray-300 p-2">Fecha</th>
+                        <th class="border border-gray-300 p-2">Vencimiento</th>
+                    </tr>
+                <tbody>
+                    <tr>
+                        <td class="border border-gray-300 p-2"><?= date('d/m/Y', strtotime($documentos[0]['DatFecha'])) ?></td>
+                        <td class="border border-gray-300 p-2"><?= date('d/m/Y', strtotime($documentos[0]['DatVencimiento'])) ?></td>
+                    </tr>
+                </tbody>
+            </table>
+            <?php if (!empty($documentos)): ?>
+                <!-- Detalles de la factura -->
+                <div class="mt-10 w-full">
+                    <h3 class="text-xl font-bold mb-2">Detalles de la Factura</h3>
+                    <table class="w-full border-collapse border border-gray-300 text-center table-fixed">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="border border-gray-300 p-2">Valor</th>
+                                <th class="border border-gray-300 p-2">Subtotal</th>
+                                <th class="border border-gray-300 p-2">IVA</th>
+                                <th class="border border-gray-300 p-2">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="border border-gray-300 p-2"><?= number_format($documentos[0]['IntValor'], 2) ?></td>
+                                <td class="border border-gray-300 p-2"><?= number_format($documentos[0]['IntSubtotal'], 2) ?></td>
+                                <td class="border border-gray-300 p-2"><?= number_format($documentos[0]['IntIva'], 2) ?></td>
+                                <td class="border border-gray-300 p-2"><?= number_format($documentos[0]['IntTotal'], 2) ?></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Listado de ítems -->
+                <div class="mt-10">
+                    <h3 class="text-xl font-bold mb-2">Listado de Ítems</h3>
+                    <table class="w-full border-collapse border border-gray-300 text-center">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="border border-gray-300 p-2">Producto</th>
+                                <th class="border border-gray-300 p-2">Descripción</th>
+                                <th class="border border-gray-300 p-2">Cantidad</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($documentos as $documento): ?>
+                                <?php if (!empty($documento['StrProducto'])): ?>
+                                    <tr>
+                                        <td class="border border-gray-300 p-2"><?= htmlspecialchars($documento['StrProducto']) ?></td>
+                                        <td class="border border-gray-300 p-2"><?= htmlspecialchars($documento['StrDescripcion']) ?></td>
+                                        <td class="border border-gray-300 p-2"><?= number_format($documento['IntCantidad'], 2) ?></td>
+                                    </tr>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
+
+            <!-- Footer -->
+            <div class="mt-10 text-gray-700">
+                <p>Canales autorizados para el pago: solo en las cuentas bancarias:</p>
+                <p>AHORROS BANCOLOMBIA #46257223761</p>
+                <p>CORRIENTE BANCO DE BOGOTA #434380127</p>
+                <p>Enviar soporte al correo: auxiliar.conta@automuellesdiesel.com o al WSP 3184010693</p>
+            </div>
+
+            <!-- Sección para la firma -->
+            <div class="mt-10">
+                <h3 class="text-xl font-bold mb-2">Firma del Cliente</h3>
+                <p class="text-gray-600 mb-2">Por favor, firme en el cuadro a continuación:</p>
+                <canvas id="signaturePad" class="border border-gray-400 w-full h-48"></canvas>
+                <button type="button" class="mt-3 px-4 py-2 bg-gray-500 text-white rounded" onclick="clearSignature()">Borrar Firma</button>
+            </div>
+
+            <!-- Botón para guardar -->
+            <button id="saveSignatureBtn" class="mt-5 px-4 py-2 bg-blue-600 text-white rounded">Guardar Documento</button>
+        </div>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    let canvas = document.getElementById('signaturePad');
+    let ctx = canvas.getContext('2d');
+    let drawing = false;
+
+    // Ajustar el tamaño del canvas
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+
+    // Manejo de eventos para mouse y touch
+    canvas.addEventListener('mousedown', startDrawing);
+    canvas.addEventListener('mouseup', stopDrawing);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('touchstart', startDrawing);
+    canvas.addEventListener('touchend', stopDrawing);
+    canvas.addEventListener('touchmove', draw);
+
+    function startDrawing(event) {
+        event.preventDefault(); // Prevenir el desplazamiento de la pantalla
+        drawing = true;
+        ctx.beginPath();
+        const {
+            offsetX,
+            offsetY
+        } = getEventPosition(event);
+        ctx.moveTo(offsetX, offsetY);
+    }
+
+    function stopDrawing(event) {
+        event.preventDefault(); // Prevenir el desplazamiento de la pantalla
+        drawing = false;
+        ctx.closePath();
+    }
+
+    function draw(event) {
+        event.preventDefault(); // Prevenir el desplazamiento de la pantalla
+        if (!drawing) return;
+        const {
+            offsetX,
+            offsetY
+        } = getEventPosition(event);
+        ctx.lineTo(offsetX, offsetY);
+        ctx.stroke();
+    }
+
+    function clearSignature() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function getEventPosition(event) {
+        let rect = canvas.getBoundingClientRect();
+        let x, y;
+
+        if (event.touches) {
+            // Para dispositivos táctiles
+            x = event.touches[0].clientX - rect.left;
+            y = event.touches[0].clientY - rect.top;
+        } else {
+            // Para mouse
+            x = event.offsetX;
+            y = event.offsetY;
+        }
+
+        return {
+            offsetX: x,
+            offsetY: y
+        };
+    }
+
+    // Guardar la firma
+    document.getElementById('saveSignatureBtn').addEventListener('click', function() {
+    let signatureData = canvas.toDataURL('image/png');
+
+    // Recoger los datos que necesitas enviar
+    let transactionData = {
+        IntTransaccion: <?= json_encode($documentos[0]['IntTransaccion']) ?>,
+        IntDocumento: <?= json_encode($documentos[0]['IntDocumento']) ?>,
+        StrNombre: <?= json_encode($documentos[0]['StrNombre']) ?>,
+        StrDireccion: <?= json_encode($documentos[0]['StrDireccion']) ?>,
+        StrTelefono: <?= json_encode($documentos[0]['StrTelefono']) ?>,
+        DatFecha: <?= json_encode(date('d/m/Y', strtotime($documentos[0]['DatFecha']))) ?>,
+        DatVencimiento: <?= json_encode(date('d/m/Y', strtotime($documentos[0]['DatVencimiento']))) ?>,
+        IntValor: <?= json_encode(number_format($documentos[0]['IntValor'], 2)) ?>,
+        IntSubtotal: <?= json_encode(number_format($documentos[0]['IntSubtotal'], 2)) ?>,
+        IntIva: <?= json_encode(number_format($documentos[0]['IntIva'], 2)) ?>,
+        IntTotal: <?= json_encode(number_format($documentos[0]['IntTotal'], 2)) ?>,
+        items: <?= json_encode($documentos) ?>, // Enviar todos los documentos
+        signature: signatureData
+    };
+
+    // Enviar la firma y los datos al servidor mediante POST
+    fetch('guardar_firma.php', {
+            method: 'POST',
+            body: JSON.stringify(transactionData),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert('El documento y la firma se han guardado correctamente. Archivo: ' + data.file);
+            } else {
+                alert('Hubo un error al guardar el documento: ' + data.message);
+            }
+        })
+        .catch(error => {
+            alert('Error en la conexión: ' + error);
+        });
+});
+</script>
+
 </html>
