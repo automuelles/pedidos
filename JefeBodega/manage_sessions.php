@@ -49,7 +49,7 @@ $sessions = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
 
     <!-- Tabla -->
-    <div class="w-full max-w-4xl p-4 bg-white shadow-lg rounded-lg">
+    <div class="w-full max-w-4xl p-4 bg-white shadow-lg rounded-lg pb-16">
         <table class="w-full table-auto border-collapse">
             <thead class="bg-gray-100">
                 <tr>
