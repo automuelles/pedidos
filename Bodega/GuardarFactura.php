@@ -1,6 +1,4 @@
 <?php
-// Configurar la zona horaria de Colombia
-date_default_timezone_set('America/Bogota');
 // Verificar si el usuario está conectado y tiene el rol adecuado
 if (!isset($_SESSION['user_name']) || 
     (!in_array($_SESSION['user_role'], ['jefeBodega', 'bodega', 'JefeCedi']))) {

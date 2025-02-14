@@ -15,39 +15,42 @@ $userId = $_SESSION['user_id'];
 
 // Función para verificar y asignar servicios
 function asignarServicios($pdo, $userId, $usuarioConectado, $rolUsuario) {
-    // Verificar si el usuario tiene una factura en estado "gestionado"
+    // Verificar si el usuario ya tiene una factura en estado "gestionado"
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM factura_gestionada fg
                            JOIN factura f ON f.id = fg.factura_id
                            WHERE fg.user_id = :user_id AND f.estado = 'gestionado'");
     $stmt->execute(['user_id' => $userId]);
     $cantidadGestionado = $stmt->fetchColumn();
 
-    // Si no tiene ninguna factura en estado "gestionado", asignar una nueva
-    if ($cantidadGestionado == 0) {
-        $factura = obtenerFacturaPendiente($pdo, $rolUsuario);
-        if ($factura) {
+    // Si el usuario no tiene facturas en estado "gestionado"
+    if ($cantidadGestionado < 2) {
+        // Obtener facturas pendientes para asignar hasta completar 2
+        $facturas = obtenerFacturasPendientes($pdo, $rolUsuario, 2 - $cantidadGestionado);
+        foreach ($facturas as $factura) {
             asignarFactura($pdo, $factura['id'], $userId, $usuarioConectado);
-        } else {
+        }
+        if (empty($facturas)) {
             $_SESSION['mensaje_servicio'] = "No hay facturas pendientes disponibles.";
         }
     } else {
-        $_SESSION['mensaje_servicio'] = "Debe finalizar la factura en 'gestionado' antes de recibir una nueva.";
+        $_SESSION['mensaje_servicio'] = "Debe finalizar las facturas en 'gestionado' antes de recibir nuevas.";
     }
 }
 
-// Función para obtener una factura pendiente según el rol
-function obtenerFacturaPendiente($pdo, $rolUsuario) {
+// Función para obtener facturas pendientes según el rol
+function obtenerFacturasPendientes($pdo, $rolUsuario, $limite) {
     if ($rolUsuario === 'JefeCedi') {
-        $stmt = $pdo->prepare("SELECT id FROM factura WHERE estado = 'pendiente' AND IntTransaccion IN (88, 42) LIMIT 2");
+        $stmt = $pdo->prepare("SELECT id FROM factura WHERE estado = 'pendiente' AND IntTransaccion IN (88, 42, 90, 40) LIMIT :limite");
     } elseif ($rolUsuario === 'jefeBodega') {
-        $stmt = $pdo->prepare("SELECT id FROM factura WHERE estado = 'pendiente' AND IntTransaccion IN (90, 40) LIMIT 2");
+        $stmt = $pdo->prepare("SELECT id FROM factura WHERE estado = 'pendiente' AND IntTransaccion IN (90, 40) LIMIT :limite");
     } elseif ($rolUsuario === 'bodega') {
-        $stmt = $pdo->prepare("SELECT id FROM factura WHERE estado = 'pendiente' AND IntTransaccion IN (90, 40, 88, 42) LIMIT 2");
+        $stmt = $pdo->prepare("SELECT id FROM factura WHERE estado = 'pendiente' AND IntTransaccion IN (90, 40, 88, 42) LIMIT :limite");
     } else {
-        $stmt = $pdo->prepare("SELECT id FROM factura WHERE estado = 'pendiente' LIMIT 2");
+        $stmt = $pdo->prepare("SELECT id FROM factura WHERE estado = 'pendiente' LIMIT :limite");
     }
+    $stmt->bindParam(':limite', $limite, PDO::PARAM_INT);
     $stmt->execute();
-    return $stmt->fetch();
+    return $stmt->fetchAll();
 }
 
 // Función para asignar una factura a un usuario
@@ -93,7 +96,6 @@ $stmt = $pdo->prepare("
         AND f.estado = 'gestionado'
 ");
 $stmt->execute(['userName' => $usuarioConectado]);
-
 
 // Obtener los resultados
 $facturas = $stmt->fetchAll();
