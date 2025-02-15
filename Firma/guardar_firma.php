@@ -73,9 +73,17 @@ $pdf->Ln(10);
 $pdf->SetFont('Arial', 'B', 12);
 $pdf->Cell(0, 10, 'Listado de Ítems', 0, 1);
 $pdf->SetFont('Arial', '', 12);
+$pdf->Cell(50, 10, 'Producto', 1);
+$pdf->Cell(90, 10, 'Descripción', 1);
+$pdf->Cell(50, 10, 'Cantidad', 1);
+$pdf->Ln(10);
+
 foreach ($data['items'] as $item) {
     if (!empty($item['StrProducto'])) {
-        $pdf->Cell(0, 10, 'Producto: ' . $item['StrProducto'] . ', Descripción: ' . $item['StrDescripcion'] . ', Cantidad: ' . number_format($item['IntCantidad'], 2), 1, 1);
+        $pdf->Cell(50, 10, $item['StrProducto'], 1);
+        $pdf->Cell(90, 10, $item['StrDescripcion'], 1);
+        $pdf->Cell(50, 10, number_format($item['IntCantidad'], 2), 1);
+        $pdf->Ln(10);
     }
 }
 $pdf->Ln(10);
