@@ -55,6 +55,26 @@ try {
         <?php if ($facturas): ?>
             <div class="space-y-4">
                 <?php foreach ($facturas as $factura): ?>
+                    <?php
+                    // Tomamos los valores de IntTransaccion e IntDocumento de la factura
+                    $intTransaccion = $factura['IntTransaccion'];
+                    $intDocumento = $factura['IntDocumento'];
+
+                    // Consulta para obtener el StrNombre desde SQL Server
+                    $sql = "
+                SELECT T.StrNombre
+                FROM [AutomuellesDiesel1].[dbo].[TblDocumentos] D
+                JOIN [AutomuellesDiesel1].[dbo].[TblTerceros] T ON D.StrTercero = T.StrIdTercero
+                WHERE D.IntTransaccion = :IntTransaccion AND D.IntDocumento = :IntDocumento
+            ";
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bindParam(':IntTransaccion', $intTransaccion, PDO::PARAM_INT);
+                    $stmt->bindParam(':IntDocumento', $intDocumento, PDO::PARAM_INT);
+                    $stmt->execute();
+
+                    $documento = $stmt->fetch(PDO::FETCH_ASSOC);
+                    $strNombre = $documento['StrNombre'] ?? 'N/A';  // Si no se encuentra, mostramos N/A
+                    ?>
                     <div class="flex items-center justify-between p-4 bg-white rounded-lg shadow-md border border-gray-200">
                         <div>
                             <p class="text-lg font-medium text-gray-800">Transacción: <?php echo htmlspecialchars($factura['IntTransaccion']); ?></p>
@@ -63,6 +83,9 @@ try {
                             <p class="text-xs text-gray-500">Fecha: <?php echo htmlspecialchars($factura['fecha']); ?></p>
                             <p class="text-xs text-gray-500">Datos: <?php echo htmlspecialchars($factura['StrReferencia1']); ?></p>
                             <p class="text-xs text-gray-500">Forma de pago: <?php echo htmlspecialchars($factura['StrReferencia3']); ?></p>
+                            <p class="text-xs text-gray-500">Novedad: <?php echo htmlspecialchars($factura['novedad'] ?? 'N/A'); ?></p>
+                            <p class="text-xs text-gray-500">Descripción: <?php echo htmlspecialchars($factura['descripcion'] ?? 'N/A'); ?></p>
+                            <p class="text-xs text-gray-500">StrNombre: <?php echo htmlspecialchars($strNombre); ?></p>
                         </div>
                         <div>
                             <form action="EstadoRevisionFinal.php" method="GET">
