@@ -2,10 +2,12 @@
 include('../php/db.php');
 include('../php/login.php');
 include('../php/validate_session.php');
+
 // Verificar si el usuario es admin
 if ($_SESSION['user_role'] !== 'despachos') {
     die("Acceso denegado.");
 }
+
 try {
     // Consulta para obtener las facturas en estado "RevisionFinal" junto con novedades
     $sql = "SELECT f.*, n.novedad, n.descripcion 
@@ -21,7 +23,26 @@ try {
 } catch (PDOException $e) {
     echo "Error en la consulta: " . $e->getMessage();
 }
+
+// Conexión a SQL Server
+$serverName = "SERVAUTOMUELLES\SQLEXPRESS";
+$connectionOptions = array(
+    "Database" => "AutomuellesDiesel1",
+    "Uid" => "AutomuellesDiesel",
+    "PWD" => "Complex@2024Pass!"
+);
+
+// Establecer conexión con PDO
+try {
+    $conn = new PDO("sqlsrv:server=$serverName;Database=AutomuellesDiesel1", $connectionOptions["Uid"], $connectionOptions["PWD"]);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("Error de conexión: " . $e->getMessage());
+}
+
+// Mostrar facturas con StrNombre desde la base de datos SQL Server
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -61,7 +82,27 @@ try {
     <?php if ($facturas): ?>
     <div class="space-y-4">
         <?php foreach ($facturas as $factura): ?>
-            <div class="flex items-center justify-between p-4 bg-white rounded-lg shadow-md border border-gray-200">
+            <?php
+            // Tomamos los valores de IntTransaccion e IntDocumento de la factura
+            $intTransaccion = $factura['IntTransaccion'];
+            $intDocumento = $factura['IntDocumento'];
+
+            // Consulta para obtener el StrNombre desde SQL Server
+            $sql = "
+                SELECT T.StrNombre
+                FROM [AutomuellesDiesel1].[dbo].[TblDocumentos] D
+                JOIN [AutomuellesDiesel1].[dbo].[TblTerceros] T ON D.StrTercero = T.StrIdTercero
+                WHERE D.IntTransaccion = :IntTransaccion AND D.IntDocumento = :IntDocumento
+            ";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':IntTransaccion', $intTransaccion, PDO::PARAM_INT);
+            $stmt->bindParam(':IntDocumento', $intDocumento, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $documento = $stmt->fetch(PDO::FETCH_ASSOC);
+            $strNombre = $documento['StrNombre'] ?? 'N/A';  // Si no se encuentra, mostramos N/A
+            ?>
+             <div class="flex items-center justify-between p-4 bg-white rounded-lg shadow-md border border-gray-200">
                 <div>
                     <p class="text-lg font-medium text-gray-800">Transacción: <?php echo htmlspecialchars($factura['IntTransaccion']); ?></p>
                     <p class="text-sm text-gray-600">Documento: <?php echo htmlspecialchars($factura['IntDocumento']); ?></p>
@@ -71,7 +112,9 @@ try {
                     <p class="text-xs text-gray-500">Forma de pago: <?php echo htmlspecialchars($factura['StrReferencia3']); ?></p>
                     <p class="text-xs text-gray-500">Novedad: <?php echo htmlspecialchars($factura['novedad'] ?? 'N/A'); ?></p>
                     <p class="text-xs text-gray-500">Descripción: <?php echo htmlspecialchars($factura['descripcion'] ?? 'N/A'); ?></p>
+                    <p class="text-xs text-gray-500">StrNombre: <?php echo htmlspecialchars($strNombre); ?></p>
                 </div>
+            
                 <div>
                     <form action="RevisarMostrador.php" method="GET">
                         <input type="hidden" name="IntTransaccion" value="<?php echo $factura['IntTransaccion']; ?>">
