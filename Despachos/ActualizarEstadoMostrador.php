@@ -15,7 +15,7 @@ if ($transaccion > 0 && $documento > 0) {
         $user_name = isset($_SESSION['user_name']) ? $_SESSION['user_name'] : 'Desconocido';
 
         // 1. Actualizar el estado de la factura en la tabla 'factura'
-        $sql_factura = "UPDATE factura SET estado = 'Despachos' WHERE IntTransaccion = :transaccion AND IntDocumento = :documento";
+        $sql_factura = "UPDATE factura SET estado = 'Entrega_mostrador' WHERE IntTransaccion = :transaccion AND IntDocumento = :documento";
         $stmt_factura = $pdo->prepare($sql_factura);
         $stmt_factura->bindParam(':transaccion', $transaccion, PDO::PARAM_INT);
         $stmt_factura->bindParam(':documento', $documento, PDO::PARAM_INT);
@@ -32,7 +32,7 @@ if ($transaccion > 0 && $documento > 0) {
         $row = $stmt_gestionada->fetch(PDO::FETCH_ASSOC);
         if ($row) {
             $sql_estado = "INSERT INTO estado (factura_id, user_id, estado, fecha, user_name) 
-                           VALUES (:factura_id, :user_id, 'Vendedor', NOW(), :user_name)";
+                           VALUES (:factura_id, :user_id, 'Entrega_mostrador', NOW(), :user_name)";
             $stmt_estado = $pdo->prepare($sql_estado);
             $stmt_estado->bindParam(':factura_id', $row['factura_id'], PDO::PARAM_INT);
             $stmt_estado->bindParam(':user_id', $row['user_id'], PDO::PARAM_INT);
@@ -42,7 +42,7 @@ if ($transaccion > 0 && $documento > 0) {
 
         // 4. Actualizar el estado en 'factura_gestionada' y el usuario que hizo el cambio
         $sql_update_gestionada = "UPDATE factura_gestionada 
-                                  SET estado = 'Despachos', user_name = :user_name 
+                                  SET estado = 'Entrega_mostrador', user_name = :user_name 
                                   WHERE factura_id IN (SELECT id FROM factura WHERE IntTransaccion = :transaccion AND IntDocumento = :documento)";
         $stmt_update_gestionada = $pdo->prepare($sql_update_gestionada);
         $stmt_update_gestionada->bindParam(':transaccion', $transaccion, PDO::PARAM_INT);
@@ -55,7 +55,7 @@ if ($transaccion > 0 && $documento > 0) {
 
         // Mostrar alerta y redirigir a 'RevisionFinal.php'
         echo "<script>
-       alert('Estado actualizado a \"Despachos\" en factura y factura gestionada correctamente.');
+       alert('Estado actualizado a \"Entrega_mostrador\" en factura y factura gestionada correctamente.');
        window.location.href = 'EntregaMostrador.php';
      </script>";
     } catch (Exception $e) {

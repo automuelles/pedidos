@@ -129,9 +129,9 @@ if ($transaccion > 0 && $documento > 0) {
                     echo "<p class='text-lg text-gray-700'><strong>Descripcion:</strong> " . htmlspecialchars($factura_detail['StrDescripcion']) . "</p>";
                     echo "<p class='text-lg text-gray-700'><strong>Ubicación:</strong> " . htmlspecialchars($factura_detail['StrParam1']) . "</p>";
                     echo "<p class='text-lg text-gray-700'><strong>Vendedor:</strong> " . htmlspecialchars($factura_detail['StrUsuarioGra']) . "</p>";
-                    echo "<p class='text-lg text-gray-700'><strong>Observaciones:</strong> " . htmlspecialchars($factura_detail['StrObservaciones']) . "</p>";
                     echo "<hr class='my-4' />";
                 }
+                echo "<p class='text-lg text-gray-700'><strong>Observaciones:</strong> " . htmlspecialchars($factura_detail['StrObservaciones']) . "</p>";
             } else {
                 echo "<p class='text-red-500'>No se encontraron detalles para la factura solicitada.</p>";
             }
@@ -147,7 +147,7 @@ if ($transaccion > 0 && $documento > 0) {
             <button type="button"
                 class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
                 onclick="window.open('ReporteFinal.php?IntTransaccion=<?php echo $intTransaccion; ?>&IntDocumento=<?php echo $intDocumento; ?>', '_blank')">
-                Reportar Pago
+                Reportar Novedad
             </button>
         </div>
     </div>
@@ -182,7 +182,7 @@ if ($transaccion > 0 && $documento > 0) {
             const IntDocumento = urlParams.get('IntDocumento');
 
             // Redirigir a un archivo PHP que maneje la actualización y copia de datos
-            window.location.href = 'EntregaMostrador.php?IntTransaccion=' + IntTransaccion + '&IntDocumento=' + IntDocumento;
+            window.location.href = 'ActualizarEstadoMostrador.php?IntTransaccion=' + IntTransaccion + '&IntDocumento=' + IntDocumento;
         }
     </script>
 </body>
