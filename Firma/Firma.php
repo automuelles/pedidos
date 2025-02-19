@@ -223,29 +223,23 @@ if (isset($_POST['IntTransaccion']) && isset($_POST['IntDocumento'])) {
     canvas.addEventListener('touchmove', draw);
 
     function startDrawing(event) {
-        event.preventDefault(); // Prevenir el desplazamiento de la pantalla
+        event.preventDefault();
         drawing = true;
         ctx.beginPath();
-        const {
-            offsetX,
-            offsetY
-        } = getEventPosition(event);
+        const { offsetX, offsetY } = getEventPosition(event);
         ctx.moveTo(offsetX, offsetY);
     }
 
     function stopDrawing(event) {
-        event.preventDefault(); // Prevenir el desplazamiento de la pantalla
+        event.preventDefault();
         drawing = false;
         ctx.closePath();
     }
 
     function draw(event) {
-        event.preventDefault(); // Prevenir el desplazamiento de la pantalla
+        event.preventDefault();
         if (!drawing) return;
-        const {
-            offsetX,
-            offsetY
-        } = getEventPosition(event);
+        const { offsetX, offsetY } = getEventPosition(event);
         ctx.lineTo(offsetX, offsetY);
         ctx.stroke();
     }
@@ -259,19 +253,14 @@ if (isset($_POST['IntTransaccion']) && isset($_POST['IntDocumento'])) {
         let x, y;
 
         if (event.touches) {
-            // Para dispositivos táctiles
             x = event.touches[0].clientX - rect.left;
             y = event.touches[0].clientY - rect.top;
         } else {
-            // Para mouse
             x = event.offsetX;
             y = event.offsetY;
         }
 
-        return {
-            offsetX: x,
-            offsetY: y
-        };
+        return { offsetX: x, offsetY: y };
     }
 
     // Guardar la firma
@@ -287,10 +276,10 @@ if (isset($_POST['IntTransaccion']) && isset($_POST['IntDocumento'])) {
             StrTelefono: <?= json_encode($documentos[0]['StrTelefono']) ?>,
             DatFecha: <?= json_encode(date('d/m/Y', strtotime($documentos[0]['DatFecha']))) ?>,
             DatVencimiento: <?= json_encode(date('d/m/Y', strtotime($documentos[0]['DatVencimiento']))) ?>,
-            IntValor: <?= json_encode(number_format($documentos[0]['IntValor'], 2)) ?>,
-            IntSubtotal: <?= json_encode(number_format($documentos[0]['IntSubtotal'], 2)) ?>,
-            IntIva: <?= json_encode(number_format($documentos[0]['IntIva'], 2)) ?>,
-            IntTotal: <?= json_encode(number_format($documentos[0]['IntTotal'], 2)) ?>,
+            IntValor: <?= json_encode($documentos[0]['IntValor']) ?>,
+            IntSubtotal: <?= json_encode($documentos[0]['IntSubtotal']) ?>,
+            IntIva: <?= json_encode($documentos[0]['IntIva']) ?>,
+            IntTotal: <?= json_encode($documentos[0]['IntTotal']) ?>,
             items: <?= !empty($documentos) ? json_encode($documentos) : '[]' ?>,
             signature: signatureData
         };

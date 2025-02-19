@@ -96,6 +96,15 @@ include('GuardarFactura.php');
                 <!-- Etiqueta como enlace -->
                 <a href="PedidosGestionados.php" class="text-sm text-gray-700 hover:underline">Historial Domicilios</a>
             </div>
+            <div class="neumorphism p-4 text-center">
+                <!-- Icono de Bodega -->
+                <div
+                    class="neumorphism-icon w-10 h-10 bg-purple-400 rounded-full mx-auto mb-2 flex items-center justify-center">
+                    <i class="fa-solid fa-car text-white"></i>
+                </div>
+                <!-- Etiqueta como enlace -->
+                <a href="CrearFactura.php" class="text-sm text-gray-700 hover:underline">Crear Factura</a>
+            </div>
         </div>
     </div>
 
