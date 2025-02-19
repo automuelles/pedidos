@@ -31,8 +31,8 @@ if (isset($_POST['IntTransaccion']) && isset($_POST['IntDocumento'])) {
     SELECT 
         D.[IntEmpresa], D.[IntTransaccion], D.[IntDocumento], D.[DatFecha], D.[DatVencimiento], 
         D.[StrTercero], D.[IntValor], D.[IntSubtotal], D.[IntIva], D.[IntTotal], 
-        T.[StrNombre], T.[StrDireccion], T.[StrTelefono],
-        dp.[StrProducto], p.[StrDescripcion], dp.[IntCantidad]
+        T.[StrNombre], T.[StrDireccion], T.[StrTelefono], T.[StrIdTercero],
+        dp.[StrProducto], p.[StrDescripcion], dp.[IntCantidad], dp.[IntValorUnitario]
     FROM [AutomuellesDiesel1].[dbo].[TblDocumentos] D
     JOIN [AutomuellesDiesel1].[dbo].[TblTerceros] T
         ON D.StrTercero = T.StrIdTercero
@@ -111,6 +111,7 @@ if (isset($_POST['IntTransaccion']) && isset($_POST['IntDocumento'])) {
                 <div>
                     <!-- Detalles del tercero -->
                     <h3 class="text-xl font-bold mb-2">Detalles del Cliente</h3>
+                    <p><span class="font-semibold">Nit/Ced:</span> <?= htmlspecialchars($documentos[0]['StrIdTercero'], ENT_QUOTES, 'UTF-8') ?></p>
                     <p><span class="font-semibold">Nombre:</span> <?= htmlspecialchars($documentos[0]['StrNombre'], ENT_QUOTES, 'UTF-8') ?></p>
                     <p><span class="font-semibold">Dirección:</span> <?= htmlspecialchars($documentos[0]['StrDireccion'], ENT_QUOTES, 'UTF-8') ?></p>
                     <p><span class="font-semibold">Teléfono:</span> <?= htmlspecialchars($documentos[0]['StrTelefono'], ENT_QUOTES, 'UTF-8') ?></p>
@@ -137,7 +138,6 @@ if (isset($_POST['IntTransaccion']) && isset($_POST['IntDocumento'])) {
                             <table class="w-full border-collapse border border-gray-300 text-center table-fixed">
                                 <thead>
                                     <tr class="bg-gray-100">
-                                        <th class="border border-gray-300 p-2">Valor</th>
                                         <th class="border border-gray-300 p-2">Subtotal</th>
                                         <th class="border border-gray-300 p-2">IVA</th>
                                         <th class="border border-gray-300 p-2">Total</th>
@@ -145,7 +145,7 @@ if (isset($_POST['IntTransaccion']) && isset($_POST['IntDocumento'])) {
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td class="border border-gray-300 p-2"><?= number_format($documentos[0]['IntValor'], 2) ?></td>
+
                                         <td class="border border-gray-300 p-2"><?= number_format($documentos[0]['IntSubtotal'], 2) ?></td>
                                         <td class="border border-gray-300 p-2"><?= number_format($documentos[0]['IntIva'], 2) ?></td>
                                         <td class="border border-gray-300 p-2"><?= number_format($documentos[0]['IntTotal'], 2) ?></td>
@@ -163,6 +163,7 @@ if (isset($_POST['IntTransaccion']) && isset($_POST['IntDocumento'])) {
                                         <th class="border border-gray-300 p-2">Producto</th>
                                         <th class="border border-gray-300 p-2">Descripción</th>
                                         <th class="border border-gray-300 p-2">Cantidad</th>
+                                        <th class="border border-gray-300 p-2">Valor Unitario</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -172,6 +173,7 @@ if (isset($_POST['IntTransaccion']) && isset($_POST['IntDocumento'])) {
                                                 <td class="border border-gray-300 p-2"><?= htmlspecialchars($documento['StrProducto']) ?></td>
                                                 <td class="border border-gray-300 p-2"><?= htmlspecialchars($documento['StrDescripcion']) ?></td>
                                                 <td class="border border-gray-300 p-2"><?= number_format($documento['IntCantidad'], 2) ?></td>
+                                                <td class="border border-gray-300 p-2"><?= number_format($documento['IntValorUnitario'], 2) ?></td>
                                             </tr>
                                         <?php endif; ?>
                                     <?php endforeach; ?>
@@ -226,7 +228,10 @@ if (isset($_POST['IntTransaccion']) && isset($_POST['IntDocumento'])) {
         event.preventDefault();
         drawing = true;
         ctx.beginPath();
-        const { offsetX, offsetY } = getEventPosition(event);
+        const {
+            offsetX,
+            offsetY
+        } = getEventPosition(event);
         ctx.moveTo(offsetX, offsetY);
     }
 
@@ -239,7 +244,10 @@ if (isset($_POST['IntTransaccion']) && isset($_POST['IntDocumento'])) {
     function draw(event) {
         event.preventDefault();
         if (!drawing) return;
-        const { offsetX, offsetY } = getEventPosition(event);
+        const {
+            offsetX,
+            offsetY
+        } = getEventPosition(event);
         ctx.lineTo(offsetX, offsetY);
         ctx.stroke();
     }
@@ -260,7 +268,10 @@ if (isset($_POST['IntTransaccion']) && isset($_POST['IntDocumento'])) {
             y = event.offsetY;
         }
 
-        return { offsetX: x, offsetY: y };
+        return {
+            offsetX: x,
+            offsetY: y
+        };
     }
 
     // Guardar la firma
@@ -271,6 +282,7 @@ if (isset($_POST['IntTransaccion']) && isset($_POST['IntDocumento'])) {
         let transactionData = {
             IntTransaccion: <?= json_encode($documentos[0]['IntTransaccion']) ?>,
             IntDocumento: <?= json_encode($documentos[0]['IntDocumento']) ?>,
+            StrIdTercero: <?= json_encode($documentos[0]['StrIdTercero']) ?>,
             StrNombre: <?= json_encode($documentos[0]['StrNombre']) ?>,
             StrDireccion: <?= json_encode($documentos[0]['StrDireccion']) ?>,
             StrTelefono: <?= json_encode($documentos[0]['StrTelefono']) ?>,

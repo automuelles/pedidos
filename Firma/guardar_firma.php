@@ -37,14 +37,27 @@ $pdf = new PDF();
 $pdf->AddPage('L'); // 'L' para horizontal
 $pdf->SetMargins(10, 10, 10);
 
-// Información de la empresa
+// Información de la empresa con logo
 $pdf->SetTextColor(0, 0, 0);
-$pdf->SetFont('Arial', '', 12);
+$pdf->SetFont('Arial', 'B', 12);
+
+// Agregar la imagen del logo en la parte izquierda (ajustar el tamaño y la posición según sea necesario)
+$logoPath = 'logo.png'; // Asegúrate de que la ruta sea correcta
+$pdf->Image($logoPath, 10, 10, 50); // 10 de margen izquierdo, 10 de margen superior, 30 de ancho
+
+// Mover la posición a la derecha del logo para la información de la empresa
+$pdf->SetXY(45, 10); // Ajustar la posición para que el texto quede alineado correctamente con el logo
+
+// Información de la empresa
 $pdf->Cell(0, 7, 'Automuelles Diesel SAS', 0, 1, 'C');
+$pdf->SetX(45); // Asegurar que la siguiente línea comience en la misma posición
 $pdf->Cell(0, 7, 'NIT: 811021438-4', 0, 1, 'C');
+$pdf->SetX(45);
 $pdf->Cell(0, 7, 'Direccion: Cra 61 # 45-04 Medellín (Antioquia)', 0, 1, 'C');
+$pdf->SetX(45);
 $pdf->Cell(0, 7, 'Telefono: 4483179', 0, 1, 'C');
-$pdf->Cell(0, 7, 'Email: automuellesdiesel@outlook.com', 0, 1, 'C');
+$pdf->SetX(45);
+$pdf->Cell(0, 7, 'Email: Facturas.compras@automuellesdiesel.com', 0, 1, 'C');
 $pdf->Ln(10);
 
 // Detalles de la transacción
@@ -61,6 +74,8 @@ $pdf->Ln(5);
 $pdf->SetFont('Arial', 'B', 12);
 $pdf->Cell(0, 10, 'Detalles del Cliente', 0, 1, 'L');
 $pdf->SetFont('Arial', '', 12);
+$pdf->Cell(50, 7, 'Nit/Ced:', 0);
+$pdf->Cell(0, 7, $data['StrIdTercero'], 0, 1);
 $pdf->Cell(50, 7, 'Nombre:', 0);
 $pdf->Cell(0, 7, $data['StrNombre'], 0, 1);
 $pdf->Cell(50, 7, 'Direccion:', 0);
@@ -76,27 +91,38 @@ $pdf->Cell(0, 10, 'Detalles de Productos', 1,  1, 'C', true);
 $pdf->SetFont('Arial', 'B', 12);
 
 // Definir los anchos de las columnas
-$widthProducto = 50; // Ancho para Producto
-$widthDescripcion = 206; // Ancho para Descripción
-$widthCantidad = 20; // Ancho para Cantidad
+$widthProducto = 50;       // Ancho para Producto
+$widthDescripcion = 152;   // Ancho para Descripción (ajustado)
+$widthCantidad = 36;       // Ancho para Cantidad
+$widthValorUnitario = 36;  // Ancho para Valor Unitario
 
 // Encabezados de las columnas
 $pdf->Cell($widthProducto, 7, 'Producto', 1);
 $pdf->Cell($widthDescripcion, 7, 'Descripcion', 1);
 $pdf->Cell($widthCantidad, 7, 'Cantidad', 1);
+$pdf->Cell($widthValorUnitario, 7, 'Valor Unitario', 1);
 $pdf->Ln(); // Salto de línea después del encabezado
+
+$maxDescripcionLength = 60; // Para truncar la descripción si es muy larga
 
 // Cambiar a fuente normal para los ítems
 $pdf->SetFont('Arial', '', 12);
 
-// Agregar los ítems al PDF
 foreach ($data['items'] as $item) {
-    $pdf->Cell($widthProducto, 7, htmlspecialchars($item['StrProducto']), 1);
-    $pdf->Cell($widthDescripcion, 7, htmlspecialchars($item['StrDescripcion']), 1);
-    $pdf->Cell($widthCantidad, 7, number_format($item['IntCantidad'], 2), 1);
-    $pdf->Ln();
+    $pdf->Cell($widthProducto, 7, htmlspecialchars($item['StrProducto']), 1, 0, 'L');
+    
+    // Truncar la descripción si es muy larga
+    $descripcion = htmlspecialchars($item['StrDescripcion']);
+    if (strlen($descripcion) > $maxDescripcionLength) {
+        $descripcion = substr($descripcion, 0, $maxDescripcionLength) . '...'; // Agregar puntos suspensivos
+    }
+
+    $pdf->Cell($widthDescripcion, 7, $descripcion, 1, 0, 'L');
+    $pdf->Cell($widthCantidad, 7, number_format($item['IntCantidad'], 2), 1, 0, 'R'); 
+    $pdf->Cell($widthValorUnitario, 7, number_format($item['IntValorUnitario'], 2), 1, 1, 'R'); // Agregar celda de Valor Unitario y salto de línea
 }
 $pdf->Ln(10);
+
 // Detalles de la factura
 $pdf->SetFillColor(200, 200, 200);
 $pdf->SetFont('Arial', 'B', 12); // Asegúrate de que la fuente esté en negrita
