@@ -13,7 +13,7 @@ $user_name = $_SESSION['user_name'];
 // Query to fetch 'despachos' state invoices, including fields from factura table
 $sql = "SELECT fg.*, 
                f.IntTransaccion, f.IntDocumento, f.StrReferencia1, f.StrReferencia3, 
-               n.novedad, n.descripcion
+               n.novedad, n.descripcion 
         FROM factura_gestionada fg
         JOIN factura f ON fg.factura_id = f.id
         LEFT JOIN Novedades_Despachos n 
@@ -62,9 +62,29 @@ $facturas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <div class="w-full max-w-4xl mx-auto pb-16">
     <?php if ($facturas): ?>
-        <div class="space-y-4">
+    <div class="space-y-4">
         <?php foreach ($facturas as $factura): ?>
-            <div class="flex items-center justify-between p-4 bg-white rounded-lg shadow-md border border-gray-200">
+            <?php
+            // Tomamos los valores de IntTransaccion e IntDocumento de la factura
+            $intTransaccion = $factura['IntTransaccion'];
+            $intDocumento = $factura['IntDocumento'];
+
+            // Consulta para obtener el StrNombre desde SQL Server
+            $sql = "
+                SELECT T.StrNombre
+                FROM [AutomuellesDiesel1].[dbo].[TblDocumentos] D
+                JOIN [AutomuellesDiesel1].[dbo].[TblTerceros] T ON D.StrTercero = T.StrIdTercero
+                WHERE D.IntTransaccion = :IntTransaccion AND D.IntDocumento = :IntDocumento
+            ";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':IntTransaccion', $intTransaccion, PDO::PARAM_INT);
+            $stmt->bindParam(':IntDocumento', $intDocumento, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $documento = $stmt->fetch(PDO::FETCH_ASSOC);
+            $strNombre = $documento['StrNombre'] ?? 'N/A';  // Si no se encuentra, mostramos N/A
+            ?>
+             <div class="flex items-center justify-between p-4 bg-white rounded-lg shadow-md border border-gray-200">
                 <div>
                     <p class="text-lg font-medium text-gray-800">Transacción: <?php echo htmlspecialchars($factura['IntTransaccion']); ?></p>
                     <p class="text-sm text-gray-600">Documento: <?php echo htmlspecialchars($factura['IntDocumento']); ?></p>
@@ -74,6 +94,7 @@ $facturas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <p class="text-xs text-gray-500">Forma de pago: <?php echo htmlspecialchars($factura['StrReferencia3']); ?></p>
                     <p class="text-xs text-gray-500">Novedad: <?php echo htmlspecialchars($factura['novedad'] ?? 'N/A'); ?></p>
                     <p class="text-xs text-gray-500">Descripción: <?php echo htmlspecialchars($factura['descripcion'] ?? 'N/A'); ?></p>
+                    <p class="text-xs text-gray-500">StrNombre: <?php echo htmlspecialchars($strNombre); ?></p>
                 </div>
                 <div>
                     <form action="EstadoRevisionFinal.php" method="GET">
