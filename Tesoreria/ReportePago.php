@@ -53,8 +53,9 @@ $sqlMySQL = "SELECT
         Reporte_pago rp
     ON 
         f.IntTransaccion = rp.inttransaccion 
-        AND f.IntDocumento = rp.intdocumento";
-
+        AND f.IntDocumento = rp.intdocumento
+    WHERE 
+        rp.estado = 'sin gestion'";
 $conditions = [];
 if ($estadoSeleccionado) {
     $conditions[] = "LOWER(rp.estado) = :estado";
@@ -113,34 +114,10 @@ $stmtMySQL->execute($params);
         <h1 class="text-black-600 text-2xl font-bold">Reportes de pago</h1>
     </div>
 
-    <!-- Filtro de estado y tipo de pago -->
-    <div class="neumorphism w-full max-w-xs p-6 mb-6 mx-auto">
-        <form method="GET" action="">
-            <label for="estado" class="block mb-2 text-gray-700">Filtrar por estado:</label>
-            <select name="estado" id="estado" class="border border-gray-300 px-2 py-1 w-full">
-                <option value="">Todos</option>
-                <?php foreach ($estados as $estado): ?>
-                    <option value="<?php echo htmlspecialchars($estado); ?>" <?php echo ($estadoSeleccionado == $estado) ? 'selected' : ''; ?>>
-                        <?php echo htmlspecialchars($estado); ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-
-            <label for="tipo_pago" class="block mb-2 text-gray-700 mt-4">Filtrar por tipo de pago:</label>
-            <select name="tipo_pago" id="tipo_pago" class="border border-gray-300 px-2 py-1 w-full">
-                <option value="">Todos</option>
-                <option value="total" <?php echo ($tipoPagoSeleccionado == 'total') ? 'selected' : ''; ?>>Pago Total</option>
-                <option value="parcial" <?php echo ($tipoPagoSeleccionado == 'parcial') ? 'selected' : ''; ?>>Pago Parcial</option>
-            </select>
-
-            <button type="submit" class="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Filtrar</button>
-        </form>
-    </div>
-
+    <!-- Tabla de datos -->
     <!-- Tabla de datos -->
     <div class="neumorphism w-full max-w-4xl p-6 mb-6 mx-auto">
         <?php
-        // Mostrar los resultados en una tabla HTML
         echo "<table class='min-w-full table-auto border-collapse border border-gray-300 mx-auto'>";
         echo "<thead>";
         echo "<tr class='bg-gray-100 text-gray-700 text-left'>";
@@ -151,59 +128,40 @@ $stmtMySQL->execute($params);
         echo "<th class='border border-gray-300 px-4 py-2'>Descripción</th>";
         echo "<th class='border border-gray-300 px-4 py-2'>Total</th>";
         echo "<th class='border border-gray-300 px-4 py-2'>Usuario</th>";
-        echo "<th class='border border-gray-300 px-4 py-2'>Pago</th>";  // Columna para el campo de pago
-        echo "<th class='border border-gray-300 px-4 py-2'>Total Recibido</th>";  // Columna para el total recibido
-        echo "<th class='border border-gray-300 px-4 py-2'></th>";  // Columna para el botón
+        echo "<th class='border border-gray-300 px-4 py-2'>Pago</th>";
+        echo "<th class='border border-gray-300 px-4 py-2'>Total Recibido</th>";
+        echo "<th class='border border-gray-300 px-4 py-2'></th>";
         echo "</tr>";
         echo "</thead>";
         echo "<tbody class='text-gray-600'>";
-        
-        // Recorremos los resultados de la consulta en MySQL
+
         while ($rowMySQL = $stmtMySQL->fetch(PDO::FETCH_ASSOC)) {
-            // Ahora realizamos la consulta en SQL Server para obtener los valores de IntTotal y StrUsuarioGra
-            $sqlSQLServer = "SELECT IntTotal, StrUsuarioGra
-                             FROM TblDocumentos
-                             WHERE IntTransaccion = :transaccion AND IntDocumento = :documento";
-        
+            $sqlSQLServer = "SELECT IntTotal, StrUsuarioGra FROM TblDocumentos WHERE IntTransaccion = :transaccion AND IntDocumento = :documento";
             $stmtSQLServer = $pdoSQLServer->prepare($sqlSQLServer);
-            $stmtSQLServer->execute([
-                ':transaccion' => $rowMySQL['IntTransaccion'],
-                ':documento' => $rowMySQL['IntDocumento']
-            ]);
-        
-            // Obtener los datos de SQL Server
+            $stmtSQLServer->execute([':transaccion' => $rowMySQL['IntTransaccion'], ':documento' => $rowMySQL['IntDocumento']]);
             $rowSQLServer = $stmtSQLServer->fetch(PDO::FETCH_ASSOC);
-        
-            // Mostrar los datos en la tabla
+
             echo "<tr class='border-b hover:bg-gray-50'>";
-            echo "<td class='border border-gray-300 px-4 py-2'>{$rowMySQL['IntTransaccion']}</td>";
-            echo "<td class='border border-gray-300 px-4 py-2'>{$rowMySQL['IntDocumento']}</td>";
-            echo "<td class='border border-gray-300 px-4 py-2'>{$rowMySQL['estado']}</td>";
-            echo "<td class='border border-gray-300 px-4 py-2'>{$rowMySQL['novedad']}</td>";
-            echo "<td class='border border-gray-300 px-4 py-2'>{$rowMySQL['descripcion']}</td>";
+            echo "<form method='POST' action='gestionar_pago.php'>";
+            echo "<td class='border border-gray-300 px-4 py-2'><input type='hidden' name='inttransaccion' value='{$rowMySQL['IntTransaccion']}' />{$rowMySQL['IntTransaccion']}</td>";
+            echo "<td class='border border-gray-300 px-4 py-2'><input type='hidden' name='intdocumento' value='{$rowMySQL['IntDocumento']}' />{$rowMySQL['IntDocumento']}</td>";
+            echo "<td class='border border-gray-300 px-4 py-2'><input type='hidden' name='estado' value='{$rowMySQL['estado']}' />{$rowMySQL['estado']}</td>";
+            echo "<td class='border border-gray-300 px-4 py-2'><input type='hidden' name='novedad' value='{$rowMySQL['novedad']}' />{$rowMySQL['novedad']}</td>";
+            echo "<td class='border border-gray-300 px-4 py-2'><input type='hidden' name='descripcion' value='{$rowMySQL['descripcion']}' />{$rowMySQL['descripcion']}</td>";
             echo "<td class='border border-gray-300 px-4 py-2'>" . number_format($rowSQLServer['IntTotal'], 0) . "</td>";
             echo "<td class='border border-gray-300 px-4 py-2'>{$rowSQLServer['StrUsuarioGra']}</td>";
-        
-            // Agregar el campo desplegable para seleccionar "Pago Total" o "Pago Parcial"
             echo "<td class='border border-gray-300 px-4 py-2'>";
-            echo "<select class='border border-gray-300 px-2 py-1'>";
+            echo "<select name='forma_pago' class='border border-gray-300 px-2 py-1'>";
             echo "<option value='total'>Pago Total</option>";
             echo "<option value='parcial'>Pago Parcial</option>";
             echo "</select>";
             echo "</td>";
-        
-            // Mostrar el campo para el total recibido
-            echo "<td class='border border-gray-300 px-4 py-2'>";
-            echo "<input type='number' class='border border-gray-300 px-2 py-1' value='" . number_format($rowSQLServer['IntTotal'], 0) . "' />";
-            echo "</td>";
-        
-            echo "<td class='border border-gray-300 px-4 py-2'>";
-            // Botón "Gestionar Pago"
-            echo "<button class='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600' onclick='return confirm(\"¿Está seguro de gestionar el pago?\")'>Gestionar Pago</button>";
-            echo "</td>";
+            echo "<td class='border border-gray-300 px-4 py-2'><input type='number' name='total_recibido' class='border border-gray-300 px-2 py-1' value='" . number_format($rowSQLServer['IntTotal'], 0) . "' /></td>";
+            echo "<td class='border border-gray-300 px-4 py-2'><button type='submit' class='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600'>Gestionar Pago</button></td>";
+            echo "</form>";
             echo "</tr>";
         }
-        
+
         echo "</tbody>";
         echo "</table>";
         ?>
@@ -226,7 +184,7 @@ $stmtMySQL->execute($params);
                 </svg>
                 <span class="text-xs">Volver</span>
             </a>
-            <a href="#" id="openModal" class ="text-gray-500 text-center flex flex-col items-center">
+            <a href="#" id="openModal" class="text-gray-500 text-center flex flex-col items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                     class="w-6 h-6">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -236,12 +194,6 @@ $stmtMySQL->execute($params);
             </a>
         </div>
     </nav>
-    <script>
-        // Recargar la página cada 30 segundos
-        setInterval(function() {
-            location.reload();
-        }, 30000); // 30000 milisegundos = 30 segundos
-    </script>
 </body>
 
 </html>

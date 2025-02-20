@@ -123,6 +123,22 @@ CREATE TABLE IF NOT EXISTS Reporte_pago (
     descripcion TEXT
 );
 
+ALTER TABLE Reporte_pago 
+ADD COLUMN total_recibido DECIMAL(10, 2) DEFAULT 0;
+
+CREATE TABLE IF NOT EXISTS Reporte_caja (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    inttransaccion INT NOT NULL,
+    intdocumento INT NOT NULL,
+    user_id INT NOT NULL,
+    estado VARCHAR(50) DEFAULT 'sin gestion',
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    novedad VARCHAR(255) NOT NULL,
+    total_recibido DECIMAL(10, 2) DEFAULT 0,
+    descripcion TEXT
+);
+
+
 CREATE TABLE Notas (
     id INT AUTO_INCREMENT PRIMARY KEY,
     tercero VARCHAR(100) NOT NULL,

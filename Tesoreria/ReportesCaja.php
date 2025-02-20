@@ -39,36 +39,41 @@ require_once '../php/db.php'; // Conexión a la base de datos
     </div>
 
     <div class="neumorphism w-full max-w-xs p-6 text-center mb-6">
-    <h2 class="text-black-600 text-xl font-bold">Ingresar Reporte de Pago</h2>
-    <form action="guardarReportePago.php" method="POST" class="space-y-4">
-        <div>
-            <label for="inttransaccion" class="block text-left">Transacción:</label>
-            <input type="number" name="inttransaccion" id="inttransaccion" required
-                class="w-full p-2 rounded border border-gray-300">
-        </div>
-        <div>
-            <label for="intdocumento" class="block text-left">Documento:</label>
-            <input type="number" name="intdocumento" id="intdocumento" required
-                class="w-full p-2 rounded border border-gray-300">
-        </div>
-        <div>
-    <label for="novedad" class="block text-left">Novedad:</label>
-    <select name="novedad" id="novedad" required class="w-full p-2 rounded border border-gray-300">
-        <option value="pago en efectivo">Pago en efectivo</option>
-        <option value="pago en transferencia">Pago en transferencia</option>
-        <option value="Pago Parcial">Pago Parcial</option>
-    </select>
-</div>
-        <div>
-            <label for="descripcion" class="block text-left">Descripción:</label>
-            <textarea name="descripcion" id="descripcion" rows="4"
-                class="w-full p-2 rounded border border-gray-300"></textarea>
-        </div>
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-            Guardar Reporte
-        </button>
-    </form>
-</div>
+        <h2 class="text-black-600 text-xl font-bold">Ingresar Reporte de Pago</h2>
+        <form action="guardarReportePago.php" method="POST" class="space-y-4">
+            <div>
+                <label for="inttransaccion" class="block text-left">Transacción:</label>
+                <input type="number" name="inttransaccion" id="inttransaccion" required
+                    class="w-full p-2 rounded border border-gray-300">
+            </div>
+            <div>
+                <label for="intdocumento" class="block text-left">Documento:</label>
+                <input type="number" name="intdocumento" id="intdocumento" required
+                    class="w-full p-2 rounded border border-gray-300">
+            </div>
+            <div>
+                <label for="novedad" class="block text-left">Novedad:</label>
+                <select name="novedad" id="novedad" required class="w-full p-2 rounded border border-gray-300">
+                    <option value="pago en efectivo">Pago en efectivo</option>
+                    <option value="pago en transferencia">Pago en transferencia</option>
+                    <option value="Pago Parcial">Pago Parcial</option>
+                </select>
+            </div>
+            <div>
+                <label for="descripcion" class="block text-left">Descripción:</label>
+                <textarea name="descripcion" id="descripcion" rows="4"
+                    class="w-full p-2 rounded border border-gray-300"></textarea>
+            </div>
+            <div>
+                <label for="total_recibido" class="block text-left">Total Recibido:</label>
+                <input type="number" step="0.01" name="total_recibido" id="total_recibido" value="0.00"
+                    class="w-full p-2 rounded border border-gray-300">
+            </div>
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                Guardar Reporte
+            </button>
+        </form>
+    </div>
     <!-- Footer Navigation -->
     <nav class="fixed bottom-0 left-0 right-0 bg-white shadow-lg">
         <div class="flex justify-around py-2">
@@ -86,7 +91,7 @@ require_once '../php/db.php'; // Conexión a la base de datos
                 </svg>
                 <span class="text-xs">Volver</span>
             </a>
-            <a href="#" id="openModal" class ="text-gray-500 text-center flex flex-col items-center">
+            <a href="#" id="openModal" class="text-gray-500 text-center flex flex-col items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                     class="w-6 h-6">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
