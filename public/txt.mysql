@@ -13,7 +13,7 @@ CREATE TABLE users (
 );
 
 ALTER TABLE users
-MODIFY COLUMN role ENUM('user', 'admin', 'bodega', 'mensajeria', 'despachos', 'cartera', 'tesoreria', 'jefeBodega', 'Vendedor', 'JefeCedi') DEFAULT 'user';
+MODIFY COLUMN role ENUM('user', 'admin', 'facturacion', 'bodega', 'mensajeria', 'despachos', 'cartera', 'tesoreria', 'jefeBodega', 'Vendedor', 'JefeCedi') DEFAULT 'user';
 
 CREATE TABLE active_sessions (
     session_id VARCHAR(255) PRIMARY KEY,
@@ -123,3 +123,15 @@ CREATE TABLE IF NOT EXISTS Reporte_pago (
     descripcion TEXT
 );
 
+CREATE TABLE Notas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    tercero VARCHAR(100) NOT NULL,
+    transaccion INT NOT NULL,
+    documento INT NOT NULL,
+    producto VARCHAR(255) NOT NULL,
+    asesor VARCHAR(100) NOT NULL,
+    motivo TEXT NOT NULL,
+    usuario VARCHAR(100) NOT NULL,
+    estado VARCHAR(50) DEFAULT 'sin gestión',
+    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
