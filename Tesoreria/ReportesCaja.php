@@ -52,10 +52,13 @@ require_once '../php/db.php'; // Conexión a la base de datos
                 class="w-full p-2 rounded border border-gray-300">
         </div>
         <div>
-            <label for="novedad" class="block text-left">Novedad:</label>
-            <input type="text" name="novedad" id="novedad" required
-                class="w-full p-2 rounded border border-gray-300">
-        </div>
+    <label for="novedad" class="block text-left">Novedad:</label>
+    <select name="novedad" id="novedad" required class="w-full p-2 rounded border border-gray-300">
+        <option value="pago en efectivo">Pago en efectivo</option>
+        <option value="pago en transferencia">Pago en transferencia</option>
+        <option value="Pago Parcial">Pago Parcial</option>
+    </select>
+</div>
         <div>
             <label for="descripcion" class="block text-left">Descripción:</label>
             <textarea name="descripcion" id="descripcion" rows="4"
