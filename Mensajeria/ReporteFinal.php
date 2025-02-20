@@ -146,6 +146,7 @@ if ($transaccion > 0 && $documento > 0) {
                         <option value="Credito">Credito</option>
                         <option value="Despachador autoriza entrega (No pago">Despachador autoriza entrega (No pago)</option>
                         <option value="Vendedor autoriza entrega (No pago)">Vendedor autoriza entrega (No pago)</option>
+                        <option value="Vendedor autoriza entrega (No pago)">Pago Parcial</option>
                     </select>
                 </div>
                 <div class="mb-4">

@@ -66,7 +66,7 @@ include('../php/validate_session.php');
                     <i class="fa-solid fa-motorcycle text-white"></i>
                 </div>
                 <!-- Etiqueta como enlace -->
-                <a href="ReportePagosGenerales.php" class="text-sm text-gray-700 hover:underline">Reportar pago</a>
+                <a href="ReportesCaja.php" class="text-sm text-gray-700 hover:underline">Reportar pago</a>
             </div>
             <div class="neumorphism p-4 text-center">
                 <!-- Icono de Bodega -->
