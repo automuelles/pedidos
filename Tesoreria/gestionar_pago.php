@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $formaPago = $_POST['forma_pago']; 
 
     // Determinar el estado basado en forma_pago
-    $estado = ($formaPago === 'total') ? 'gestionado' : 'saldo pendiente';
+    $estado = ($formaPago === 'Pago Total') ? 'gestionado' : 'saldo pendiente';
 
     // Insertar en la tabla Reporte_caja
     $sqlInsertCaja = "INSERT INTO Reporte_caja (inttransaccion, intdocumento, user_id, estado, novedad, total_recibido, descripcion)

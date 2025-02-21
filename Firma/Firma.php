@@ -29,19 +29,19 @@ if (isset($_POST['IntTransaccion']) && isset($_POST['IntDocumento'])) {
     // Consulta principal para obtener datos de TblDocumentos
     $sql = "
     SELECT 
-        D.[IntEmpresa], D.[IntTransaccion], D.[IntDocumento], D.[DatFecha], D.[DatVencimiento], 
-        D.[StrTercero], D.[IntValor], D.[IntSubtotal], D.[IntIva], D.[IntTotal], 
-        T.[StrNombre], T.[StrDireccion], T.[StrTelefono], T.[StrIdTercero],
-        dp.[StrProducto], p.[StrDescripcion], dp.[IntCantidad], dp.[IntValorUnitario]
-    FROM [AutomuellesDiesel1].[dbo].[TblDocumentos] D
-    JOIN [AutomuellesDiesel1].[dbo].[TblTerceros] T
-        ON D.StrTercero = T.StrIdTercero
-    LEFT JOIN [AutomuellesDiesel1].[dbo].[TblDetalleDocumentos] dp
-        ON D.IntTransaccion = dp.IntTransaccion AND D.IntDocumento = dp.IntDocumento
-    LEFT JOIN [AutomuellesDiesel1].[dbo].[TblProductos] p
-        ON dp.StrProducto = p.StrIdProducto
-    WHERE D.IntTransaccion = :IntTransaccion
-      AND D.IntDocumento = :IntDocumento";
+    D.[IntEmpresa], D.[IntTransaccion], D.[IntDocumento], D.[DatFecha], D.[DatVencimiento], 
+    D.[StrTercero], D.[IntValor], D.[IntSubtotal], D.[IntIva], D.[IntTotal], D.[StrReferencia2],
+    T.[StrNombre], T.[StrDireccion], T.[StrTelefono], T.[StrIdTercero],
+    dp.[StrProducto], p.[StrDescripcion], dp.[IntCantidad], dp.[IntValorUnitario]
+FROM [AutomuellesDiesel1].[dbo].[TblDocumentos] D
+JOIN [AutomuellesDiesel1].[dbo].[TblTerceros] T
+    ON D.StrTercero = T.StrIdTercero
+LEFT JOIN [AutomuellesDiesel1].[dbo].[TblDetalleDocumentos] dp
+    ON D.IntTransaccion = dp.IntTransaccion AND D.IntDocumento = dp.IntDocumento
+LEFT JOIN [AutomuellesDiesel1].[dbo].[TblProductos] p
+    ON dp.StrProducto = p.StrIdProducto
+WHERE D.IntTransaccion = :IntTransaccion
+  AND D.IntDocumento = :IntDocumento";
 
     // Preparar y ejecutar la consulta
     $stmt = $conn->prepare($sql);
@@ -107,6 +107,7 @@ if (isset($_POST['IntTransaccion']) && isset($_POST['IntDocumento'])) {
                 <div class="mt-10 w-full">
                     <p><span class="font-semibold">Transacción:</span> <?= htmlspecialchars($documentos[0]['IntTransaccion'], ENT_QUOTES, 'UTF-8') ?></p>
                     <p><span class="font-semibold">Número de Factura:</span> <?= htmlspecialchars($documentos[0]['IntDocumento'], ENT_QUOTES, 'UTF-8') ?></p>
+                    <p><span class="font-semibold">PLACA:</span> <?= htmlspecialchars($documentos[0]['StrReferencia2'], ENT_QUOTES, 'UTF-8') ?></p>
                 </div>
                 <div>
                     <!-- Detalles del tercero -->
@@ -282,6 +283,7 @@ if (isset($_POST['IntTransaccion']) && isset($_POST['IntDocumento'])) {
         let transactionData = {
             IntTransaccion: <?= json_encode($documentos[0]['IntTransaccion']) ?>,
             IntDocumento: <?= json_encode($documentos[0]['IntDocumento']) ?>,
+            StrReferencia2: <?= json_encode($documentos[0]['StrReferencia2']) ?>, // Asegúrate de que esto esté presente
             StrIdTercero: <?= json_encode($documentos[0]['StrIdTercero']) ?>,
             StrNombre: <?= json_encode($documentos[0]['StrNombre']) ?>,
             StrDireccion: <?= json_encode($documentos[0]['StrDireccion']) ?>,
@@ -295,7 +297,6 @@ if (isset($_POST['IntTransaccion']) && isset($_POST['IntDocumento'])) {
             items: <?= !empty($documentos) ? json_encode($documentos) : '[]' ?>,
             signature: signatureData
         };
-
         // Enviar la firma y los datos al servidor mediante POST
         fetch('guardar_firma.php', {
                 method: 'POST',

@@ -23,17 +23,17 @@ file_put_contents($signatureFile, base64_decode($signatureImage));
 
 class PDF extends Fpdi
 {
-
     function Footer()
     {
         // Posición a 1.5 cm del final
         $this->SetY(-15);
         $this->SetFont('Arial', 'I', 8);
-        $this->Cell(0, 10, 'Page ' . $this->PageNo(), 0, 0, 'C');
+        $this->Cell(0, 10, 'Pagina ' . $this->PageNo() . ' de {nb}', 0, 0, 'C');
     }
 }
 
 $pdf = new PDF();
+$pdf->AliasNbPages();
 $pdf->AddPage('L'); // 'L' para horizontal
 $pdf->SetMargins(10, 10, 10);
 
@@ -60,28 +60,41 @@ $pdf->SetX(45);
 $pdf->Cell(0, 7, 'Email: Facturas.compras@automuellesdiesel.com', 0, 1, 'C');
 $pdf->Ln(10);
 
-// Detalles de la transacción
-$pdf->SetFont('Arial', 'B', 12);
-$pdf->Cell(0, 10, 'Detalles de la Transaccion', 0, 1, 'L');
-$pdf->SetFont('Arial', '', 12);
-$pdf->Cell(50, 7, 'Transaccion:', 0);
-$pdf->Cell(0, 7, $data['IntTransaccion'], 0, 1);
-$pdf->Cell(50, 7, 'Numero de Factura:', 0);
-$pdf->Cell(0, 7, $data['IntDocumento'], 0, 1);
-$pdf->Ln(5);
+// Ancho de cada columna
+$col1_width = 100; // Aumentamos el ancho de la columna izquierda (Detalles del Cliente)
+$col2_width = 95;  // Ancho de la columna derecha (Detalles de la Transacción)
 
-// Detalles del cliente
+// Títulos de las secciones
 $pdf->SetFont('Arial', 'B', 12);
-$pdf->Cell(0, 10, 'Detalles del Cliente', 0, 1, 'L');
+$pdf->Cell($col1_width, 10, 'Detalles del Cliente', 0, 0, 'L'); // Cliente a la izquierda
+$pdf->Cell($col2_width, 10, 'Detalles de la Transaccion', 0, 1, 'R'); // Transacción a la derecha
 $pdf->SetFont('Arial', '', 12);
-$pdf->Cell(50, 7, 'Nit/Ced:', 0);
-$pdf->Cell(0, 7, $data['StrIdTercero'], 0, 1);
-$pdf->Cell(50, 7, 'Nombre:', 0);
-$pdf->Cell(0, 7, $data['StrNombre'], 0, 1);
-$pdf->Cell(50, 7, 'Direccion:', 0);
-$pdf->Cell(0, 7, $data['StrDireccion'], 0, 1);
-$pdf->Cell(50, 7, 'Telefono:', 0);
-$pdf->Cell(0, 7, $data['StrTelefono'], 0, 1);
+
+// Detalles del Cliente
+$pdf->Cell(50, 7, 'Nit/Ced:', 0, 0, 'L');
+$pdf->Cell(50, 7, $data['StrIdTercero'], 0, 0, 'L');
+
+$pdf->SetX(150); // Desplazamos a la derecha la segunda columna
+$pdf->Cell(50, 7, 'Transaccion:', 0, 0, 'L');
+$pdf->Cell(40, 7, $data['IntTransaccion'], 0, 1, 'L');
+
+$pdf->Cell(50, 7, 'Nombre:', 0, 0, 'L');
+$pdf->Cell(50, 7, $data['StrNombre'], 0, 0, 'L');
+
+$pdf->SetX(150); // Desplazamos a la derecha la segunda columna
+$pdf->Cell(50, 7, 'Numero de Factura:', 0, 0, 'L');
+$pdf->Cell(40, 7, $data['IntDocumento'], 0, 1, 'L');
+
+$pdf->Cell(50, 7, 'Direccion:', 0, 0, 'L');
+$pdf->Cell(50, 7, $data['StrDireccion'], 0, 0, 'L'); // Alineamos "Dirección" y su valor
+
+$pdf->SetX(150);
+$pdf->Cell(50, 7, 'Placa:', 0, 0, 'L');
+$pdf->Cell(50, 7, $data['StrReferencia2'], 0, 1, 'L'); // Alineamos "Placa" y su valor
+
+$pdf->Cell(50, 7, 'Telefono:', 0, 0, 'L');
+$pdf->Cell(50, 7, $data['StrTelefono'], 0, 1, 'L'); // Alineamos "Teléfono" y su valor
+
 $pdf->Ln(5);
 
 // Sección para Detalles de Productos
@@ -150,13 +163,19 @@ $pdf->Cell($widthLabel, 7, number_format($data['IntTotal'], 2), 1);
 $pdf->Ln(5); // Salto de línea adicional después de los detalles
 $pdf->Ln(5);
 
-// Sección para la firma
+// Agregar un espacio antes de la sección de firma
 $pdf->SetFont('Arial', 'B', 12);
-$pdf->Cell(0, 10, 'Firma del Cliente:', 0, 1);
-$pdf->Rect(10, $pdf->GetY(), 80, 40); // Dibujar un cuadro para la firma
-$pdf->Image($signatureFile, 12, $pdf->GetY() + 2, 76, 36, 'PNG');
-$pdf->Ln(45);
+$pdf->Cell(0, 10, 'Firma del Cliente:', 0, 0);
 
+// Colocar la firma en la parte superior
+$pdf->Image($signatureFile, 12, $pdf->GetY() + 2, 76, 36, 'PNG'); // Ajusta la posición y el tamaño según sea necesario
+
+// Dibuja una línea horizontal debajo de la firma
+$y = $pdf->GetY(); // Obtener la posición Y actual
+$pdf->Line(10, $y + 40, 100, $y + 40); // Dibuja una línea horizontal (ajusta el valor 200 según el ancho de la página)
+
+// Agregar un espacio adicional después de la línea
+$pdf->Ln(10);
 // Guardar el PDF
 $pdfFilePath = 'factura_firmada/' . $data['IntTransaccion'] . '-' . $data['IntDocumento'] . '.pdf';
 $pdf->Output('F', $pdfFilePath);
