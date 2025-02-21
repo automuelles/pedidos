@@ -4,7 +4,7 @@ include('../php/login.php');
 include('../php/validate_session.php');
 
 try {
-    $stmt = $pdo->query("SELECT * FROM Notas ORDER BY fecha_registro DESC");
+    $stmt = $pdo->query("SELECT * FROM Notas WHERE estado = 'sin gestión' ORDER BY fecha_registro DESC");
     $notas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     die("Error al recuperar las notas: " . $e->getMessage());
@@ -58,6 +58,8 @@ try {
                     <th class="py-3 px-4">Solicitada Por</th>
                     <th class="py-3 px-4">Estado</th>
                     <th class="py-3 px-4">Fecha</th>
+                    <th class="py-3 px-4">Comentario</th>
+                    <th class="py-3 px-4">Acción</th>
                 </tr>
             </thead>
             <tbody class="text-gray-700">
@@ -71,17 +73,25 @@ try {
                         <td class="py-2 px-4"><?php echo htmlspecialchars($nota['usuario']); ?></td>
                         <td class="py-2 px-4">
                             <span class="px-2 py-1 rounded-full text-white
-                                <?php echo ($nota['estado'] == 'sin gestión') ? 'bg-red-500' : ''; ?>">
+                        <?php echo ($nota['estado'] == 'sin gestión') ? 'bg-red-500' : 'bg-green-500'; ?>">
                                 <?php echo htmlspecialchars($nota['estado']); ?>
                             </span>
                         </td>
                         <td class="py-2 px-4"><?php echo $nota['fecha_registro']; ?></td>
+                        <td class="py-2 px-4">
+                            <input type="text" id="comentario_<?php echo $nota['id']; ?>" class="border rounded px-2 py-1 w-full" placeholder="Añadir comentario" required>
+                        </td>
+                        <td class="py-2 px-4">
+                            <a href="javascript:void(0);" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded"
+                                onclick="guardarGestion(<?php echo $nota['id']; ?>)">
+                                Gestionar
+                            </a>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
     </div>
-
     <!-- Footer Navigation -->
     <nav class="fixed bottom-0 left-0 right-0 bg-white shadow-lg">
         <div class="flex justify-around py-2">
@@ -105,6 +115,38 @@ try {
             </a>
         </div>
     </nav>
+    <script>
+function guardarGestion(notaId) {
+    let comentario = document.getElementById('comentario_' + notaId).value;
+    
+    if (comentario.trim() === "") {
+        alert("Por favor, añade un comentario antes de gestionar.");
+        return;
+    }
 
+    let formData = new FormData();
+    formData.append('nota_id', notaId);
+    formData.append('comentario', comentario);
+
+    fetch('gestionar_nota.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json()) // Esperamos una respuesta JSON
+    .then(data => {
+        alert(data.message); // Mostramos el mensaje en un alert
+
+        if (data.status === "success") {
+            // Opcional: actualizar la interfaz sin recargar la página
+            document.location.reload();
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert("Hubo un error al procesar la gestión.");
+    });
+}
+</script>
 </body>
+
 </html>

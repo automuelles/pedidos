@@ -26,14 +26,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $usuario = isset($_SESSION['user_name']) ? $_SESSION['user_name'] : 'Desconocido';
 
     // Insertar los datos en la base de datos
-    $sql = "INSERT INTO notas (tercero, transaccion, documento, producto, asesor, motivo, usuario, estado) 
-            VALUES (:tercero, :transaccion, :documento, :producto, :asesor, :motivo, :usuario, 'sin gestión')";
+    $sql = "INSERT INTO notas (tercero, transaccion, documento, producto, motivo, usuario, estado) 
+            VALUES (:tercero, :transaccion, :documento, :producto, :motivo, :usuario, 'sin gestión')";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':tercero', $tercero);
     $stmt->bindParam(':transaccion', $transaccion);
     $stmt->bindParam(':documento', $documento);
     $stmt->bindParam(':producto', $producto);
-    $stmt->bindParam(':asesor', $asesor);
     $stmt->bindParam(':motivo', $motivo);
     $stmt->bindParam(':usuario', $usuario);
 

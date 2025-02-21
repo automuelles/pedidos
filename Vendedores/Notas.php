@@ -78,13 +78,6 @@ if ($_SESSION['user_role'] !== 'Vendedor') {
                     class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
             </div>
 
-            <!-- Campo de Asesor -->
-            <div class="mb-4">
-                <label for="asesor" class="block text-gray-700 font-bold mb-2">Asesor:</label>
-                <input type="text" id="asesor" name="asesor" placeholder="Ingrese el nombre del asesor"
-                    class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
-            </div>
-
             <!-- Campo de Motivo -->
             <div class="mb-4">
                 <label for="motivo" class="block text-gray-700 font-bold mb-2">Motivo:</label>
