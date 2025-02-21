@@ -51,9 +51,9 @@ $pdf->SetXY(45, 10); // Ajustar la posición para que el texto quede alineado co
 // Información de la empresa
 $pdf->Cell(0, 7, 'Automuelles Diesel SAS', 0, 1, 'C');
 $pdf->SetX(45); // Asegurar que la siguiente línea comience en la misma posición
-$pdf->Cell(0, 7, 'NIT: 811021438-4', 0, 1, 'C');
+$pdf->Cell(0, 7, 'NIT: 900950921', 0, 1, 'C');
 $pdf->SetX(45);
-$pdf->Cell(0, 7, 'Direccion: Cra 61 # 45-04 Medellín (Antioquia)', 0, 1, 'C');
+$pdf->Cell(0, 7, 'Direccion: Cra 61 # 45-04 Medellin (Antioquia)', 0, 1, 'C');
 $pdf->SetX(45);
 $pdf->Cell(0, 7, 'Telefono: 4483179', 0, 1, 'C');
 $pdf->SetX(45);
