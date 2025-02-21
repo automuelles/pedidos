@@ -23,6 +23,78 @@ file_put_contents($signatureFile, base64_decode($signatureImage));
 
 class PDF extends Fpdi
 {
+    private $clientData;
+    private $transactionData;
+
+    public function setClientData($data)
+    {
+        $this->clientData = $data;
+    }
+
+    public function setTransactionData($data)
+    {
+        $this->transactionData = $data;
+    }
+
+    function Header()
+    {
+        // Información de la empresa con logo
+        $this->SetTextColor(0, 0, 0);
+        $this->SetFont('Arial', 'B', 12);
+
+        // Agregar la imagen del logo en la parte izquierda
+        $logoPath = 'logo.png'; // Asegúrate de que la ruta sea correcta
+        $this->Image($logoPath, 10, 10, 50); // 10 de margen izquierdo, 10 de margen superior, 50 de ancho
+
+        // Mover la posición a la derecha del logo para la información de la empresa
+        $this->SetXY(60, 10); // Ajustar la posición para que el texto quede alineado correctamente con el logo
+
+        // Información de la empresa
+        $this->Cell(0, 7, 'Automuelles Diesel SAS', 0, 1, 'C');
+        $this->SetX(50); // Asegurar que la siguiente línea comience en la misma posición
+        $this->Cell(0, 7, 'NIT: 900.950.921-9', 0, 1, 'C');
+        $this->SetX(50);
+        $this->Cell(0, 7, 'Direccion: Cra 61 # 45-04 Medellin (Antioquia)', 0, 1, 'C');
+        $this->SetX(50);
+        $this->Cell(0, 7, 'Telefono: 4483179', 0, 1, 'C');
+        $this->SetX(50);
+        $this->Cell(0, 7, 'Email: Facturas.compras@automuellesdiesel.com', 0, 1, 'C');
+        $this->Ln(5); // Espacio entre el encabezado y el contenido
+
+        // Detalles del Cliente
+        $this->SetFont('Arial', 'B', 12);
+        $this->Cell(120, 10, 'Detalles del Cliente', 0, 0, 'L');
+        $this->Cell(95, 10, 'Detalles de la Transaccion', 0, 1, 'R'); // Transacción a la derecha
+        $this->SetFont('Arial', '', 12);
+
+        // Mostrar detalles del cliente
+        $this->Cell(50, 7, 'Nit/Ced:', 0, 0, 'L');
+        $this->Cell(50, 7, $this->clientData['StrIdTercero'], 0, 0, 'L');
+
+        $this->SetX(170); // Desplazamos a la derecha la segunda columna
+        $this->Cell(50, 7, 'Transaccion:', 0, 0, 'L');
+        $this->Cell(40, 7, $this->transactionData['IntTransaccion'], 0, 1, 'L');
+
+        $this->Cell(50, 7, 'Nombre:', 0, 0, 'L');
+        $this->Cell(50, 7, $this->clientData['StrNombre'], 0, 0, 'L');
+
+        $this->SetX(170); // Desplazamos a la derecha la segunda columna
+        $this->Cell(50, 7, 'Numero de Factura:', 0, 0, 'L');
+        $this->Cell(40, 7, $this->transactionData['IntDocumento'], 0, 1, 'L');
+
+        $this->Cell(50, 7, 'Direccion:', 0, 0, 'L');
+        $this->Cell(50, 7, $this->clientData['StrDireccion'], 0, 0, 'L'); // Alineamos "Dirección" y su valor
+
+        $this->SetX(170);
+        $this->Cell(50, 7, 'Placa:', 0, 0, 'L');
+        $this->Cell(50, 7, $this->clientData['StrReferencia2'], 0, 1, 'L'); // Alineamos "Placa" y su valor
+
+        $this->Cell(50, 7, 'Telefono:', 0, 0, 'L');
+        $this->Cell(50, 7, $this->clientData['StrTelefono'], 0, 1, 'L'); // Alineamos "Teléfono" y su valor
+
+        $this->Ln(5); // Espacio entre el encabezado y el contenido
+    }
+
     function Footer()
     {
         // Posición a 1.5 cm del final
@@ -33,69 +105,11 @@ class PDF extends Fpdi
 }
 
 $pdf = new PDF();
+$pdf->setClientData($data); // Asignar datos del cliente
+$pdf->setTransactionData($data); // Asignar datos de la transacción
 $pdf->AliasNbPages();
 $pdf->AddPage('L'); // 'L' para horizontal
 $pdf->SetMargins(10, 10, 10);
-
-// Información de la empresa con logo
-$pdf->SetTextColor(0, 0, 0);
-$pdf->SetFont('Arial', 'B', 12);
-
-// Agregar la imagen del logo en la parte izquierda (ajustar el tamaño y la posición según sea necesario)
-$logoPath = 'logo.png'; // Asegúrate de que la ruta sea correcta
-$pdf->Image($logoPath, 10, 10, 50); // 10 de margen izquierdo, 10 de margen superior, 30 de ancho
-
-// Mover la posición a la derecha del logo para la información de la empresa
-$pdf->SetXY(45, 10); // Ajustar la posición para que el texto quede alineado correctamente con el logo
-
-// Información de la empresa
-$pdf->Cell(0, 7, 'Automuelles Diesel SAS', 0, 1, 'C');
-$pdf->SetX(45); // Asegurar que la siguiente línea comience en la misma posición
-$pdf->Cell(0, 7, 'NIT: 900950921', 0, 1, 'C');
-$pdf->SetX(45);
-$pdf->Cell(0, 7, 'Direccion: Cra 61 # 45-04 Medellin (Antioquia)', 0, 1, 'C');
-$pdf->SetX(45);
-$pdf->Cell(0, 7, 'Telefono: 4483179', 0, 1, 'C');
-$pdf->SetX(45);
-$pdf->Cell(0, 7, 'Email: Facturas.compras@automuellesdiesel.com', 0, 1, 'C');
-$pdf->Ln(10);
-
-// Ancho de cada columna
-$col1_width = 100; // Aumentamos el ancho de la columna izquierda (Detalles del Cliente)
-$col2_width = 95;  // Ancho de la columna derecha (Detalles de la Transacción)
-
-// Títulos de las secciones
-$pdf->SetFont('Arial', 'B', 12);
-$pdf->Cell($col1_width, 10, 'Detalles del Cliente', 0, 0, 'L'); // Cliente a la izquierda
-$pdf->Cell($col2_width, 10, 'Detalles de la Transaccion', 0, 1, 'R'); // Transacción a la derecha
-$pdf->SetFont('Arial', '', 12);
-
-// Detalles del Cliente
-$pdf->Cell(50, 7, 'Nit/Ced:', 0, 0, 'L');
-$pdf->Cell(50, 7, $data['StrIdTercero'], 0, 0, 'L');
-
-$pdf->SetX(150); // Desplazamos a la derecha la segunda columna
-$pdf->Cell(50, 7, 'Transaccion:', 0, 0, 'L');
-$pdf->Cell(40, 7, $data['IntTransaccion'], 0, 1, 'L');
-
-$pdf->Cell(50, 7, 'Nombre:', 0, 0, 'L');
-$pdf->Cell(50, 7, $data['StrNombre'], 0, 0, 'L');
-
-$pdf->SetX(150); // Desplazamos a la derecha la segunda columna
-$pdf->Cell(50, 7, 'Numero de Factura:', 0, 0, 'L');
-$pdf->Cell(40, 7, $data['IntDocumento'], 0, 1, 'L');
-
-$pdf->Cell(50, 7, 'Direccion:', 0, 0, 'L');
-$pdf->Cell(50, 7, $data['StrDireccion'], 0, 0, 'L'); // Alineamos "Dirección" y su valor
-
-$pdf->SetX(150);
-$pdf->Cell(50, 7, 'Placa:', 0, 0, 'L');
-$pdf->Cell(50, 7, $data['StrReferencia2'], 0, 1, 'L'); // Alineamos "Placa" y su valor
-
-$pdf->Cell(50, 7, 'Telefono:', 0, 0, 'L');
-$pdf->Cell(50, 7, $data['StrTelefono'], 0, 1, 'L'); // Alineamos "Teléfono" y su valor
-
-$pdf->Ln(5);
 
 // Sección para Detalles de Productos
 $pdf->SetFillColor(200, 200, 200);
@@ -116,7 +130,7 @@ $pdf->Cell($widthCantidad, 7, 'Cantidad', 1);
 $pdf->Cell($widthValorUnitario, 7, 'Valor Unitario', 1);
 $pdf->Ln(); // Salto de línea después del encabezado
 
-$maxDescripcionLength = 60; // Para truncar la descripción si es muy larga
+$maxDescripcionLength = 55; // Para truncar la descripción si es muy larga
 
 // Cambiar a fuente normal para los ítems
 $pdf->SetFont('Arial', '', 12);
