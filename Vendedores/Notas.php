@@ -122,13 +122,6 @@ if ($_SESSION['user_role'] !== 'Vendedor') {
             </a>
         </div>
     </nav>
-
-    <script>
-        // Recargar la página cada 30 segundos
-        setInterval(function() {
-            location.reload();
-        }, 30000); // 30000 milisegundos = 30 segundos
-    </script>
 </body>
 
 </html>
