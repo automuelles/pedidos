@@ -76,7 +76,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } elseif ($user['role'] === 'Vendedor') {
                 header("Location: ../Vendedores/Vendedor.php");
                 exit;
-            } else {
+            }
+            elseif ($user['role'] === 'facturacion') {
+                header("Location: ../Facturacion/facturacion.php");
+                exit;
+            }
+             else {
                 header("Location: user_dashboard.php");
                 exit;
             }
