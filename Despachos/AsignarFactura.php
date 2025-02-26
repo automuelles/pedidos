@@ -100,17 +100,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <div class="container mx-auto p-6 pb-16">
+        <h2 class="text-center text-lg font-semibold text-gray-700 mb-6">Reasignar Servicios Sin Gestión</h2>
         <?php if (!empty($servicios)): ?>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 <?php foreach ($servicios as $servicio): ?>
+                    <?php
+                    // Obtener IntTransaccion e IntDocumento del servicio
+                    $intTransaccion = $servicio['IntTransaccion'];
+                    $intDocumento = $servicio['IntDocumento'];
+
+                    // Consulta en SQL Server para obtener más detalles del documento
+                    $sql = "SELECT 
+                        T.StrNombre,
+                        D.StrReferencia1,
+                        D.StrUsuarioGra,
+                        D.StrObservaciones
+                    FROM [AutomuellesDiesel1].[dbo].[TblDocumentos] D
+                    JOIN [AutomuellesDiesel1].[dbo].[TblTerceros] T 
+                        ON D.StrTercero = T.StrIdTercero
+                    WHERE D.IntTransaccion = :IntTransaccion 
+                      AND D.IntDocumento = :IntDocumento";
+
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bindParam(':IntTransaccion', $intTransaccion, PDO::PARAM_INT);
+                    $stmt->bindParam(':IntDocumento', $intDocumento, PDO::PARAM_INT);
+                    $stmt->execute();
+
+                    $documento = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                    // Asignar valores con verificación de existencia
+                    $strNombre = $documento['StrNombre'] ?? 'N/A';
+                    $StrUsuarioGra = $documento['StrUsuarioGra'] ?? 'N/A';
+                    $strReferencia1 = !empty($documento['StrReferencia1']) ? 'DOMICILIO' : 'MOSTRADOR';
+                    $strObservaciones = $documento['StrObservaciones'] ?? 'N/A';
+                    ?>
+
                     <form action="" method="POST" class="bg-white shadow-md rounded-2xl p-4 border border-gray-200">
                         <input type="hidden" name="servicio_id" value="<?= $servicio['id'] ?>">
-                        <p class="text-gray-600"><strong>Transaccion :</strong> <?= htmlspecialchars($servicio['IntTransaccion']) ?></p>
-                        <p class="text-gray-600"><strong>Documento :</strong> <?= htmlspecialchars($servicio['IntDocumento']) ?></p>
-                        <p class="text-gray-600"><strong>Entregar a :</strong> <?= htmlspecialchars($servicio['StrReferencia1']) ?></p>
-                        <p class="text-gray-600"><strong>Forma de Pago:</strong> <?= htmlspecialchars($servicio['StrReferencia3']) ?></p>
-                        <p class="text-gray-600"><strong>Estado:</strong> <?= htmlspecialchars($servicio['estado']) ?></p>
+                        <p class="text-gray-600"><strong>Transacción:</strong> <?= htmlspecialchars($intTransaccion) ?></p>
+                        <p class="text-gray-600"><strong>Número de Factura:</strong> <?= htmlspecialchars($intDocumento) ?></p>
+                        <p class="text-gray-600"><strong>Estado:</strong>
+                            <?= htmlspecialchars(str_replace('gestionado', 'asignado', $servicio['estado'])) ?>
+                        </p>
                         <p class="text-gray-600"><strong>Asignado a:</strong> <?= htmlspecialchars($servicio['user_name']) ?></p>
+
+                        <!-- Nueva información obtenida de SQL Server -->
+                        <p class="text-gray-600"><strong>Cliente:</strong> <?= htmlspecialchars($strNombre) ?></p>
+                        <p class="text-gray-600"><strong>Entregar en:</strong> <?= htmlspecialchars($strReferencia1) ?></p>
+                        <p class="text-gray-600"><strong>Vendedor:</strong> <?= htmlspecialchars($StrUsuarioGra) ?></p>
+                        <p class="text-gray-600"><strong>Observaciones:</strong> <?= htmlspecialchars($strObservaciones) ?></p>
+
                         <label for="user-select-<?= $servicio['id'] ?>" class="block text-sm font-medium text-gray-700 mt-4">
                             Reasignar a:
                         </label>
@@ -134,6 +173,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <p class="text-gray-600 text-center mt-8">No hay servicios gestionados en este momento.</p>
         <?php endif; ?>
     </div>
+
     <div id="notification" class="notification"></div>
     <!-- Footer Navigation -->
     <nav class="fixed bottom-0 left-0 right-0 bg-white shadow-lg">

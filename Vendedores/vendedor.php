@@ -84,7 +84,7 @@ include('../php/validate_session.php');
                     <i class="fa-solid fa-file-invoice text-white"></i>
                 </div>
                 <!-- Etiqueta como enlace -->
-                <a href="Notas.php" class="text-sm text-gray-700 hover:underline">Solictar Nota</a>
+                <a href="#" class="text-sm text-gray-700 hover:underline">Solictar Nota</a>
             </div>
             <div class="neumorphism p-4 text-center">
                 <!-- Icono de Bodega -->

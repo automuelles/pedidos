@@ -135,11 +135,6 @@ $documento = isset($_GET['documento']) ? htmlspecialchars($_GET['documento']) : 
                 <?php unset($_SESSION['mensaje_servicio']); ?> // Limpiar el mensaje
             }
         };
-
-        // Recargar la página cada 30 segundos
-        setInterval(function() {
-            location.reload();
-        }, 30000); // 30000 milisegundos = 30 segundos
     </script>
 </body>
 

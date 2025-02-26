@@ -2,9 +2,8 @@
 include('../php/db.php');
 include('../php/login.php');
 include('../php/validate_session.php');
-
 try {
-    // Consulta para obtener notas autorizadas en la tabla gestiones
+    // excluyendo aquellas que tengan un registro en gestiones con estado "Realizado"
     $stmt = $pdo->query("
         SELECT 
             n.*, 
@@ -12,6 +11,9 @@ try {
         FROM Notas n
         INNER JOIN gestiones g ON n.id = g.nota_id
         WHERE g.estado = 'Autorizado'
+        AND n.id NOT IN (
+            SELECT nota_id FROM gestiones WHERE estado = 'Realizado'
+        )
         ORDER BY n.fecha_registro DESC
     ");
     
@@ -19,6 +21,8 @@ try {
 } catch (PDOException $e) {
     die("Error al recuperar las notas: " . $e->getMessage());
 }
+
+
 
 ?>
 
