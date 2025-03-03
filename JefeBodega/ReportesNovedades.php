@@ -153,6 +153,7 @@ if ($factura_id > 0) {
                         <option value="ubicacion_sede_principal">Ubicación Mercancía Sede Principal</option>
                         <option value="ubicacion_ambas_sedes">Ubicación Mercancía Ambas Sedes</option>
                         <option value="ubicacion_ambas_sedes">Mercancia de Mostrador</option>
+                        <option value="ubicacion_ambas_sedes">Compra en el barrio</option>
                     </select>
                 </div>
                 <div class="mb-4">

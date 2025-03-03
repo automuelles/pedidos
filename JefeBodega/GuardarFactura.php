@@ -1,5 +1,4 @@
 <?php
-
 // Verificar si el usuario está conectado y tiene el rol adecuado
 if (!isset($_SESSION['user_name']) || 
     (!in_array($_SESSION['user_role'], ['jefeBodega', 'bodega', 'JefeCedi']))) {
