@@ -27,36 +27,8 @@ include('GuardarFactura.php');
 </head>
 
 <body class="bg-gray-200 min-h-screen flex flex-col items-center justify-center">
-    <nav class="fixed top-0 left-0 right-0 bg-white shadow-lg z-50">
-        <div class="flex justify-around py-2">
-            <a href="../php/logout_index.php" class="text-blue-500 text-center flex flex-col items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                    class="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12h18M9 5l7 7-7 7" />
-                </svg>
-                <span class="text-xs">Salir</span>
-            </a>
-            <a href="../Firma/Firma.php" target="_blank" class="text-gray-500 text-center flex flex-col items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                    class="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                </svg>
-                <span class="text-xs">Firma Facturas</span>
-            </a>
-            <a href="#" id="openModal" class="text-gray-500 text-center flex flex-col items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                    class="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-                <span class="text-xs">Apps</span>
-            </a>
-        </div>
-    </nav>
-
-
     <!-- Header -->
-    <div class="neumorphism w-full max-w-xs p-6 text-center mb-6 mt-16">
+    <div class="neumorphism w-full max-w-xs p-6 text-center mb-6">
         <h1 class="text-yellow-600 text-2xl font-bold">Bienvenido to Automuelles</h1>
         <?php if (isset($_SESSION['user_name'])): ?>
             <h1 class="text-black-600 text-2xl font-bold"><?php echo htmlspecialchars($_SESSION['user_name']); ?>!</h1>
@@ -147,7 +119,32 @@ include('GuardarFactura.php');
 
 
     <!-- Footer Navigation -->
-
+    <nav class="fixed bottom-0 left-0 right-0 bg-white shadow-lg">
+        <div class="flex justify-around py-2">
+            <a href="../php/logout_index.php" class="text-blue-500 text-center flex flex-col items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                    class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12h18M9 5l7 7-7 7" />
+                </svg>
+                <span class="text-xs">Salir</span>
+            </a>
+            <a href="../Firma/Firma.php" target="_blank" class="text-gray-500 text-center flex flex-col items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                    class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                <span class="text-xs">Firma Facturas</span>
+            </a>
+            <a href="#" id="openModal" class="text-gray-500 text-center flex flex-col items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                    class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                <span class="text-xs">Apps</span>
+            </a>
+        </div>
+    </nav>
     <script>
         // Recargar la página cada 30 segundos
         setInterval(function() {

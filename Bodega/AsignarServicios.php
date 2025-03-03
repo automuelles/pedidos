@@ -96,22 +96,19 @@ function asignarServicios($pdo) {
         return;
     }
 
-    $totalUsuarios = count($usuarios);
-    $indiceUsuario = 0; // Iniciar en el primer usuario
-
-    foreach ($facturas as $factura) {
-        // Seleccionar el usuario actual en orden rotativo
-        $usuario = $usuarios[$indiceUsuario];
-
-        // Verificar la cantidad de facturas "gestionadas" del usuario
+    foreach ($usuarios as $usuario) {
+        // Contar solo las facturas en estado "gestionado"
         $facturasGestionadas = contarFacturasGestionadas($pdo, $usuario['user_id']);
-        if ($facturasGestionadas < 2) {
-            // Asignar la factura al usuario
-            asignarFactura($pdo, $factura['id'], $usuario['user_id'], $usuario['user_name']);
+
+        if ($facturasGestionadas >= 2) {
+            continue; // Si el usuario ya tiene 2 facturas "gestionadas", no se le asigna más
         }
 
-        // Avanzar al siguiente usuario de forma circular
-        $indiceUsuario = ($indiceUsuario + 1) % $totalUsuarios;
+        $limite = 2 - $facturasGestionadas; // Cuántas facturas puede recibir el usuario
+        for ($i = 0; $i < $limite && !empty($facturas); $i++) {
+            $factura = array_shift($facturas); // Se toma una factura de la lista
+            asignarFactura($pdo, $factura['id'], $usuario['user_id'], $usuario['user_name']);
+        }
     }
 }
 
@@ -120,10 +117,20 @@ asignarServicios($pdo);
 
 // Consultar las facturas asignadas al usuario en estado 'gestionado'
 $stmt = $pdo->prepare("
-    SELECT f.IntTransaccion, f.IntDocumento, f.fecha, f.id AS factura_id 
-    FROM factura AS f 
-    JOIN factura_gestionada AS fg ON f.id = fg.factura_id 
-    WHERE fg.user_name = :userName AND f.estado = 'gestionado'
+    SELECT 
+        f.IntTransaccion, 
+        f.IntDocumento, 
+        f.fecha, 
+        f.id AS factura_id, 
+        f.StrReferencia1, 
+        f.StrReferencia3
+    FROM 
+        factura AS f
+    JOIN 
+        factura_gestionada AS fg ON f.id = fg.factura_id
+    WHERE 
+        fg.user_name = :userName 
+        AND f.estado = 'gestionado'
 ");
 $stmt->execute(['userName' => $usuarioConectado]);
 

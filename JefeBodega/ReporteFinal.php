@@ -4,7 +4,6 @@ include('../php/login.php');
 include('../php/validate_session.php');
 include('GuardarFactura.php');
 include('AsignarServicios.php');
-include('GuardarFactura.php');
 
 // Obtener los valores de los parámetros desde la URL
 $transaccion = isset($_GET['IntTransaccion']) ? (int) $_GET['IntTransaccion'] : 0;
