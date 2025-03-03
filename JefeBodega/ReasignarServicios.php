@@ -4,10 +4,6 @@ include('../php/login.php');
 include('../php/validate_session.php');
 include('GuardarFactura.php');
 
-if ($_SESSION['user_role'] !== 'jefeBodega') {
-    die("Acceso denegado.");
-}
-
 try {
     $sql_servicios = "SELECT fg.id, fg.user_name, fg.estado, f.IntTransaccion, f.IntDocumento
                       FROM factura_gestionada fg
