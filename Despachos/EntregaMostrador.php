@@ -13,8 +13,7 @@ try {
     $sql = "SELECT f.*, n.novedad, n.descripcion 
             FROM factura f
             LEFT JOIN Novedades_Bodega n ON f.id = n.factura_id
-            WHERE f.estado = 'RevisionFinal' 
-            AND (f.StrReferencia1 = '' OR f.StrReferencia1 IS NULL OR f.StrReferencia1 = '0')";
+            WHERE f.estado = 'RevisionFinal'";
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
 
@@ -67,6 +66,31 @@ try {
 </head>
 
 <body class="bg-gray-200 min-h-screen flex flex-col items-center justify-center">
+    <nav class="fixed top-0 left-0 right-0 bg-white shadow-lg z-50">
+        <div class="flex justify-around py-2">
+            <a href="../php/logout_index.php" class="text-blue-500 text-center flex flex-col items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                    class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12h18M9 5l7 7-7 7" />
+                </svg>
+                <span class="text-xs">Salir</span>
+            </a>
+            <a href="despachos.php" class="text-gray-500 text-center flex flex-col items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                <span class="text-xs">Volver</span>
+            </a>
+            <a href="#" id="openModal" class="text-gray-500 text-center flex flex-col items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                    class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                <span class="text-xs">Apps</span>
+            </a>
+        </div>
+    </nav>
     <!-- Header -->
     <div class="neumorphism w-full max-w-xs p-6 text-center mb-6">
         <h1 class="text-yellow-600 text-2xl font-bold">Bienvenido to Automuelles</h1>
@@ -79,85 +103,68 @@ try {
     </div>
 
     <div class="w-full max-w-4xl mx-auto pb-16">
-    <?php if ($facturas): ?>
-    <div class="space-y-4">
-        <?php foreach ($facturas as $factura): ?>
-            <?php
-            // Tomamos los valores de IntTransaccion e IntDocumento de la factura
-            $intTransaccion = $factura['IntTransaccion'];
-            $intDocumento = $factura['IntDocumento'];
+        <?php if ($facturas): ?>
+            <div class="space-y-4">
+                <?php foreach ($facturas as $factura): ?>
+                    <?php
+                    // Tomamos los valores de IntTransaccion e IntDocumento de la factura
+                    $intTransaccion = $factura['IntTransaccion'];
+                    $intDocumento = $factura['IntDocumento'];
 
-            // Consulta para obtener el StrNombre desde SQL Server
-            $sql = "
-                SELECT T.StrNombre
+                    // Consulta para obtener los datos desde SQL Server
+                    $sql = "SELECT 
+                    T.StrNombre,
+                    D.StrReferencia1,
+                    D.StrUsuarioGra,
+                    D.StrObservaciones
                 FROM [AutomuellesDiesel1].[dbo].[TblDocumentos] D
-                JOIN [AutomuellesDiesel1].[dbo].[TblTerceros] T ON D.StrTercero = T.StrIdTercero
-                WHERE D.IntTransaccion = :IntTransaccion AND D.IntDocumento = :IntDocumento
-            ";
-            $stmt = $conn->prepare($sql);
-            $stmt->bindParam(':IntTransaccion', $intTransaccion, PDO::PARAM_INT);
-            $stmt->bindParam(':IntDocumento', $intDocumento, PDO::PARAM_INT);
-            $stmt->execute();
+                JOIN [AutomuellesDiesel1].[dbo].[TblTerceros] T 
+                    ON D.StrTercero = T.StrIdTercero
+                WHERE D.IntTransaccion = :IntTransaccion 
+                  AND D.IntDocumento = :IntDocumento";
 
-            $documento = $stmt->fetch(PDO::FETCH_ASSOC);
-            $strNombre = $documento['StrNombre'] ?? 'N/A';  // Si no se encuentra, mostramos N/A
-            ?>
-             <div class="flex items-center justify-between p-4 bg-white rounded-lg shadow-md border border-gray-200">
-                <div>
-                    <p class="text-lg font-medium text-gray-800">Transacción: <?php echo htmlspecialchars($factura['IntTransaccion']); ?></p>
-                    <p class="text-sm text-gray-600">Documento: <?php echo htmlspecialchars($factura['IntDocumento']); ?></p>
-                    <p class="text-sm text-gray-600">Estado: <?php echo htmlspecialchars($factura['estado']); ?></p>
-                    <p class="text-xs text-gray-500">Fecha: <?php echo htmlspecialchars($factura['fecha']); ?></p>
-                    <p class="text-xs text-gray-500">Datos: <?php echo htmlspecialchars($factura['StrReferencia1']); ?></p>
-                    <p class="text-xs text-gray-500">Forma de pago: <?php echo htmlspecialchars($factura['StrReferencia3']); ?></p>
-                    <p class="text-xs text-gray-500">Novedad: <?php echo htmlspecialchars($factura['novedad'] ?? 'N/A'); ?></p>
-                    <p class="text-xs text-gray-500">Descripción: <?php echo htmlspecialchars($factura['descripcion'] ?? 'N/A'); ?></p>
-                    <p class="text-xs text-gray-500">StrNombre: <?php echo htmlspecialchars($strNombre); ?></p>
-                </div>
-            
-                <div>
-                    <form action="RevisarMostrador.php" method="GET">
-                        <input type="hidden" name="IntTransaccion" value="<?php echo $factura['IntTransaccion']; ?>">
-                        <input type="hidden" name="IntDocumento" value="<?php echo $factura['IntDocumento']; ?>">
-                        <input type="hidden" name="estado" value="<?php echo $factura['estado']; ?>">
-                        <input type="hidden" name="fecha" value="<?php echo $factura['fecha']; ?>">
-                        <input type="hidden" name="StrReferencia1" value="<?php echo $factura['StrReferencia1']; ?>">
-                        <input type="hidden" name="StrReferencia3" value="<?php echo $factura['StrReferencia3']; ?>">
-                        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md">
-                            Revisar Pedido
-                        </button>
-                    </form>
-                </div>
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bindParam(':IntTransaccion', $intTransaccion, PDO::PARAM_INT);
+                    $stmt->bindParam(':IntDocumento', $intDocumento, PDO::PARAM_INT);
+                    $stmt->execute();
+
+                    $documento = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                    // Asignación correcta de valores con verificación
+                    $strNombre = $documento['StrNombre'] ?? 'N/A';
+                    $StrUsuarioGra = $documento['StrUsuarioGra'] ?? 'N/A';
+                    $strReferencia1 = $documento['StrReferencia1'] ?? 'N/A';
+                    $strObservaciones = $documento['StrObservaciones'] ?? 'N/A';
+                    // Mostrar solo los que tengan valor en StrReferencia1 igual de cero o vacío
+                    if (empty($strReferencia1) || $strReferencia1 === '0'):
+                        ?>
+                        <div class="flex items-center justify-between p-4 bg-white rounded-lg shadow-md border border-gray-200">
+                            <div>
+                                <p class="text-lg font-medium text-gray-800">Transacción: <?php echo htmlspecialchars($factura['IntTransaccion']); ?></p>
+                                <p class="text-sm text-gray-600">Documento: <?php echo htmlspecialchars($factura['IntDocumento']); ?></p>
+                                <p class="text-xs text-gray-500">Fecha: <?php echo htmlspecialchars($factura['fecha']); ?></p>
+                                <p class="text-xs text-gray-500">StrNombre: <?php echo htmlspecialchars($strNombre); ?></p>
+                                <p class="text-xs text-gray-500">Entregar En: <?php echo htmlspecialchars($strReferencia1); ?></p>
+                                <p class="text-xs text-gray-500">Vendedor: <?php echo htmlspecialchars($StrUsuarioGra); ?></p>
+                                <p class="text-xs text-gray-500">Observaciones: <?php echo htmlspecialchars($strObservaciones); ?></p>
+                            </div>
+                            <div>
+                                <form action="Estado_RevisionFinal.php" method="GET">
+                                    <input type="hidden" name="IntTransaccion" value="<?php echo $factura['IntTransaccion']; ?>">
+                                    <input type="hidden" name="IntDocumento" value="<?php echo $factura['IntDocumento']; ?>">
+                                    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md">
+                                        Revisar Pedido
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                <?php endforeach; ?>
             </div>
-        <?php endforeach; ?>
+        <?php else: ?>
+            <p class="text-center text-gray-500">No hay facturas registradas.</p>
+        <?php endif; ?>
     </div>
-<?php endif; ?>
-    </div>
-
-    <!-- Footer Navigation -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-white shadow-lg">
-        <div class="flex justify-around py-2">
-            <a href="../php/logout_index.php" class="text-blue-500 text-center flex flex-col items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12h18M9 5l7 7-7 7" />
-                </svg>
-                <span class="text-xs">Salir</span>
-            </a>
-            <a href="Despachos.php" class="text-gray-500 text-center flex flex-col items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                </svg>
-                <span class="text-xs">Volver</span>
-            </a>
-            <a href="#" id="openModal" class="text-gray-500 text-center flex flex-col items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-                <span class="text-xs">Apps</span>
-            </a>
-        </div>
-    </nav>
-
     <script>
         // Recargar la página cada 30 segundos
         setInterval(function() {

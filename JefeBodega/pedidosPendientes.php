@@ -1,12 +1,16 @@
 <?php
 include('../php/login.php');
 include('../php/validate_session.php');
-include('GuardarFactura.php');
 include('AsignarServicios.php');
+require '../php/db.php';
 // Obtener los datos de la URL
 $transaccion = isset($_GET['transaccion']) ? htmlspecialchars($_GET['transaccion']) : null;
 $documento = isset($_GET['documento']) ? htmlspecialchars($_GET['documento']) : null;
+// Contar la cantidad de facturas
+$numeroFacturas = count($facturas);
 
+// Almacenar el número de facturas en la sesión
+$_SESSION['numero_facturas'] = $numeroFacturas;
 ?>
 
 <!DOCTYPE html>
@@ -33,8 +37,34 @@ $documento = isset($_GET['documento']) ? htmlspecialchars($_GET['documento']) : 
 </head>
 
 <body class="bg-gray-200 min-h-screen flex flex-col items-center justify-center">
+    <nav class="fixed top-0 left-0 right-0 bg-white shadow-lg z-50">
+        <div class="flex justify-around py-2">
+            <a href="../php/logout_index.php" class="text-blue-500 text-center flex flex-col items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                    class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12h18M9 5l7 7-7 7" />
+                </svg>
+                <span class="text-xs">Salir</span>
+            </a>
+            <a href="Bodega.php" class="text-gray-500 text-center flex flex-col items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                <span class="text-xs">Volver</span>
+            </a>
+            <a href="#" id="openModal" class="text-gray-500 text-center flex flex-col items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                    class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                <span class="text-xs">Apps</span>
+            </a>
+        </div>
+    </nav>
+
     <!-- Header -->
-    <div class="neumorphism w-full max-w-xs p-6 text-center mb-6">
+    <div class="neumorphism w-full max-w-xs p-6 text-center mb-6 mt-16">
         <h1 class="text-yellow-600 text-2xl font-bold">Bienvenido to Automuelles</h1>
         <?php if (isset($_SESSION['user_name'])): ?>
             <h1 class="text-black-600 text-2xl font-bold"><?php echo htmlspecialchars($_SESSION['user_name']); ?>!</h1>
@@ -44,44 +74,55 @@ $documento = isset($_GET['documento']) ? htmlspecialchars($_GET['documento']) : 
         <h1 class="text-black-600 text-2xl font-bold">Pedidos Pendientes</h1>
     </div>
 
+
     <!-- Features Section -->
     <div class="w-full max-w-4xl mx-auto pb-16">
         <h2 class="text-center text-lg font-semibold text-gray-700 mb-6">Pedidos Asignados sin Revisión</h2>
 
         <?php if ($facturas): ?>
-    <div class="space-y-4">
-        <?php foreach ($facturas as $factura): ?>
-            <?php
-            // Tomamos los valores de IntTransaccion e IntDocumento de la factura
-            $intTransaccion = $factura['IntTransaccion'];
-            $intDocumento = $factura['IntDocumento'];
+            <div class="space-y-4">
+                <?php foreach ($facturas as $factura): ?>
+                    <?php
+                    // Tomamos los valores de IntTransaccion e IntDocumento de la factura
+                    $intTransaccion = $factura['IntTransaccion'];
+                    $intDocumento = $factura['IntDocumento'];
 
-            // Consulta para obtener el StrNombre desde SQL Server
-            $sql = "
-                SELECT T.StrNombre
+                    // Consulta para obtener el StrNombre desde SQL Server
+                    $sql = "SELECT 
+                    T.StrNombre,
+                    D.StrReferencia1,
+                    D.StrUsuarioGra,
+                    D.StrObservaciones
                 FROM [AutomuellesDiesel1].[dbo].[TblDocumentos] D
-                JOIN [AutomuellesDiesel1].[dbo].[TblTerceros] T ON D.StrTercero = T.StrIdTercero
-                WHERE D.IntTransaccion = :IntTransaccion AND D.IntDocumento = :IntDocumento
-            ";
-            $stmt = $conn->prepare($sql);
-            $stmt->bindParam(':IntTransaccion', $intTransaccion, PDO::PARAM_INT);
-            $stmt->bindParam(':IntDocumento', $intDocumento, PDO::PARAM_INT);
-            $stmt->execute();
+                JOIN [AutomuellesDiesel1].[dbo].[TblTerceros] T 
+                    ON D.StrTercero = T.StrIdTercero
+                WHERE D.IntTransaccion = :IntTransaccion 
+                  AND D.IntDocumento = :IntDocumento";
 
-            $documento = $stmt->fetch(PDO::FETCH_ASSOC);
-            $strNombre = $documento['StrNombre'] ?? 'N/A';  // Si no se encuentra, mostramos N/A
-            ?>
-             <div class="flex items-center justify-between p-4 bg-white rounded-lg shadow-md border border-gray-200">
-                <div>
-                    <p class="text-lg font-medium text-gray-800">Transacción: <?php echo htmlspecialchars($factura['IntTransaccion']); ?></p>
-                    <p class="text-sm text-gray-600">Documento: <?php echo htmlspecialchars($factura['IntDocumento']); ?></p>
-                    <p class="text-xs text-gray-500">Fecha: <?php echo htmlspecialchars($factura['fecha']); ?></p>
-                    <p class="text-xs text-gray-500">Datos: <?php echo htmlspecialchars($factura['StrReferencia1']); ?></p>
-                    <p class="text-xs text-gray-500">Forma de pago: <?php echo htmlspecialchars($factura['StrReferencia3']); ?></p>
-                    <p class="text-xs text-gray-500">Novedad: <?php echo htmlspecialchars($factura['novedad'] ?? 'N/A'); ?></p>
-                    <p class="text-xs text-gray-500">Descripción: <?php echo htmlspecialchars($factura['descripcion'] ?? 'N/A'); ?></p>
-                    <p class="text-xs text-gray-500">StrNombre: <?php echo htmlspecialchars($strNombre); ?></p>
-                </div>
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bindParam(':IntTransaccion', $intTransaccion, PDO::PARAM_INT);
+                    $stmt->bindParam(':IntDocumento', $intDocumento, PDO::PARAM_INT);
+                    $stmt->execute();
+
+                    $documento = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                    // Asignación correcta de valores con verificación
+                    $strNombre = $documento['StrNombre'] ?? 'N/A';
+                    $StrUsuarioGra = $documento['StrUsuarioGra'] ?? 'N/A';
+                    $strReferencia1 = !empty($documento['StrReferencia1']) ? 'DOMICILIO' : 'MOSTRADOR';
+                    $strObservaciones = $documento['StrObservaciones'] ?? 'N/A';
+                    ?>
+
+                    <div class="flex items-center justify-between p-4 bg-white rounded-lg shadow-md border border-gray-200">
+                        <div>
+                            <p class="text-lg font-medium text-gray-800">Transacción: <?php echo htmlspecialchars($factura['IntTransaccion']); ?></p>
+                            <p class="text-sm text-gray-600">Documento: <?php echo htmlspecialchars($factura['IntDocumento']); ?></p>
+                            <p class="text-xs text-gray-500">Fecha: <?php echo htmlspecialchars($factura['fecha']); ?></p>
+                            <p class="text-xs text-gray-500">StrNombre: <?php echo htmlspecialchars($strNombre); ?></p>
+                            <p class="text-xs text-gray-500">Entregar En: <?php echo htmlspecialchars($strReferencia1); ?></p>
+                            <p class="text-xs text-gray-500">Vendedor: <?php echo htmlspecialchars($StrUsuarioGra); ?></p>
+                            <p class="text-xs text-gray-500">Observaciones: <?php echo htmlspecialchars($strObservaciones); ?></p>
+                        </div>
                         <div>
                             <form action="picking_factura.php" method="GET">
                                 <input type="hidden" name="factura_id" value="<?php echo $factura['factura_id']; ?>">
@@ -97,45 +138,24 @@ $documento = isset($_GET['documento']) ? htmlspecialchars($_GET['documento']) : 
             <p class="text-center text-gray-500">No hay pedidos asignados sin revisión.</p>
         <?php endif; ?>
     </div>
-
-    <!-- Footer Navigation -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-white shadow-lg">
-        <div class="flex justify-around py-2">
-            <a href="../php/logout_index.php" class="text-blue-500 text-center flex flex-col items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                    class="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12h18M9 5l7 7-7 7" />
-                </svg>
-                <span class="text-xs">Salir</span>
-            </a>
-            <a href="Bodega.php" class="text-gray-500 text-center flex flex-col items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                    class="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                </svg>
-                <span class="text-xs">Volver</span>
-            </a>
-            <a href="#" id="openModal" class="text-gray-500 text-center flex flex-col items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                    class="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-                <span class="text-xs">Apps</span>
-            </a>
-        </div>
-    </nav>
     <script>
-        // Reproducir el sonido si hay un mensaje de servicio
-        window.onload = function() {
-            var mensaje = "<?php echo isset($_SESSION['mensaje_servicio']) ? $_SESSION['mensaje_servicio'] : ''; ?>";
-            if (mensaje !== "") {
-                var audio = new Audio('../assets/audio/notification.mp3'); // Ruta al archivo de sonido
-                audio.play(); // Reproducir sonido
-                <?php unset($_SESSION['mensaje_servicio']); ?> // Limpiar el mensaje
-            }
-        };
-    </script>
+    window.onload = function() {
+        var numeroFacturas = <?php echo isset($_SESSION['numero_facturas']) ? $_SESSION['numero_facturas'] : 0; ?>;
+        
+        if (numeroFacturas > 0) {
+            var audio = new Audio('../assets/audio/notification.mp3'); // Ruta al archivo de sonido
+            audio.play(); // Reproducir sonido
+
+            // Mostrar alerta con la cantidad de facturas pendientes
+            alert("Tienes " + numeroFacturas + " facturas pendientes por revisión.");
+        }
+    };
+
+    // Recargar la página cada 30 segundos
+    setInterval(function() {
+        location.reload();
+    }, 30000); // 30000 milisegundos = 30 segundos
+</script>
 </body>
 
 </html>

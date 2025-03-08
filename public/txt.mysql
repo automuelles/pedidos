@@ -1,6 +1,6 @@
-CREATE DATABASE automuelles_db;
+CREATE DATABASE automuelles;
 
-USE automuelles_db;
+USE automuelles;
 
 
 CREATE TABLE users (
@@ -27,26 +27,25 @@ CREATE TABLE active_sessions (
             id INT AUTO_INCREMENT PRIMARY KEY,
             IntTransaccion INT NOT NULL,
             IntDocumento INT NOT NULL,
-            StrReferencia1 VARCHAR(255),
-            StrReferencia3 VARCHAR(255),
             estado VARCHAR(50) DEFAULT 'pendiente',
             fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            UNIQUE (IntTransaccion, IntDocumento)  -- Garantizar que no se repitan combinaciones
+            UNIQUE (IntTransaccion, IntDocumento)
         );
 
 
 
-    CREATE TABLE IF NOT EXISTS factura_gestionada (
+   CREATE TABLE factura_gestionada (
     id INT AUTO_INCREMENT PRIMARY KEY,
     factura_id INT NOT NULL,
     user_id INT NOT NULL,
+    user_name VARCHAR(255),
     estado VARCHAR(50) DEFAULT 'gestionado',
     fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (factura_id) REFERENCES factura(id) ON DELETE CASCADE
 );
 
-ALTER TABLE factura_gestionada ADD COLUMN user_name VARCHAR(255);
+
 
 CREATE TABLE IF NOT EXISTS estado (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -161,3 +160,70 @@ CREATE TABLE gestiones (
 );
 
 ALTER TABLE gestiones ADD COLUMN estado VARCHAR(50);
+
+CREATE TABLE facturas_zonificacion (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    transaccion VARCHAR(50) NOT NULL,
+    documento VARCHAR(50) NOT NULL,
+    zonificacion VARCHAR(50) NOT NULL,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE revision_motocicleta (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    fecha_revision DATE NOT NULL,
+    placa VARCHAR(10) NOT NULL,
+    mensajero VARCHAR(100) NOT NULL,
+    tipo_identificacion VARCHAR(10) NOT NULL,
+    numero_identificacion VARCHAR(20) NOT NULL,
+    kilometraje_inicio INT NOT NULL,
+    salud_cumple TINYINT(1) DEFAULT 0,
+    salud_no_cumple TINYINT(1) DEFAULT 0,
+    licencia_cumple TINYINT(1) DEFAULT 0,
+    licencia_no_cumple TINYINT(1) DEFAULT 0,
+    soat_cumple TINYINT(1) DEFAULT 0,
+    soat_no_cumple TINYINT(1) DEFAULT 0,
+    aceite_cumple TINYINT(1) DEFAULT 0,
+    aceite_no_cumple TINYINT(1) DEFAULT 0,
+    gasolina_cumple TINYINT(1) DEFAULT 0,
+    gasolina_no_cumple TINYINT(1) DEFAULT 0,
+    bateria_cumple TINYINT(1) DEFAULT 0,
+    bateria_no_cumple TINYINT(1) DEFAULT 0,
+    guaya_cumple TINYINT(1) DEFAULT 0,
+    guaya_no_cumple TINYINT(1) DEFAULT 0,
+    freno_del_cumple TINYINT(1) DEFAULT 0,
+    freno_del_no_cumple TINYINT(1) DEFAULT 0,
+    freno_tras_cumple TINYINT(1) DEFAULT 0,
+    freno_tras_no_cumple TINYINT(1) DEFAULT 0,
+    llantas_cumple TINYINT(1) DEFAULT 0,
+    llantas_no_cumple TINYINT(1) DEFAULT 0,
+    manijas_cumple TINYINT(1) DEFAULT 0,
+    manijas_no_cumple TINYINT(1) DEFAULT 0,
+    estribos_cumple TINYINT(1) DEFAULT 0,
+    estribos_no_cumple TINYINT(1) DEFAULT 0,
+    luces_del_cumple TINYINT(1) DEFAULT 0,
+    luces_del_no_cumple TINYINT(1) DEFAULT 0,
+    luz_freno_cumple TINYINT(1) DEFAULT 0,
+    luz_freno_no_cumple TINYINT(1) DEFAULT 0,
+    direcc_del_cumple TINYINT(1) DEFAULT 0,
+    direcc_del_no_cumple TINYINT(1) DEFAULT 0,
+    direcc_tras_cumple TINYINT(1) DEFAULT 0,
+    direcc_tras_no_cumple TINYINT(1) DEFAULT 0,
+    bocina_cumple TINYINT(1) DEFAULT 0,
+    bocina_no_cumple TINYINT(1) DEFAULT 0,
+    espejos_cumple TINYINT(1) DEFAULT 0,
+    espejos_no_cumple TINYINT(1) DEFAULT 0,
+    carroceria_cumple TINYINT(1) DEFAULT 0,
+    carroceria_no_cumple TINYINT(1) DEFAULT 0,
+    epp_cumple TINYINT(1) DEFAULT 0,
+    epp_no_cumple TINYINT(1) DEFAULT 0,
+    encendido_cumple TINYINT(1) DEFAULT 0,
+    encendido_no_cumple TINYINT(1) DEFAULT 0,
+    casco_cumple TINYINT(1) DEFAULT 0,
+    casco_no_cumple TINYINT(1) DEFAULT 0,
+    aseo_cumple TINYINT(1) DEFAULT 0,
+    aseo_no_cumple TINYINT(1) DEFAULT 0,
+    observaciones TEXT,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    usuario_creacion VARCHAR(50)
+);

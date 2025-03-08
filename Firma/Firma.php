@@ -91,10 +91,6 @@ WHERE D.IntTransaccion = :IntTransaccion
 
             </form>
             </form>
-            <a href="buscar_factura.php?IntTransaccion=42&IntDocumento=3500"
-                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded inline-block text-center mt-4">
-                Buscar Factura firmada
-            </a>
             <div class="container mx-auto mt-10 p-5 bg-white rounded-lg shadow-md">
                 <div class="text-center mb-5">
                     <h1 class="text-3xl font-bold">COMPROBANTE DE ENTREGA</h1>
@@ -201,6 +197,14 @@ WHERE D.IntTransaccion = :IntTransaccion
 
                     <!-- Botón para guardar -->
                     <button id="saveSignatureBtn" class="mt-5 px-4 py-2 bg-blue-600 text-white rounded">Guardar Documento</button>
+
+                    <?php if (!empty($documentos)): ?>
+                        <button type="button"
+                            class="mt-5 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                            onclick="window.open('../Firma/factura_firmada/<?php echo $IntTransaccion . '-' . $IntDocumento; ?>.pdf', '_blank')">
+                            Ver PDF
+                        </button>
+                    <?php endif; ?>
 
                 </div>
             </div>

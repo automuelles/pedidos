@@ -2,7 +2,6 @@
 // Incluir archivos necesarios
 include('../php/login.php');
 include('../php/validate_session.php');
-include('GuardarFactura.php');
 
 // Obtener el ID de la factura desde la URL
 $factura_id = isset($_GET['factura_id']) ? (int) $_GET['factura_id'] : 0;
@@ -153,6 +152,7 @@ if ($factura_id > 0) {
                         <option value="ubicacion_sede_principal">Ubicación Mercancía Sede Principal</option>
                         <option value="ubicacion_ambas_sedes">Ubicación Mercancía Ambas Sedes</option>
                         <option value="ubicacion_ambas_sedes">Mercancia de Mostrador</option>
+                        <option value="ubicacion_ambas_sedes">Compra en el barrio</option>
                     </select>
                 </div>
                 <div class="mb-4">

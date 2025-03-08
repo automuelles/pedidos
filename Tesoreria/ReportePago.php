@@ -153,6 +153,7 @@ $stmtMySQL->execute($params);
         echo "<select name='forma_pago' class='border border-gray-300 px-2 py-1'>";
         echo "<option value='total'>Pago Total</option>";
         echo "<option value='parcial'>Pago Parcial</option>";
+        echo "<option value='parcial'>Credito</option>";
         echo "</select>";
         echo "</td>";
         echo "<td class='border border-gray-300 px-4 py-2'><input type='number' name='total_recibido' class='border border-gray-300 px-2 py-1' value='" . number_format($rowSQLServer['IntTotal'], 0) . "' /></td>";

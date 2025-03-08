@@ -48,8 +48,11 @@ try {
         ORDER BY d.IntDocumento
     ";
 
-    // Ejecutar la consulta
-    $stmt = $conn->prepare($query);
+$mensajero_id = isset($_POST['mensajero']) ? (int) $_POST['mensajero'] : 0;
+
+// Ejecutar la consulta
+$stmt = $conn->prepare($query);
+
     $stmt->execute();
     $facturas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -86,7 +89,17 @@ try {
             }
         }
     }
+    // Insertar en factura_gestionada
+    if ($mensajero_id > 0) {
+        $sql_insert = "INSERT INTO factura_gestionada (factura_id, user_id, user_name, estado) VALUES (:factura_id, :user_id, :user_name, 'enviado')";
+        $stmt_insert = $pdo->prepare($sql_insert);
+        $stmt_insert->bindParam(':factura_id', $factura_id, PDO::PARAM_INT);
+        $stmt_insert->bindParam(':user_id', $mensajero_id, PDO::PARAM_INT);
+        $stmt_insert->bindParam(':user_name', $usuarioConectado, PDO::PARAM_STR);
+        $stmt_insert->execute();
+    }
 } catch (PDOException $e) {
+
     echo "Error al guardar las facturas: " . $e->getMessage();
 }
 ?>

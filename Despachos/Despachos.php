@@ -26,6 +26,31 @@ include('../php/validate_session.php');
 </head>
 
 <body class="bg-gray-200 min-h-screen flex flex-col items-center justify-center">
+<nav class="fixed top-0 left-0 right-0 bg-white shadow-lg z-50">
+        <div class="flex justify-around py-2">
+            <a href="../php/logout_index.php" class="text-blue-500 text-center flex flex-col items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                    class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12h18M9 5l7 7-7 7" />
+                </svg>
+                <span class="text-xs">Salir</span>
+            </a>
+            <a href="" class="text-gray-500 text-center flex flex-col items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                <span class="text-xs">Volver</span>
+            </a>
+            <a href="#" id="openModal" class="text-gray-500 text-center flex flex-col items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                    class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                <span class="text-xs">Apps</span>
+            </a>
+        </div>
+    </nav>
     <!-- Header -->
     <div class="neumorphism w-full max-w-xs p-6 text-center mb-6">
         <h1 class="text-yellow-600 text-2xl font-bold">Bienvenido to Automuelles</h1>
@@ -95,37 +120,27 @@ include('../php/validate_session.php');
                 <!-- Etiqueta como enlace -->
                 <a href="PedidosGestionados.php" class="text-sm text-gray-700 hover:underline">Historial Domicilios</a>
             </div>
+            <div class="neumorphism p-4 text-center">
+                <!-- Icono de Bodega -->
+                <div
+                    class="neumorphism-icon w-10 h-10 bg-purple-400 rounded-full mx-auto mb-2 flex items-center justify-center">
+                    <i class="fa-solid fa-car text-white"></i>
+                </div>
+                <!-- Etiqueta como enlace -->
+                <a href="PedidosenTranscurso.php" class="text-sm text-gray-700 hover:underline">Pedidos en Transcurso</a>
+            </div>
+            <div class="neumorphism p-4 text-center">
+                <!-- Icono de Bodega -->
+                <div
+                    class="neumorphism-icon w-10 h-10 bg-purple-400 rounded-full mx-auto mb-2 flex items-center justify-center">
+                    <i class="fa-solid fa-car text-white"></i>
+                </div>
+                <!-- Etiqueta como enlace -->
+                <a href="./pedidos Asignados/pedidospendientes.php" class="text-sm text-gray-700 hover:underline">Pedidos Asignados</a>
+            </div>
         </div>
     </div>
 
-
-    <!-- Footer Navigation -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-white shadow-lg">
-        <div class="flex justify-around py-2">
-            <a href="../php/logout_index.php" class="text-blue-500 text-center flex flex-col items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                    class="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12h18M9 5l7 7-7 7" />
-                </svg>
-                <span class="text-xs">Salir</span>
-            </a>
-            <a href="../Firma/Firma.php" target="_blank" class="text-gray-500 text-center flex flex-col items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                    class="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                </svg>
-                <span class="text-xs">Firma Facturas</span>
-            </a>
-            <a href="#" id="openModal" class="text-gray-500 text-center flex flex-col items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                    class="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-                <span class="text-xs">Apps</span>
-            </a>
-        </div>
-    </nav>
     <script>
         // Recargar la página cada 30 segundos
         setInterval(function() {

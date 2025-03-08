@@ -34,7 +34,7 @@ include('../php/validate_session.php');
         <?php else: ?>
             <h1 class="text-black-600 text-2xl font-bold">No estás autenticado.</h1>
         <?php endif; ?>
-        <h1 class="text-black-600 text-2xl font-bold">Despachos</h1>
+        <h1 class="text-black-600 text-2xl font-bold">Mensajeria</h1>
     </div>
 
     <!-- Features Section -->
@@ -75,7 +75,7 @@ include('../php/validate_session.php');
                     <i class="fa-solid fa-lock text-white"></i>
                 </div>
                 <!-- Etiqueta como enlace -->
-                <a href="" class="text-sm text-gray-700 hover:underline">Registro Viajes</a>
+                <a href="RegistroViajes.php" class="text-sm text-gray-700 hover:underline">Registro Viajes</a>
             </div>
             <div class="neumorphism p-4 text-center">
                 <!-- Icono de Bodega -->
@@ -84,7 +84,7 @@ include('../php/validate_session.php');
                     <i class="fa-solid fa-car text-white"></i>
                 </div>
                 <!-- Etiqueta como enlace -->
-                <a href="#" class="text-sm text-gray-700 hover:underline">Revision Diaria</a>
+                <a href="RevisionDiaria.php" class="text-sm text-gray-700 hover:underline">Revision Diaria</a>
             </div>
             <div class="neumorphism p-4 text-center">
                 <!-- Icono de Bodega -->
@@ -95,6 +95,7 @@ include('../php/validate_session.php');
                 <!-- Etiqueta como enlace -->
                 <a href="#" class="text-sm text-gray-700 hover:underline">#</a>
             </div>
+            
         </div>
     </div>
 

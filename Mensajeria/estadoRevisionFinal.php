@@ -105,6 +105,14 @@ if ($transaccion > 0 && $documento > 0) {
         <h1 class="text-black-600 text-2xl font-bold">Bodega</h1>
     </div>
 
+    <!-- Boton de firmar -->
+<button type="button"
+        class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
+        onclick="window.open('Firmar.php?IntTransaccion=<?php echo $transaccion; ?>&IntDocumento=<?php echo $documento; ?>', '_blank')">
+        Firmar
+</button>
+
+      <!-- Cuerpo de la pagina  -->
     <div class="w-full max-w-xs pb-16">
         <div class="w-full max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md mt-10 pb-24"> <!-- Agregar pb-24 para dar espacio abajo -->
             <h1 class="text-2xl font-bold text-gray-800 mb-4">Detalles de la Factura</h1>
@@ -137,18 +145,19 @@ if ($transaccion > 0 && $documento > 0) {
             }
             ?>
 
-            <button type="button"
-                class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
-                onclick="updateEstado()">Guardar</button>
-                <?php
-            $intTransaccion = htmlspecialchars($factura['IntTransaccion']);
-            $intDocumento = htmlspecialchars($factura['IntDocumento']);
-            ?>
-            <button type="button"
-                class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
-                onclick="window.open('ReporteFinal.php?IntTransaccion=<?php echo $intTransaccion; ?>&IntDocumento=<?php echo $intDocumento; ?>', '_blank')">
-                Reportar Pago
-            </button>
+<button type="button"
+        class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 mr-4"
+        onclick="updateEstado()">Guardar</button>
+<?php
+    $intTransaccion = htmlspecialchars($factura['IntTransaccion']);
+    $intDocumento = htmlspecialchars($factura['IntDocumento']);
+?>
+<button type="button"
+        class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 mr-4"
+        onclick="window.open('ReporteFinal.php?IntTransaccion=<?php echo $intTransaccion; ?>&IntDocumento=<?php echo $intDocumento; ?>', '_blank')">
+        Reportar Pago
+</button>
+
         </div>
     </div>
     <!-- Footer Navigation -->

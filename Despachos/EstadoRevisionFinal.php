@@ -182,7 +182,7 @@ if ($transaccion > 0 && $documento > 0) {
             const IntDocumento = urlParams.get('IntDocumento');
 
             // Redirigir a un archivo PHP que maneje la actualización y copia de datos
-            window.location.href = 'actualizar_estadoFinal.php?IntTransaccion=' + IntTransaccion + '&IntDocumento=' + IntDocumento;
+            window.location.href = 'AsignarMensajero.php?IntTransaccion=' + IntTransaccion + '&IntDocumento=' + IntDocumento;
         }
     </script>
 </body>

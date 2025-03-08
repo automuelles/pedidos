@@ -11,10 +11,10 @@ if ($_SESSION['user_role'] !== 'mensajeria') {
 $user_name = $_SESSION['user_name'];
 
 // Query to fetch 'despachos' state invoices, including fields from factura table
-$sql = "SELECT fg.*, f.IntTransaccion, f.IntDocumento, f.StrReferencia1, f.StrReferencia3
+$sql = "SELECT fg.*, f.IntTransaccion, f.IntDocumento
         FROM factura_gestionada fg
         JOIN factura f ON fg.factura_id = f.id
-        WHERE fg.estado = 'Mensajeria' AND fg.user_name = ?";
+        WHERE fg.estado = 'Entregado' AND fg.user_name = ?";
 $stmt = $pdo->prepare($sql);
 $stmt->execute([$user_name]);
 

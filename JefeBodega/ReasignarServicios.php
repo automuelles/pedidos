@@ -3,12 +3,9 @@ include('../php/db.php');
 include('../php/login.php');
 include('../php/validate_session.php');
 
-if ($_SESSION['user_role'] !== 'jefeBodega') {
-    die("Acceso denegado.");
-}
 
 try {
-    $sql_servicios = "SELECT fg.id, fg.user_name, fg.estado, f.StrReferencia1, f.StrReferencia3, f.IntTransaccion, f.IntDocumento
+    $sql_servicios = "SELECT fg.id, fg.user_name, fg.estado, f.IntTransaccion, f.IntDocumento
                       FROM factura_gestionada fg
                       LEFT JOIN factura f ON fg.factura_id = f.id
                       WHERE fg.estado = 'gestionado'";
@@ -77,6 +74,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 
 <body class="bg-gray-200 min-h-screen flex flex-col items-center justify-center">
+    <nav class="fixed top-0 left-0 right-0 bg-white shadow-lg z-50">
+        <div class="flex justify-around py-2">
+            <a href="../php/logout_index.php" class="text-blue-500 text-center flex flex-col items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                    class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12h18M9 5l7 7-7 7" />
+                </svg>
+                <span class="text-xs">Salir</span>
+            </a>
+            <a href="Bodega.php" class="text-gray-500 text-center flex flex-col items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                <span class="text-xs">Volver</span>
+            </a>
+            <a href="#" id="openModal" class="text-gray-500 text-center flex flex-col items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                    class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                <span class="text-xs">Apps</span>
+            </a>
+        </div>
+    </nav>
     <div class="neumorphism w-full max-w-xs p-6 text-center mb-6">
         <h1 class="text-yellow-600 text-2xl font-bold">Bienvenido to Automuelles</h1>
         <?php if (isset($_SESSION['user_name'])): ?>
@@ -92,17 +114,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php if (!empty($servicios)): ?>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 <?php foreach ($servicios as $servicio): ?>
+                    <?php
+                    // Obtener IntTransaccion e IntDocumento del servicio
+                    $intTransaccion = $servicio['IntTransaccion'];
+                    $intDocumento = $servicio['IntDocumento'];
+
+                    // Consulta en SQL Server para obtener más detalles del documento
+                    $sql = "SELECT 
+                        T.StrNombre,
+                        D.StrReferencia1,
+                        D.StrUsuarioGra,
+                        D.StrObservaciones
+                    FROM [AutomuellesDiesel1].[dbo].[TblDocumentos] D
+                    JOIN [AutomuellesDiesel1].[dbo].[TblTerceros] T 
+                        ON D.StrTercero = T.StrIdTercero
+                    WHERE D.IntTransaccion = :IntTransaccion 
+                      AND D.IntDocumento = :IntDocumento";
+
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bindParam(':IntTransaccion', $intTransaccion, PDO::PARAM_INT);
+                    $stmt->bindParam(':IntDocumento', $intDocumento, PDO::PARAM_INT);
+                    $stmt->execute();
+
+                    $documento = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                    // Asignar valores con verificación de existencia
+                    $strNombre = $documento['StrNombre'] ?? 'N/A';
+                    $StrUsuarioGra = $documento['StrUsuarioGra'] ?? 'N/A';
+                    $strReferencia1 = !empty($documento['StrReferencia1']) ? 'DOMICILIO' : 'MOSTRADOR';
+                    $strObservaciones = $documento['StrObservaciones'] ?? 'N/A';
+                    ?>
+
                     <form action="" method="POST" class="bg-white shadow-md rounded-2xl p-4 border border-gray-200">
                         <input type="hidden" name="servicio_id" value="<?= $servicio['id'] ?>">
-                        <p class="text-gray-600"><strong>Transaccion:</strong> <?= htmlspecialchars($servicio['IntTransaccion']) ?></p>
-                        <p class="text-gray-600"><strong>Numero de Factura:</strong> <?= htmlspecialchars($servicio['IntDocumento']) ?></p>
-                        <p class="text-gray-600"><strong>Estado:</strong> <?= htmlspecialchars($servicio['estado']) ?></p>
+                        <p class="text-gray-600"><strong>Transacción:</strong> <?= htmlspecialchars($intTransaccion) ?></p>
+                        <p class="text-gray-600"><strong>Número de Factura:</strong> <?= htmlspecialchars($intDocumento) ?></p>
+                        <p class="text-gray-600"><strong>Estado:</strong>
+                            <?= htmlspecialchars(str_replace('gestionado', 'asignado', $servicio['estado'])) ?>
+                        </p>
                         <p class="text-gray-600"><strong>Asignado a:</strong> <?= htmlspecialchars($servicio['user_name']) ?></p>
+
+                        <!-- Nueva información obtenida de SQL Server -->
+                        <p class="text-gray-600"><strong>Cliente:</strong> <?= htmlspecialchars($strNombre) ?></p>
+                        <p class="text-gray-600"><strong>Entregar en:</strong> <?= htmlspecialchars($strReferencia1) ?></p>
+                        <p class="text-gray-600"><strong>Vendedor:</strong> <?= htmlspecialchars($StrUsuarioGra) ?></p>
+                        <p class="text-gray-600"><strong>Observaciones:</strong> <?= htmlspecialchars($strObservaciones) ?></p>
 
                         <label for="user-select-<?= $servicio['id'] ?>" class="block text-sm font-medium text-gray-700 mt-4">
                             Reasignar a:
                         </label>
-                        <select name="new_user_name" id="user-select-<?= $servicio['id'] ?>" 
+                        <select name="new_user_name" id="user-select-<?= $servicio['id'] ?>"
                             class="w-full mt-2 p-2 border rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500">
                             <option value="">Seleccionar usuario</option>
                             <?php foreach ($usuarios as $usuario): ?>
@@ -111,7 +172,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 </option>
                             <?php endforeach; ?>
                         </select>
-
+                        <a href="ver.php?transaccion=<?= urlencode($intTransaccion) ?>&documento=<?= urlencode($intDocumento) ?>"
+                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-lg inline-block">
+                            Ver
+                        </a>
                         <button type="submit" class="mt-4 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg w-full">
                             Guardar
                         </button>
@@ -122,36 +186,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <p class="text-gray-600 text-center mt-8">No hay servicios gestionados en este momento.</p>
         <?php endif; ?>
     </div>
+
     <div id="notification" class="notification"></div>
-     <!-- Footer Navigation -->
-     <nav class="fixed bottom-0 left-0 right-0 bg-white shadow-lg">
-        <div class="flex justify-around py-2">
-            <a href="../php/logout_index.php" class="text-blue-500 text-center flex flex-col items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                    class="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12h18M9 5l7 7-7 7" />
-                </svg>
-                <span class="text-xs">Salir</span>
-            </a>
-            <a href="Bodega.php" class="text-gray-500 text-center flex flex-col items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                    class="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                </svg>
-                <span class="text-xs">Volver</span>
-            </a>
-            <a href="#" id="openModal" class="text-gray-500 text-center flex flex-col items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                    class="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-                <span class="text-xs">Apps</span>
-            </a>
-        </div>
-    </nav>
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             const message = <?= json_encode($message) ?>;
             if (message) {
                 const notification = document.getElementById("notification");
@@ -167,7 +205,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         setInterval(function() {
             location.reload();
-        }, 30000); 
+        }, 30000);
     </script>
 </body>
 

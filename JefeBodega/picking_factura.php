@@ -2,7 +2,6 @@
 // Incluir archivos necesarios
 include('../php/login.php');
 include('../php/validate_session.php');
-include('GuardarFactura.php');
 include('AsignarServicios.php');
 
 // Obtener el ID de la factura desde la URL
@@ -98,66 +97,7 @@ if ($factura_id > 0) {
 </head>
 
 <body class="bg-gray-200 min-h-screen flex flex-col items-center justify-center">
-    <!-- Header -->
-    <div class="neumorphism w-full max-w-xs p-6 text-center mb-6">
-        <h1 class="text-yellow-600 text-2xl font-bold">Bienvenido to Automuelles</h1>
-        <?php if (isset($_SESSION['user_name'])): ?>
-            <h1 class="text-black-600 text-2xl font-bold"><?php echo htmlspecialchars($_SESSION['user_name']); ?>!</h1>
-        <?php else: ?>
-            <h1 class="text-black-600 text-2xl font-bold">No estás autenticado.</h1>
-        <?php endif; ?>
-        <h1 class="text-black-600 text-2xl font-bold">Bodega</h1>
-    </div>
-
-    <div class="w-full max-w-xs pb-16">
-        <div class="w-full max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md mt-10 pb-24"> <!-- Agregar pb-24 para dar espacio abajo -->
-            <h1 class="text-2xl font-bold text-gray-800 mb-4">Detalles de la Factura</h1>
-
-            <?php
-            // Mostrar el número de factura y la transacción
-            if (isset($factura['IntTransaccion']) && isset($factura['IntDocumento'])) {
-                echo "<h1 class='text-xl font-semibold text-gray-700 mb-4'> " . htmlspecialchars($factura['IntDocumento']) . " - " . htmlspecialchars($factura['IntTransaccion']) . "</h1>";
-            } else {
-                echo "<p class='text-red-500'>No se encontraron los datos de la factura.</p>";
-            }
-            ?>
-
-            <?php
-            // Mostrar los detalles de la factura sin agrupar productos
-            if ($results) {
-                foreach ($results as $factura_detail) {
-                    // Mostrar todos los detalles de la factura
-                    // Casilla de verificación
-                    echo "<input type='checkbox' name='productos[]' value='" . htmlspecialchars($factura_detail['StrProducto']) . "' class='form-checkbox text-blue-500'>";
-                    echo "<p class='text-lg text-gray-700'><strong>Cantidad:</strong> " . number_format((float) $factura_detail['IntCantidad'], 2, '.', '') . "</p>";
-                    echo "<p class='text-lg text-gray-700'><strong>Producto:</strong> " . htmlspecialchars($factura_detail['StrProducto']) . "</p>";
-                    echo "<p class='text-lg text-gray-700'><strong>Descripcion:</strong> " . htmlspecialchars($factura_detail['StrDescripcion']) . "</p>";
-                    echo "<p class='text-lg text-gray-700'><strong>Observaciones:</strong> " . htmlspecialchars($factura_detail['IntBodega']) . "</p>";
-                    echo "<p class='text-lg text-gray-700'><strong>Ubicación:</strong> " . htmlspecialchars($factura_detail['StrParam1']) . "</p>";
-                    echo "<p class='text-lg text-gray-700'><strong>Vendedor:</strong> " . htmlspecialchars($factura_detail['StrUsuarioGra']) . "</p>";
-                    echo "<hr class='my-4' />";
-                }
-                echo "<p class='text-lg text-gray-700'><strong>Observaciones:</strong> " . htmlspecialchars($factura_detail['StrObservaciones']) . "</p>";
-            } else {
-                echo "<p class='text-red-500'>No se encontraron detalles para la factura solicitada.</p>";
-            }
-            ?>
-            <button type="button"
-                class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
-                onclick="updateEstado()">
-                Guardar
-            </button>
-            <button type="button"
-                class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
-                onclick="reportarNovedad(<?php echo $factura['id']; ?>)">
-                Reportar Novedad
-            </button>
-        </div>
-    </div>
-
-
-    <!-- Footer Navigation -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-white shadow-lg">
+    <nav class="fixed top-0 left-0 right-0 bg-white shadow-lg z-50">
         <div class="flex justify-around py-2">
             <a href="../php/logout_index.php" class="text-blue-500 text-center flex flex-col items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
@@ -166,9 +106,8 @@ if ($factura_id > 0) {
                 </svg>
                 <span class="text-xs">Salir</span>
             </a>
-            <a href="pedidosPendientes.php" class="text-gray-500 text-center flex flex-col items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                    class="w-6 h-6">
+            <a href="Bodega.php" class="text-gray-500 text-center flex flex-col items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                 </svg>
                 <span class="text-xs">Volver</span>
@@ -183,6 +122,75 @@ if ($factura_id > 0) {
             </a>
         </div>
     </nav>
+    <div class="w-full max-w-5xl mx-auto p-6 bg-white rounded-lg shadow-md mt-10 pb-24 overflow-x-auto">
+        <h1 class="text-2xl font-bold text-gray-800 mb-4">Detalles de la Factura</h1>
+
+        <?php
+        // Mostrar el número de factura y la transacción
+        if (isset($factura['IntTransaccion']) && isset($factura['IntDocumento'])) {
+            echo "<h1 class='text-xl font-semibold text-gray-700 mb-4'>" . htmlspecialchars($factura['IntDocumento']) . " - " . htmlspecialchars($factura['IntTransaccion']) . "</h1>";
+        } else {
+            echo "<p class='text-red-500'>No se encontraron los datos de la factura.</p>";
+        }
+        ?>
+
+        <?php  if (!empty($results)) {
+            $observaciones = htmlspecialchars($results[0]['StrObservaciones'] ?? 'Sin observaciones');
+            $vendedor = htmlspecialchars($results[0]['StrUsuarioGra'] ?? 'No especificado');
+
+            echo "<p class='text-lg text-gray-700'><strong>Observaciones:</strong> $observaciones</p>";
+            echo "<p class='text-lg text-gray-700'><strong>Vendedor:</strong> $vendedor</p>";
+        ?>
+            <table class="w-full border-collapse border border-gray-300 text-center mt-4">
+                <thead>
+                    <tr class="bg-gray-100">
+                        <th class="border border-gray-300 p-2">Seleccionar</th>
+                        <th class="border border-gray-300 p-2">Cantidad</th>
+                        <th class="border border-gray-300 p-2">Producto</th>
+                        <th class="border border-gray-300 p-2">Descripción</th>
+                        <th class="border border-gray-300 p-2">Bodega</th>
+                        <th class="border border-gray-300 p-2">Ubicación</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($results as $factura_detail) : ?>
+                        <tr>
+                            <td class="border border-gray-300 p-2">
+                            <input type="checkbox" name="productos[]" value="<?= htmlspecialchars($factura_detail['StrProducto']) ?>" class="form-checkbox text-blue-500" required>
+                            </td>
+                            <td class="border border-gray-300 p-2"><?= number_format((float) $factura_detail['IntCantidad'], 2, '.', '') ?></td>
+                            <td class="border border-gray-300 p-2"><?= htmlspecialchars($factura_detail['StrProducto']) ?></td>
+                            <td class="border border-gray-300 p-2"><?= htmlspecialchars($factura_detail['StrDescripcion']) ?></td>
+                            <td class="border border-gray-300 p-2"><?= htmlspecialchars($factura_detail['IntBodega']) ?></td>
+                            <td class="border border-gray-300 p-2"><?= htmlspecialchars($factura_detail['StrParam1']) ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+
+            <!-- Mostrar Observaciones al final de la tabla -->
+            <p class="text-lg text-gray-700 mt-4"><strong>Observaciones:</strong> <?= htmlspecialchars($results[0]['StrObservaciones'] ?? 'Sin observaciones') ?></p>
+
+        <?php } else {
+            echo "<p class='text-red-500'>No se encontraron detalles para la factura solicitada.</p>";
+        } ?>
+
+        <!-- Botones de acción -->
+        <div class="mt-6">
+            <button type="button"
+                class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
+                onclick="updateEstado()">
+                Guardar
+            </button>
+            <button type="button"
+                class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
+                onclick="reportarNovedad(<?php echo $factura['id']; ?>)">
+                Reportar Novedad
+            </button>
+        </div>
+    </div>
+
+
     <script>
         // Recargar la página cada 30 segundos
         setInterval(function() {
@@ -234,14 +242,14 @@ if ($factura_id > 0) {
         }
     </script>
     <script>
-    function reportarNovedad(facturaId) {
-        if (!facturaId) {
-            alert('No se pudo obtener el ID de la factura.');
-            return;
+        function reportarNovedad(facturaId) {
+            if (!facturaId) {
+                alert('No se pudo obtener el ID de la factura.');
+                return;
+            }
+            window.open('ReportesNovedades.php?factura_id=' + facturaId, '_blank');
         }
-        window.open('ReportesNovedades.php?factura_id=' + facturaId, '_blank');
-    }
-</script>
+    </script>
 </body>
 
 </html>

@@ -2,7 +2,6 @@
 // Incluir archivos necesarios
 include('../php/login.php');
 include('../php/validate_session.php');
-include('GuardarFactura.php');
 include('AsignarServicios.php');
 
 // Obtener los valores de los parámetros desde la URL
@@ -146,6 +145,7 @@ if ($transaccion > 0 && $documento > 0) {
                         <option value="mercancia_no_encontrada">Mercancía No Encontrada</option>
                         <option value="Referencias_Equivocadas">Referencias Equivocadas</option>
                         <option value="Referencias_Equivocadas">Mercancia de Mostrador</option>
+                        <option value="Referencias_Equivocadas">Mercancia Comprada en el barrio</option>
                     </select>
                 </div>
                 <div class="mb-4">

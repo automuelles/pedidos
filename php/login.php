@@ -71,7 +71,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 header("Location: ../Despachos/Despachos.php");
                 exit;
             } elseif ($user['role'] === 'mensajeria') {
-                header("Location: ../Mensajeria/Mensajeria.php");
+                header("Location: ../Mensajeria/RevisionDiaria.php");
                 exit;
             } elseif ($user['role'] === 'Vendedor') {
                 header("Location: ../Vendedores/Vendedor.php");
