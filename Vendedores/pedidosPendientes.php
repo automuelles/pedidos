@@ -108,6 +108,7 @@ try {
                     $sql = "SELECT 
                             T.StrNombre,
                             D.StrReferencia1,
+                            D.StrReferencia3,
                             D.StrUsuarioGra,
                             D.StrObservaciones
                         FROM [AutomuellesDiesel1].[dbo].[TblDocumentos] D
@@ -127,6 +128,7 @@ try {
                     $strNombre = $documento['StrNombre'] ?? 'N/A';
                     $StrUsuarioGra = $documento['StrUsuarioGra'] ?? 'N/A';
                     $strReferencia1 = $documento['StrReferencia1'] ?? 'N/A';
+                    $strReferencia3 = $documento['StrReferencia3'] ?? 'N/A';
                     $strObservaciones = $documento['StrObservaciones'] ?? 'N/A';
 
                     // Mostrar solo los que tengan valor en StrReferencia1 igual de cero o vacío
@@ -138,9 +140,10 @@ try {
                                 <p class="text-sm text-gray-600">Documento: <?php echo htmlspecialchars($factura['IntDocumento']); ?></p>
                                 <p class="text-xs text-gray-500">Fecha: <?php echo htmlspecialchars($factura['fecha']); ?></p>
                                 <p class="text-xs text-gray-500">StrNombre: <?php echo htmlspecialchars($strNombre); ?></p>
-                                <p class="text-xs text-gray-500">Entregar En: <?php echo htmlspecialchars($strReferencia1); ?></p>
+                                <p class="text-xs text-gray-500">Forma de Pago: <?php echo htmlspecialchars($strReferencia1); ?></p>
                                 <p class="text-xs text-gray-500">Vendedor: <?php echo htmlspecialchars($StrUsuarioGra); ?></p>
                                 <p class="text-xs text-gray-500">Observaciones: <?php echo htmlspecialchars($strObservaciones); ?></p>
+                                <p class="text-xs text-gray-500">Forma de Pago: <?php echo htmlspecialchars($strReferencia3); ?></p>
                             </div>
                             <div>
                                 <form action="EstadoRevisionFinal.php" method="GET">
