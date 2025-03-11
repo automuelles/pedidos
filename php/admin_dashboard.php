@@ -1,137 +1,282 @@
-<?php
-include('login.php');
-include('validate_session.php');
-?>
-<!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pagina Principal Automuelles</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-    /* Neumorphism effect */
-    .neumorphism {
-        background: #e0e5ec;
-        border-radius: 15px;
-        box-shadow: 20px 20px 60px #bebebe, -20px -20px 60px #ffffff;
-    }
-
-    .neumorphism-icon {
-        box-shadow: 6px 6px 12px #bebebe, -6px -6px 12px #ffffff;
-    }
-    </style>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>
+        Admin
+    </title>
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <link rel="stylesheet" href="../Chat/chat.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
 </head>
 
-<body class="bg-gray-200 min-h-screen flex flex-col items-center justify-center">
-    <!-- Header -->
-    <div class="neumorphism w-full max-w-xs p-6 text-center mb-6">
-        <h1 class="text-blue-600 text-2xl font-bold">Bienvenido to Automuelles</h1>
-        <?php if (isset($_SESSION['user_name'])): ?>
-        <h1 class="text-green-600 text-2xl font-bold"><?php echo htmlspecialchars($_SESSION['user_name']); ?>!</h1>
-    <?php else: ?>
-        <h1 class="text-red-600 text-2xl font-bold">No estás autenticado.</h1>
-    <?php endif; ?>
-       <h1 class="text-red-600 text-2xl font-bold">Pagina Admin</h1>
-    </div>
+<body class="bg-gray-900 text-white">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div class="w-20 bg-gray-800 flex flex-col items-center py-4 space-y-4">
+            <img alt="User profile picture" class="rounded-full" height="40" src="#" width="40" />
+            <i class="fas fa-home text-xl">
+            </i>
+            <i class="fas fa-chart-bar text-xl">
+            </i>
+            <i class="fas fa-cog text-xl">
+            </i>
+            <i class="fas fa-user text-xl">
+            </i>
+            <i class="fas fa-sign-out-alt text-xl">
+            </i>
+        </div>
+        <!-- Main Content -->
+        <div class="flex-1 p-6">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-6">
+                <div class="flex items-center space-x-4">
+                    <i class="fas fa-bars text-2xl">
+                    </i>
+                    <h1 class="text-2xl font-semibold">
+                        Sales Overview
+                    </h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <input class="bg-gray-800 text-white px-4 py-2 rounded-lg" placeholder="Search here..." type="text" />
+                    <i class="fas fa-moon text-xl">
+                    </i>
+                    <i class="fas fa-bell text-xl">
+                    </i>
+                    <img alt="User profile picture" class="rounded-full" height="40" src="#" width="40" />
+                </div>
+            </div>
+            <!-- Sales Overview -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                <div class="bg-gray-800 p-6 rounded-lg col-span-2">
+                    <div class="flex justify-between items-center mb-4">
+                        <div>
+                            <h2 class="text-3xl font-semibold">
+                                $6,556.55
+                            </h2>
+                            <p class="text-gray-400">
+                                Este Mes
+                            </p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-clock text-xl">
+                            </i>
+                            <p class="text-green-500">
+                                3.2%
+                            </p>
+                        </div>
+                    </div>
+                    <div class="h-40 bg-gray-700 rounded-lg mb-4">
+                    </div>
+                    <button class="bg-blue-600 px-4 py-2 rounded-lg">
+                        Download Report
+                    </button>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-lg">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-semibold">
+                            Last month
+                        </h2>
+                        <h2 class="text-xl font-semibold">
+                            Last year
+                        </h2>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-gray-700 p-4 rounded-lg">
+                            <h3 class="text-lg font-semibold">
+                                $67.6k
+                            </h3>
+                            <p class="text-gray-400">
+                                Income
+                            </p>
+                        </div>
+                        <div class="bg-gray-700 p-4 rounded-lg">
+                            <h3 class="text-lg font-semibold">
+                                12.6K
+                            </h3>
+                            <p class="text-gray-400">
+                                Completed
+                            </p>
+                        </div>
+                        <div class="bg-gray-700 p-4 rounded-lg">
+                            <h3 class="text-lg font-semibold">
+                                143
+                            </h3>
+                            <p class="text-gray-400">
+                                Pending
+                            </p>
+                        </div>
+                        <div class="bg-gray-700 p-4 rounded-lg">
+                            <h3 class="text-lg font-semibold">
+                                651
+                            </h3>
+                            <p class="text-gray-400">
+                                Dispatch
+                            </p>
+                        </div>
+                        <div class="bg-gray-700 p-4 rounded-lg">
+                            <h3 class="text-lg font-semibold">
+                                46k
+                            </h3>
+                            <p class="text-gray-400">
+                                Products
+                            </p>
+                        </div>
+                        <div class="bg-gray-700 p-4 rounded-lg">
+                            <h3 class="text-lg font-semibold">
+                                8.8k
+                            </h3>
+                            <p class="text-gray-400">
+                                Customers
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Projects Status -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                <div class="bg-gray-800 p-6 rounded-lg">
+                    <h2 class="text-xl font-semibold mb-4">
+                        Web Design
+                    </h2>
+                    <p class="text-gray-400 mb-4">
+                        Design Learn Management System
+                    </p>
+                    <span class="bg-blue-600 text-white px-2 py-1 rounded-lg">
+                        UI/UX Design
+                    </span>
+                    <div class="flex justify-between items-center mt-4">
+                        <h3 class="text-2xl font-semibold">
+                            55.23%
+                        </h3>
+                        <p class="text-gray-400">
+                            June 08, 2021
+                        </p>
+                    </div>
+                    <div class="flex mt-4">
+                        <img alt="User profile picture" class="rounded-full" height="40" src="https://storage.googleapis.com/a1aa/image/mOLt58DG6X5oAAxDoGxqrZxyRereQID7QCMPx9ZVNnY.jpg" width="40" />
+                        <img alt="User profile picture" class="rounded-full -ml-2" height="40" src="https://storage.googleapis.com/a1aa/image/mOLt58DG6X5oAAxDoGxqrZxyRereQID7QCMPx9ZVNnY.jpg" width="40" />
+                        <img alt="User profile picture" class="rounded-full -ml-2" height="40" src="https://storage.googleapis.com/a1aa/image/mOLt58DG6X5oAAxDoGxqrZxyRereQID7QCMPx9ZVNnY.jpg" width="40" />
+                    </div>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-lg">
+                    <h2 class="text-xl font-semibold mb-4">
+                        Mobile App
+                    </h2>
+                    <p class="text-gray-400 mb-4">
+                        Ecommerce Application
+                    </p>
+                    <span class="bg-pink-600 text-white px-2 py-1 rounded-lg">
+                        Ecommerce
+                    </span>
+                    <div class="flex justify-between items-center mt-4">
+                        <h3 class="text-2xl font-semibold">
+                            14.84%
+                        </h3>
+                        <p class="text-gray-400">
+                            May 01, 2021
+                        </p>
+                    </div>
+                    <div class="flex mt-4">
+                        <img alt="User profile picture" class="rounded-full" height="40" src="https://storage.googleapis.com/a1aa/image/mOLt58DG6X5oAAxDoGxqrZxyRereQID7QCMPx9ZVNnY.jpg" width="40" />
+                        <img alt="User profile picture" class="rounded-full -ml-2" height="40" src="https://storage.googleapis.com/a1aa/image/mOLt58DG6X5oAAxDoGxqrZxyRereQID7QCMPx9ZVNnY.jpg" width="40" />
+                        <img alt="User profile picture" class="rounded-full -ml-2" height="40" src="https://storage.googleapis.com/a1aa/image/mOLt58DG6X5oAAxDoGxqrZxyRereQID7QCMPx9ZVNnY.jpg" width="40" />
+                    </div>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-lg">
+                    <h2 class="text-xl font-semibold mb-4">
+                        Design System
+                    </h2>
+                    <p class="text-gray-400 mb-4">
+                        Create LMS design system on Figma
+                    </p>
+                    <span class="bg-yellow-600 text-white px-2 py-1 rounded-lg">
+                        LMS
+                    </span>
+                    <span class="bg-orange-600 text-white px-2 py-1 rounded-lg">
+                        Figma
+                    </span>
+                    <div class="flex justify-between items-center mt-4">
+                        <h3 class="text-2xl font-semibold">
+                            87.40%
+                        </h3>
+                        <p class="text-gray-400">
+                            September 16, 2021
+                        </p>
+                    </div>
+                    <div class="flex mt-4">
+                        <img alt="User profile picture" class="rounded-full" height="40" src="https://storage.googleapis.com/a1aa/image/mOLt58DG6X5oAAxDoGxqrZxyRereQID7QCMPx9ZVNnY.jpg" width="40" />
+                        <img alt="User profile picture" class="rounded-full -ml-2" height="40" src="https://storage.googleapis.com/a1aa/image/mOLt58DG6X5oAAxDoGxqrZxyRereQID7QCMPx9ZVNnY.jpg" width="40" />
+                        <img alt="User profile picture" class="rounded-full -ml-2" height="40" src="https://storage.googleapis.com/a1aa/image/mOLt58DG6X5oAAxDoGxqrZxyRereQID7QCMPx9ZVNnY.jpg" width="40" />
+                    </div>
+                </div>
+            </div>
 
-    <!-- Features Section -->
-    <div class="w-full max-w-xs">
-        <h2 class="text-center text-lg font-semibold text-gray-700 mb-4">Modulos</h2>
-        <div class="grid grid-cols-3 gap-4">
-            <div class="neumorphism p-4 text-center">
-                <!-- Icono de vendedor -->
-                <div
-                    class="neumorphism-icon w-10 h-10 bg-yellow-400 rounded-full mx-auto mb-2 flex items-center justify-center">
-                    <i class="fa-solid fa-user text-white"></i>
+            <!-- Top Sellers -->
+            <div class="bg-gray-800 p-6 rounded-lg">
+                <h2 class="text-xl font-semibold mb-4">
+                    Top Sellers
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-gray-700 p-4 rounded-lg flex items-center space-x-4">
+                        <img alt="User profile picture" class="rounded-full" height="40" src="https://storage.googleapis.com/a1aa/image/mOLt58DG6X5oAAxDoGxqrZxyRereQID7QCMPx9ZVNnY.jpg" width="40" />
+                        <div>
+                            <h3 class="text-lg font-semibold">
+                                StarCodeKh
+                            </h3>
+                            <p class="text-gray-400">
+                                Employee
+                            </p>
+                        </div>
+                    </div>
+                    <div class="bg-gray-700 p-4 rounded-lg flex items-center space-x-4">
+                        <img alt="User profile picture" class="rounded-full" height="40" src="https://storage.googleapis.com/a1aa/image/mOLt58DG6X5oAAxDoGxqrZxyRereQID7QCMPx9ZVNnY.jpg" width="40" />
+                        <div>
+                            <h3 class="text-lg font-semibold">
+                                Konnor Guzman
+                            </h3>
+                            <p class="text-gray-400">
+                                Employee
+                            </p>
+                        </div>
+                    </div>
+                    <div class="bg-gray-700 p-4 rounded-lg flex items-center space-x-4">
+                        <img alt="User profile picture" class="rounded-full" height="40" src="https://storage.googleapis.com/a1aa/image/mOLt58DG6X5oAAxDoGxqrZxyRereQID7QCMPx9ZVNnY.jpg" width="40" />
+                        <div>
+                            <h3 class="text-lg font-semibold">
+                                Alfredo Elliott
+                            </h3>
+                            <p class="text-gray-400">
+                                Contractor
+                            </p>
+                        </div>
+                    </div>
+                    <div class="bg-gray-700 p-4 rounded-lg flex items-center space-x-4">
+                        <img alt="User profile picture" class="rounded-full" height="40" src="https://storage.googleapis.com/a1aa/image/mOLt58DG6X5oAAxDoGxqrZxyRereQID7QCMPx9ZVNnY.jpg" width="40" />
+                        <div>
+                            <h3 class="text-lg font-semibold">
+                                Samantha Smith
+                            </h3>
+                            <p class="text-gray-400">
+                                Contractor
+                            </p>
+                        </div>
+                    </div>
                 </div>
-                <!-- Etiqueta como enlace -->
-                <a href="../admin/manage_sessions.php" class="text-sm text-gray-700 hover:underline">Usuario Logueado</a>
-            </div>
-            <div class="neumorphism p-4 text-center">
-                <!-- Icono de Bodega -->
-                <div
-                    class="neumorphism-icon w-10 h-10 bg-orange-400 rounded-full mx-auto mb-2 flex items-center justify-center">
-                    <i class="fa-solid fa-shop text-white"></i>
-                </div>
-                <!-- Etiqueta como enlace -->
-                <a href="#" class="text-sm text-gray-700 hover:underline">Asignar Rol</a>
-            </div>
-            <div class="neumorphism p-4 text-center">
-                <!-- Icono de Bodega -->
-                <div
-                    class="neumorphism-icon w-10 h-10 bg-green-400 rounded-full mx-auto mb-2 flex items-center justify-center">
-                    <i class="fa-solid fa-motorcycle text-white"></i>
-                </div>
-                <!-- Etiqueta como enlace -->
-                <a href="#" class="text-sm text-gray-700 hover:underline">#</a>
-            </div>
-            <div class="neumorphism p-4 text-center">
-                <!-- Icono de Bodega -->
-                <div
-                    class="neumorphism-icon w-10 h-10 bg-red-400 rounded-full mx-auto mb-2 flex items-center justify-center">
-                    <i class="fa-solid fa-lock text-white"></i>
-                </div>
-                <!-- Etiqueta como enlace -->
-                <a href="#" class="text-sm text-gray-700 hover:underline">#</a>
-            </div>
-            <div class="neumorphism p-4 text-center">
-                <!-- Icono de Bodega -->
-                <div
-                    class="neumorphism-icon w-10 h-10 bg-purple-400 rounded-full mx-auto mb-2 flex items-center justify-center">
-                    <i class="fa-solid fa-car text-white"></i>
-                </div>
-                <!-- Etiqueta como enlace -->
-                <a href="#" class="text-sm text-gray-700 hover:underline">#</a>
-            </div>
-            <div class="neumorphism p-4 text-center">
-                <!-- Icono de Bodega -->
-                <div
-                    class="neumorphism-icon w-10 h-10 bg-purple-400 rounded-full mx-auto mb-2 flex items-center justify-center">
-                    <i class="fa-solid fa-car text-white"></i>
-                </div>
-                <!-- Etiqueta como enlace -->
-                <a href="#" class="text-sm text-gray-700 hover:underline">#</a>
             </div>
         </div>
     </div>
-
-
-    <!-- Footer Navigation -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-white shadow-lg">
-        <div class="flex justify-around py-2">
-        <a href="../php/logout_user.php" class="text-blue-500 text-center flex flex-col items-center">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-        class="w-6 h-6">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12h18M9 5l7 7-7 7" />
-    </svg>
-    <span class="text-xs">Salir</span>
-</a>
-            <a href="../Firma/Firma.php" class="text-gray-500 text-center flex flex-col items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                    class="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                </svg>
-                <span class="text-xs">Firma Facturas</span>
-            </a>
-            <a href="#" id="openModal" class="text-gray-500 text-center flex flex-col items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                    class="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-                <span class="text-xs">Apps</span>
-            </a>
-        </div>
-    </nav>
-    <script>
-        // Recargar la página cada 30 segundos
-        setInterval(function() {
-            location.reload();
-        }, 30000); // 30000 milisegundos = 30 segundos
-    </script>
+    <div id="chat-container">
+        <div id="chat-header">Chat en Vivo <span id="close-chat">×</span></div>
+        <div id="users-list"></div>
+        <div id="chat-messages"></div>
+        <input type="text" id="chat-input" placeholder="Escribe un mensaje...">
+        <button id="send-btn">Enviar</button>
+    </div>
+    <div id="chat-button">💬</div>
+    <script src="../Chat/chat.js"></script>
 </body>
 
 </html>

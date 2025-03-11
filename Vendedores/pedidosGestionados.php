@@ -21,6 +21,8 @@ if (!empty($documento)) {
     $query .= " AND f.IntDocumento = ?";
     $params[] = $documento;
 }
+// Usar el nombre real de la columna en lugar del alias
+$query .= " ORDER BY f.fecha DESC";
 
 $stmt = $pdo->prepare($query);
 $stmt->execute($params);
@@ -62,9 +64,9 @@ $facturas = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <h1 class="text-black-600 text-2xl font-bold">Pedidos Gestionados</h1>
     </div>
 
-  <!-- Features Section -->
-<div class="w-full max-w-4xl mx-auto pb-16">
-<form method="GET" class="mb-6 flex space-x-4">
+    <!-- Features Section -->
+    <div class="w-full max-w-4xl mx-auto pb-16">
+        <form method="GET" class="mb-6 flex space-x-4">
             <input type="text" name="transaccion" placeholder="Transacción" value="<?= htmlspecialchars($transaccion) ?>" class="p-2 border rounded w-full">
             <input type="text" name="documento" placeholder="Documento" value="<?= htmlspecialchars($documento) ?>" class="p-2 border rounded w-full">
             <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Filtrar</button>
@@ -87,17 +89,20 @@ $facturas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <tr class="bg-white border">
                         <td class="border p-2"><?= htmlspecialchars($factura['IntTransaccion']) ?></td>
                         <td class="border p-2"><?= htmlspecialchars($factura['IntDocumento']) ?></td>
-                        <td class="border p-2"><?= htmlspecialchars($factura['factura_estado']) ?></td>
+                        <td class="border p-2">
+                            <?= htmlspecialchars($factura['factura_estado'] === 'gestionado' ? 'asignado' : $factura['factura_estado']) ?>
+                        </td>
                         <td class="border p-2"><?= htmlspecialchars($factura['factura_fecha']) ?></td>
-                        <td class="border p-2"><?= htmlspecialchars($factura['estado_actual'] ?? 'N/A') ?></td>
+                        <td class="border p-2">
+                            <?= htmlspecialchars(($factura['estado_actual'] ?? 'N/A') === 'gestionado' ? 'asignado' : ($factura['estado_actual'] ?? 'N/A')) ?>
+                        </td>
                         <td class="border p-2"><?= htmlspecialchars($factura['estado_fecha'] ?? 'N/A') ?></td>
                         <td class="border p-2"><?= htmlspecialchars($factura['user_name'] ?? 'N/A') ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
-    
-</div>
+    </div>
 
     <!-- Footer Navigation -->
     <nav class="fixed bottom-0 left-0 right-0 bg-white shadow-lg">
@@ -125,7 +130,7 @@ $facturas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <span class="text-xs">Apps</span>
             </a>
         </div>
-    </nav>    
+    </nav>
 </body>
 
 </html>
