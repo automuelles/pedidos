@@ -35,11 +35,11 @@ include('../php/validate_session.php');
                 </svg>
                 <span class="text-xs">Salir</span>
             </a>
-            <a href="" class="text-gray-500 text-center flex flex-col items-center">
+            <a href="../Firma/Firma.php" class="text-gray-500 text-center flex flex-col items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                 </svg>
-                <span class="text-xs">Volver</span>
+                <span class="text-xs">Firma</span>
             </a>
             <a href="#" id="openModal" class="text-gray-500 text-center flex flex-col items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
