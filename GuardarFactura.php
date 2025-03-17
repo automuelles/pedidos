@@ -52,9 +52,13 @@ try {
         FROM TblDetalleDocumentos d
         WHERE CONVERT(DATE, d.DatFecha1) = CONVERT(DATE, GETDATE())
         AND d.IntTransaccion IN (40, 42, 88, 90)
-        ORDER BY d.IntDocumento
+      AND d.IntDocumento NOT LIKE '%-%'  -- Ignorar documentos que contengan '-'
+AND ISNUMERIC(d.IntDocumento) = 1 
+AND ISNUMERIC(d.IntTransaccion) = 1  
+ORDER BY d.IntDocumento;
     ";
 
+   
     // Ejecutar la consulta
     $stmt = $conn->prepare($query);
     $stmt->execute();
@@ -69,7 +73,8 @@ try {
 
     // Insertar cada factura en la tabla factura, filtrando documentos con '-' y evitando duplicados
     foreach ($facturas as $factura) {
-        if (strpos((string)$factura['IntDocumento'], '-') === false) {
+        // Verificar si los valores son válidos
+        if ($factura['IntTransaccion'] !== null && $factura['IntDocumento'] !== null) {
             // Verificar si la combinación IntTransaccion e IntDocumento ya existe
             $checkQuery = "
                 SELECT COUNT(*) FROM factura 

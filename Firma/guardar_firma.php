@@ -51,7 +51,7 @@ class PDF extends Fpdi
 
         // Información de la empresa
         $this->Cell(0, 7, 'Automuelles Diesel SAS', 0, 1, 'C');
-        $this->SetX(50); // Asegurar que la siguiente línea comience en la misma posición
+        $this->SetX(50);
         $this->Cell(0, 7, 'NIT: 900.950.921-9', 0, 1, 'C');
         $this->SetX(50);
         $this->Cell(0, 7, 'Direccion: Cra 61 # 45-04 Medellin (Antioquia)', 0, 1, 'C');
@@ -61,7 +61,7 @@ class PDF extends Fpdi
         $this->Cell(0, 7, 'Email: Facturas.compras@automuellesdiesel.com', 0, 1, 'C');
         $this->Ln(5); // Espacio entre el encabezado y el contenido
 
-        // Detalles del Cliente
+        // Detalles del Cliente y Transacción
         $this->SetFont('Arial', 'B', 12);
         $this->Cell(120, 10, 'Detalles del Cliente', 0, 0, 'L');
         $this->Cell(95, 10, 'Detalles de la Transaccion', 0, 1, 'R'); // Transacción a la derecha
@@ -78,19 +78,23 @@ class PDF extends Fpdi
         $this->Cell(50, 7, 'Nombre:', 0, 0, 'L');
         $this->Cell(50, 7, $this->clientData['StrNombre'], 0, 0, 'L');
 
-        $this->SetX(170); // Desplazamos a la derecha la segunda columna
+        $this->SetX(170);
         $this->Cell(50, 7, 'Numero de Factura:', 0, 0, 'L');
         $this->Cell(40, 7, $this->transactionData['IntDocumento'], 0, 1, 'L');
 
         $this->Cell(50, 7, 'Direccion:', 0, 0, 'L');
-        $this->Cell(50, 7, $this->clientData['StrDireccion'], 0, 0, 'L'); // Alineamos "Dirección" y su valor
+        $this->Cell(50, 7, $this->clientData['StrDireccion'], 0, 0, 'L');
 
         $this->SetX(170);
         $this->Cell(50, 7, 'Placa:', 0, 0, 'L');
-        $this->Cell(50, 7, $this->clientData['StrReferencia2'], 0, 1, 'L'); // Alineamos "Placa" y su valor
+        $this->Cell(40, 7, $this->clientData['StrReferencia2'], 0, 1, 'L');
 
         $this->Cell(50, 7, 'Telefono:', 0, 0, 'L');
-        $this->Cell(50, 7, $this->clientData['StrTelefono'], 0, 1, 'L'); // Alineamos "Teléfono" y su valor
+        $this->Cell(50, 7, $this->clientData['StrTelefono'], 0, 0, 'L');
+
+        $this->SetX(170);
+        $this->Cell(50, 7, 'Fecha:', 0, 0, 'L');
+        $this->Cell(40, 7, $this->transactionData['DatFecha'] ?? date('Y-m-d'), 0, 1, 'L'); // Fecha o fecha actual si no está definida
 
         $this->Ln(5); // Espacio entre el encabezado y el contenido
     }
@@ -114,7 +118,7 @@ $pdf->SetMargins(10, 10, 10);
 // Sección para Detalles de Productos
 $pdf->SetFillColor(200, 200, 200);
 $pdf->SetFont('Arial', 'B', 12);
-$pdf->Cell(0, 10, 'Detalles de Productos', 1,  1, 'C', true);
+$pdf->Cell(0, 10, 'Detalles de Productos', 1, 1, 'C', true);
 $pdf->SetFont('Arial', 'B', 12);
 
 // Definir los anchos de las columnas
@@ -152,9 +156,9 @@ $pdf->Ln(10);
 
 // Detalles de la factura
 $pdf->SetFillColor(200, 200, 200);
-$pdf->SetFont('Arial', 'B', 12); // Asegúrate de que la fuente esté en negrita
+$pdf->SetFont('Arial', 'B', 12);
 $pdf->Cell(0, 10, 'Detalles de la Factura', 1, 1, 'C', true);
-$pdf->SetFont('Arial', 'B', 12); // Mantener la fuente en negrita para los títulos
+$pdf->SetFont('Arial', 'B', 12);
 
 // Definir el ancho de las columnas
 $widthLabel = 69; // Ancho para las etiquetas
@@ -186,7 +190,7 @@ $pdf->Image($signatureFile, 12, $pdf->GetY() + 2, 76, 36, 'PNG'); // Ajusta la p
 
 // Dibuja una línea horizontal debajo de la firma
 $y = $pdf->GetY(); // Obtener la posición Y actual
-$pdf->Line(10, $y + 40, 100, $y + 40); // Dibuja una línea horizontal (ajusta el valor 200 según el ancho de la página)
+$pdf->Line(10, $y + 40, 100, $y + 40); // Dibuja una línea horizontal
 
 // Agregar un espacio adicional después de la línea
 $pdf->Ln(10);
