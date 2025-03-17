@@ -3,17 +3,18 @@ include('../php/login.php');
 include('../php/validate_session.php');
 require_once '../php/db.php'; // Conexión a ambas bases de datos ($pdo para MySQL, $conn para SQL Server)
 
-// 1. Obtener todas las facturas de MySQL usando $pdo
+// 1. Obtener facturas con IntTransaccion 40 y 42 de MySQL usando $pdo
 $sql_factura = "SELECT id, IntTransaccion, IntDocumento, estado, fecha 
                 FROM factura 
+                WHERE IntTransaccion IN ('88', '90')
                 ORDER BY fecha DESC";
 $stmt_factura = $pdo->prepare($sql_factura);
 $stmt_factura->execute();
 $facturas = $stmt_factura->fetchAll(PDO::FETCH_ASSOC);
 
-
 $facturas_con_total = [];
 foreach ($facturas as $factura) {
+    // 2. Consultar TblDocumentos
     $sql_documento = "SELECT IntTotal, StrReferencia3
                      FROM TblDocumentos 
                      WHERE IntTransaccion = :transaccion 
@@ -24,10 +25,23 @@ foreach ($facturas as $factura) {
         ':documento' => $factura['IntDocumento']
     ]);
     $documento = $stmt_documento->fetch(PDO::FETCH_ASSOC);
-    
-    // Combinar los datos
+
+    // 3. Consultar TblDetallePagos
+    $sql_detalle_pagos = "SELECT IntPago
+                         FROM TblDetallePagos 
+                         WHERE IntTransaccion = :transaccion 
+                         AND IntDocumento = :documento";
+    $stmt_detalle_pagos = $conn->prepare($sql_detalle_pagos);
+    $stmt_detalle_pagos->execute([
+        ':transaccion' => $factura['IntTransaccion'],
+        ':documento' => $factura['IntDocumento']
+    ]);
+    $detalle_pagos = $stmt_detalle_pagos->fetch(PDO::FETCH_ASSOC);
+
+    // 4. Combinar los datos
     $factura['IntTotal'] = $documento['IntTotal'] ?? 0;
     $factura['StrReferencia3'] = $documento['StrReferencia3'] ?? ''; // Valor por defecto como cadena vacía si es null
+    $factura['IntPago'] = $detalle_pagos['IntPago'] ?? 0; // Agregar IntPago, con 0 como valor por defecto si no existe
     $facturas_con_total[] = $factura;
 }
 ?>
@@ -76,6 +90,7 @@ foreach ($facturas as $factura) {
                     <th scope="col" class="px-6 py-3">Fecha</th>
                     <th scope="col" class="px-6 py-3">Total</th>
                     <th scope="col" class="px-6 py-3">Forma de Pago</th>
+                    <th scope="col" class="px-6 py-3">Pago Hgi</th>
                     <th scope="col" class="px-6 py-3">Ver</th>
                     <th scope="col" class="px-6 py-3">Reportar pago</th>
                 </tr>
@@ -87,13 +102,14 @@ foreach ($facturas as $factura) {
                             <td class="px-6 py-4"><?php echo htmlspecialchars($row['IntTransaccion']); ?></td>
                             <td class="px-6 py-4"><?php echo htmlspecialchars($row['IntDocumento']); ?></td>
                             <td class="px-6 py-4"><?php echo htmlspecialchars($row['fecha']); ?></td>
-                            <td class="px-6 py-4"><?php echo number_format($row['IntTotal'], 2); ?></td>
+                            <td class="px-6 py-4"><?php echo number_format($row['IntTotal']); ?></td>
                             <td class="px-6 py-4"><?php echo htmlspecialchars($row['StrReferencia3']); ?></td>
+                            <td class="px-6 py-4"><?php echo number_format($row['IntPago']); ?></td>
                             <td class="px-6 py-4">
-                                <a href="detalle_factura.php?id=<?php echo htmlspecialchars($row['id']); ?>" 
-                                   class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2">
-                                    Ver
-                                </a>
+                            <a href="detalle_factura.php?id=<?php echo htmlspecialchars($row['id']); ?>&inttransaccion=<?php echo htmlspecialchars($row['IntTransaccion']); ?>&intdocumento=<?php echo htmlspecialchars($row['IntDocumento']); ?>" 
+   class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2">
+    Ver
+</a>
                             </td>
                             <td class="px-6 py-4">
                                 <a href="detalle_factura.php?id=<?php echo htmlspecialchars($row['id']); ?>" 
