@@ -38,17 +38,24 @@ foreach ($facturas as $factura) {
     ]);
     $detalle_pagos = $stmt_detalle_pagos->fetch(PDO::FETCH_ASSOC);
 
-    // 4. Combinar los datos
-    $factura['IntTotal'] = $documento['IntTotal'] ?? 0;
-    $factura['StrReferencia3'] = $documento['StrReferencia3'] ?? ''; // Valor por defecto como cadena vacía si es null
-    $factura['IntPago'] = $detalle_pagos['IntPago'] ?? 0; // Agregar IntPago, con 0 como valor por defecto si no existe
-    $facturas_con_total[] = $factura;
+    // 4. Combinar los datos y redondear
+    $intTotal = round((float)($documento['IntTotal'] ?? 0)); // Redondear a entero
+    $intPago = round((float)($detalle_pagos['IntPago'] ?? 0)); // Redondear a entero
+
+    $factura['IntTotal'] = $intTotal;
+    $factura['StrReferencia3'] = $documento['StrReferencia3'] ?? '';
+    $factura['IntPago'] = $intPago;
+
+    // 5. Solo agregar si los valores redondeados no son iguales
+    if ($intTotal !== $intPago) {
+        $facturas_con_total[] = $factura;
+    }
 }
 ?>
 
+<!-- El HTML sigue igual -->
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -61,13 +68,11 @@ foreach ($facturas as $factura) {
             border-radius: 15px;
             box-shadow: 20px 20px 60px #bebebe, -20px -20px 60px #ffffff;
         }
-
         .neumorphism-icon {
             box-shadow: 6px 6px 12px #bebebe, -6px -6px 12px #ffffff;
         }
     </style>
 </head>
-
 <body class="bg-gray-200 min-h-screen flex flex-col items-center justify-center">
     <!-- Header -->
     <div class="neumorphism w-full max-w-xs p-6 text-center mb-6">
@@ -106,10 +111,10 @@ foreach ($facturas as $factura) {
                             <td class="px-6 py-4"><?php echo htmlspecialchars($row['StrReferencia3']); ?></td>
                             <td class="px-6 py-4"><?php echo number_format($row['IntPago']); ?></td>
                             <td class="px-6 py-4">
-                            <a href="detalle_factura.php?id=<?php echo htmlspecialchars($row['id']); ?>&inttransaccion=<?php echo htmlspecialchars($row['IntTransaccion']); ?>&intdocumento=<?php echo htmlspecialchars($row['IntDocumento']); ?>" 
-   class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2">
-    Ver
-</a>
+                                <a href="detalle_factura.php?id=<?php echo htmlspecialchars($row['id']); ?>&inttransaccion=<?php echo htmlspecialchars($row['IntTransaccion']); ?>&intdocumento=<?php echo htmlspecialchars($row['IntDocumento']); ?>" 
+                                   class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2">
+                                    Ver
+                                </a>
                             </td>
                             <td class="px-6 py-4">
                                 <a href="detalle_factura.php?id=<?php echo htmlspecialchars($row['id']); ?>" 
@@ -151,6 +156,5 @@ foreach ($facturas as $factura) {
             </a>
         </div>
     </nav>
-
 </body>
 </html>
