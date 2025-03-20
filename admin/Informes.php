@@ -5,12 +5,18 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>
-        Admin
+        Informes
     </title>
     <script src="https://cdn.tailwindcss.com">
     </script>
     <link rel="stylesheet" href="../Chat/chat.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script src="informes.js" crossorigin="anonymous"></script>
+    <script src="informePedidosBodega.js" crossorigin="anonymous"></script>
+    <script src="informeDespachos.js" crossorigin="anonymous"></script>
+    <script src="informeMensajeria.js" crossorigin="anonymous"></script>
 </head>
 
 <body class="bg-gray-900 text-white">
@@ -41,11 +47,12 @@
                     <i class="fas fa-bars text-2xl">
                     </i>
                     <h1 class="text-2xl font-semibold">
-                        Resumen de ventas
+                        Resumen de Pedidos
                     </h1>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <input class="bg-gray-800 text-white px-4 py-2 rounded-lg" placeholder="Search here..." type="text" />
+                    <input class="bg-gray-800 text-white px-4 py-2 rounded-lg" placeholder="
+Busca aquí..." type="text" />
                     <i class="fas fa-moon text-xl">
                     </i>
                     <i class="fas fa-bell text-xl">
@@ -54,37 +61,33 @@
             </div>
             <!-- Sales Overview -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+
+                <!-- Gráfica de pedidos separados-->
                 <div class="bg-gray-800 p-6 rounded-lg col-span-2">
                     <div class="flex justify-between items-center mb-4">
                         <div>
-                            <h2 class="text-3xl font-semibold">
-                                $6,556.55
-                            </h2>
-                            <p class="text-gray-400">
-                                Este Mes
-                            </p>
+                            <h2 class="text-3xl font-semibold">Facturas separadas</h2>
+                            <p class="text-gray-400">Este Mes</p>
                         </div>
                         <div class="flex items-center space-x-2">
-                            <i class="fas fa-clock text-xl">
-                            </i>
-                            <p class="text-green-500">
-                                3.2%
-                            </p>
+                            <i class="fas fa-clock text-xl"></i>
+                            <p class="text-green-500">100%</p>
                         </div>
                     </div>
+                    <!-- Gráfica -->
                     <div class="h-40 bg-gray-700 rounded-lg mb-4">
+                        <canvas id="graficaPedidos" class="w-full h-full"></canvas>
                     </div>
+
                     <button class="bg-blue-600 px-4 py-2 rounded-lg">
                         Descargar Reporte
                     </button>
                 </div>
+
                 <div class="bg-gray-800 p-6 rounded-lg">
                     <div class="flex justify-between items-center mb-4">
                         <h2 class="text-xl font-semibold">
                             Mes pasado
-                        </h2>
-                        <h2 class="text-xl font-semibold">
-                            El año pasado
                         </h2>
                     </div>
                     <div class="grid grid-cols-2 gap-4">
@@ -142,86 +145,53 @@
             <!-- Projects Status -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
                 <div class="bg-gray-800 p-6 rounded-lg">
-                    <h2 class="text-xl font-semibold mb-4">
-                        Web Design
-                    </h2>
-                    <p class="text-gray-400 mb-4">
-                        Design Learn Management System
-                    </p>
-                    <span class="bg-blue-600 text-white px-2 py-1 rounded-lg">
-                        UI/UX Design
-                    </span>
-                    <div class="flex justify-between items-center mt-4">
-                        <h3 class="text-2xl font-semibold">
-                            55.23%
-                        </h3>
-                        <p class="text-gray-400">
-                            June 08, 2021
-                        </p>
-                    </div>
-                    <div class="flex mt-4">
-                        <img alt="User profile picture" class="rounded-full" height="40" src="https://storage.googleapis.com/a1aa/image/mOLt58DG6X5oAAxDoGxqrZxyRereQID7QCMPx9ZVNnY.jpg" width="40" />
-                        <img alt="User profile picture" class="rounded-full -ml-2" height="40" src="https://storage.googleapis.com/a1aa/image/mOLt58DG6X5oAAxDoGxqrZxyRereQID7QCMPx9ZVNnY.jpg" width="40" />
-                        <img alt="User profile picture" class="rounded-full -ml-2" height="40" src="https://storage.googleapis.com/a1aa/image/mOLt58DG6X5oAAxDoGxqrZxyRereQID7QCMPx9ZVNnY.jpg" width="40" />
-                    </div>
+                    <h2 class="text-xl font-semibold mb-4">Informe de Pedidos Bodega</h2>
+                    <table class="w-full text-white">
+                        <thead>
+                            <tr>
+                            </tr>
+                        </thead>
+                        <canvas id="graficaBodega" class="w-full h-full"></canvas>
+                    </table>
+                    <button class="bg-blue-600 px-4 py-2 rounded-lg">
+                        Descargar Reporte
+                    </button>
                 </div>
+
                 <div class="bg-gray-800 p-6 rounded-lg">
-                    <h2 class="text-xl font-semibold mb-4">
-                        Mobile App
-                    </h2>
-                    <p class="text-gray-400 mb-4">
-                        Ecommerce Application
-                    </p>
-                    <span class="bg-pink-600 text-white px-2 py-1 rounded-lg">
-                        Ecommerce
-                    </span>
-                    <div class="flex justify-between items-center mt-4">
-                        <h3 class="text-2xl font-semibold">
-                            14.84%
-                        </h3>
-                        <p class="text-gray-400">
-                            May 01, 2021
-                        </p>
-                    </div>
-                    <div class="flex mt-4">
-                        <img alt="User profile picture" class="rounded-full" height="40" src="https://storage.googleapis.com/a1aa/image/mOLt58DG6X5oAAxDoGxqrZxyRereQID7QCMPx9ZVNnY.jpg" width="40" />
-                        <img alt="User profile picture" class="rounded-full -ml-2" height="40" src="https://storage.googleapis.com/a1aa/image/mOLt58DG6X5oAAxDoGxqrZxyRereQID7QCMPx9ZVNnY.jpg" width="40" />
-                        <img alt="User profile picture" class="rounded-full -ml-2" height="40" src="https://storage.googleapis.com/a1aa/image/mOLt58DG6X5oAAxDoGxqrZxyRereQID7QCMPx9ZVNnY.jpg" width="40" />
-                    </div>
+                    <h2 class="text-xl font-semibold mb-4">Informe de Despachos</h2>
+                    <table class="w-full text-white">
+                        <thead>
+                            <tr>
+                            </tr>
+                        </thead>
+                        <canvas id="graficaDespachos" class="w-full h-full"></canvas>
+                    </table>
+                    <button class="bg-blue-600 px-4 py-2 rounded-lg">
+                        Descargar Reporte
+                    </button>
                 </div>
+
                 <div class="bg-gray-800 p-6 rounded-lg">
-                    <h2 class="text-xl font-semibold mb-4">
-                        Design System
-                    </h2>
-                    <p class="text-gray-400 mb-4">
-                        Create LMS design system on Figma
-                    </p>
-                    <span class="bg-yellow-600 text-white px-2 py-1 rounded-lg">
-                        LMS
-                    </span>
-                    <span class="bg-orange-600 text-white px-2 py-1 rounded-lg">
-                        Figma
-                    </span>
-                    <div class="flex justify-between items-center mt-4">
-                        <h3 class="text-2xl font-semibold">
-                            87.40%
-                        </h3>
-                        <p class="text-gray-400">
-                            September 16, 2021
-                        </p>
-                    </div>
-                    <div class="flex mt-4">
-                        <img alt="User profile picture" class="rounded-full" height="40" src="https://storage.googleapis.com/a1aa/image/mOLt58DG6X5oAAxDoGxqrZxyRereQID7QCMPx9ZVNnY.jpg" width="40" />
-                        <img alt="User profile picture" class="rounded-full -ml-2" height="40" src="https://storage.googleapis.com/a1aa/image/mOLt58DG6X5oAAxDoGxqrZxyRereQID7QCMPx9ZVNnY.jpg" width="40" />
-                        <img alt="User profile picture" class="rounded-full -ml-2" height="40" src="https://storage.googleapis.com/a1aa/image/mOLt58DG6X5oAAxDoGxqrZxyRereQID7QCMPx9ZVNnY.jpg" width="40" />
-                    </div>
+                    <h2 class="text-xl font-semibold mb-4">Informe de Mensajeria</h2>
+                    <table class="w-full text-white">
+                        <thead>
+                            <tr>
+                            </tr>
+                        </thead>
+                        <canvas id="graficaMensajeria" class="w-full h-full"></canvas>
+                    </table>
+                    <button class="bg-blue-600 px-4 py-2 rounded-lg">
+                        Descargar Reporte
+                    </button>
                 </div>
+
             </div>
 
             <!-- Top Sellers -->
             <div class="bg-gray-800 p-6 rounded-lg">
                 <h2 class="text-xl font-semibold mb-4">
-                    Los más vendidos
+                    VENDEDORES
                 </h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div class="bg-gray-700 p-4 rounded-lg flex items-center space-x-4">
