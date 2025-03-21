@@ -20,11 +20,11 @@ try {
 }
 
 // Conexión a SQL Server
-$serverName = "SERVAUTOMUELLES\SQLEXPRESS";
+$serverName = "SERVAUTOMUELLES\SQLDEVELOPER";
 $connectionOptions = array(
     "Database" => "AutomuellesDiesel1",
-    "Uid" => "AutomuellesDiesel",
-    "PWD" => "Complex@2024Pass!"
+    "Uid" => "Hgi",
+    "PWD" => "Hgi"
 );
 
 // Establecer conexión con PDO

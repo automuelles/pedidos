@@ -3,13 +3,12 @@ include('../php/login.php');
 include('../php/validate_session.php');
 
 // Conexión a SQL Server
-$serverName = "SERVAUTOMUELLES\\SQLEXPRESS";
+$serverName = "SERVAUTOMUELLES\SQLDEVELOPER";
 $connectionOptions = array(
     "Database" => "AutomuellesDiesel1",
     "Uid" => "Hgi",
     "PWD" => "Hgi"
 );
-
 try {
     $conn = new PDO("sqlsrv:server=$serverName;Database=AutomuellesDiesel1", $connectionOptions["Uid"], $connectionOptions["PWD"]);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
