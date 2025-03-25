@@ -28,9 +28,12 @@
                 <i class="fas fa-home"></i>
             </a>
 
-            <a href="../admin/Informes.php" class="text-xl">
+            <a href="Informes.php" class="text-xl">
                 <i class="fas fa-chart-bar text-xl"></i>
             </a>
+
+            <a href="catalogo.php" class="text-xl">
+            <i class="fa-solid fa-file-import"></i> </a>
 
             <i class="fas fa-cog text-xl">
             </i>

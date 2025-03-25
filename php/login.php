@@ -81,6 +81,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 header("Location: ../Facturacion/facturacion.php");
                 exit;
             }
+            elseif ($user['role'] === 'Compras') {
+                header("Location: ../Compras/compras.php");
+                exit;
+            }
              else {
                 header("Location: user_dashboard.php");
                 exit;
