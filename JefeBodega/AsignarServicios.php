@@ -112,10 +112,10 @@ function asignarServicios($pdo) {
             $transaccionesPermitidas = [];
             switch ($usuario['role']) {
                 case 'jefeBodega':
-                    $transaccionesPermitidas = ['90', '40', '42', '88'];
+                    $transaccionesPermitidas = ['90', '40'];
                     break;
                 case 'JefeCedi':
-                    $transaccionesPermitidas = ['90', '40', '42', '88'];
+                    $transaccionesPermitidas = ['42', '88'];
                     break;
                 case 'bodega':
                     $transaccionesPermitidas = ['90', '40', '42', '88'];
