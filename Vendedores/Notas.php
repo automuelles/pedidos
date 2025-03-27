@@ -42,9 +42,11 @@ if ($_SESSION['user_role'] !== 'Vendedor') {
         <h1 class="text-black-600 text-2xl font-bold">Solicitar Nota</h1>
     </div>
     <div class="p-1 pb-1">
-        <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 my-4">
-            Ver Notas Gestionadas
-        </button>
+    <form action="VerNotas.php" method="POST">
+    <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 my-4">
+        Ver Notas Gestionadas
+    </button>
+</form>
     </div>
 
     <div class="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md pb-20">
