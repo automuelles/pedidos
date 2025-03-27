@@ -11,6 +11,7 @@ include('../php/validate_session.php');
     <title>Pagina Principal Automuelles</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         /* Neumorphism effect */
         .neumorphism {
@@ -96,40 +97,104 @@ include('../php/validate_session.php');
                 <a href="#" class="text-sm text-gray-700 hover:underline">#</a>
             </div>
         </div>
-        <!-- Footer Navigation -->
-        <nav class="fixed bottom-0 left-0 right-0 bg-white shadow-lg">
+     <!-- Footer Navigation -->
+     <nav class="fixed bottom-0 left-0 right-0 bg-white shadow-lg">
             <div class="flex justify-around py-2">
                 <a href="../php/logout_index.php" class="text-blue-500 text-center flex flex-col items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                        class="w-6 h-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12h18M9 5l7 7-7 7" />
                     </svg>
                     <span class="text-xs">Salir</span>
                 </a>
                 <a href="../Firma/Firma.php" target="_blank" class="text-gray-500 text-center flex flex-col items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                        class="w-6 h-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>
                     <span class="text-xs">Firma Facturas</span>
                 </a>
                 <a href="#" id="openModal" class="text-gray-500 text-center flex flex-col items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                        class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                     <span class="text-xs">Apps</span>
                 </a>
             </div>
         </nav>
     </div>
+
+   <!-- Botón flotante y contenedor del chat -->
+   <div id="chat-widget" class="fixed bottom-16 right-4">
+        <button id="chat-toggle" class="neumorphism w-12 h-12 bg-blue-500 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-blue-600 transition">
+            <i class="fa-solid fa-comments"></i>
+        </button>
+        <div id="chat-box" class="hidden neumorphism absolute bottom-16 right-0 w-80 bg-white rounded-lg shadow-lg p-4">
+            <div id="chat-container" class="w-full h-64 border border-gray-300 rounded overflow-y-scroll mb-2 p-2 bg-gray-50"></div>
+            <select id="user-select" class="w-full p-2 border border-gray-300 rounded mb-2">
+                <option value="">Selecciona un usuario</option>
+                <?php
+                $host = "localhost";
+                $dbname = "automuelles_db";
+                $username = "root";
+                $password = ""; // Update if you have a password
+
+                try {
+                    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+                    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+                    // Get active users
+                    $activeStmt = $pdo->query("SELECT user_name FROM active_sessions");
+                    $activeUsers = $activeStmt->fetchAll(PDO::FETCH_COLUMN);
+
+                    // Get all users
+                    $allStmt = $pdo->query("SELECT name FROM users");
+                    while ($row = $allStmt->fetch(PDO::FETCH_ASSOC)) {
+                        $name = $row['name'];
+                        $status = in_array($name, $activeUsers) ? '🟢' : '🔴';
+                        echo "<option value='" . htmlspecialchars($name) . "'>$status " . htmlspecialchars($name) . "</option>";
+                    }
+                } catch (PDOException $e) {
+                    echo "<option>Error de conexión: " . $e->getMessage() . "</option>";
+                }
+                ?>
+            </select>
+            <div class="flex">
+                <input type="text" id="message-input" class="w-full p-2 border border-gray-300 rounded-l focus:outline-none" placeholder="Escribe tu mensaje">
+                <button id="send-button" class="p-2 bg-blue-500 text-white rounded-r hover:bg-blue-600">Enviar</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Recargar la página cada 30 segundos
-        setInterval(function() {
-            location.reload();
-        }, 30000); // 30000 milisegundos = 30 segundos
+   $(document).ready(function() {
+    $('#chat-toggle').click(function() {
+        console.log("Toggle clicked");
+        $('#chat-box').toggleClass('hidden');
+    });
+
+    $('#send-button').click(function() {
+        let user = $('#user-select').val();
+        let message = $('#message-input').val();
+        if (user && message) {
+            let fullMessage = "enviar " + user + " " + message;
+            console.log("Sending:", fullMessage);
+            $('#chat-container').append('<p class="text-right text-blue-600">Tú: ' + message + ' (para ' + user + ')</p>');
+            $.post('../Chat/chat.php', { message: fullMessage }, function(response) {
+                console.log("Response from chat.php:", response); // Debug
+                $('#chat-container').append('<p class="text-left text-gray-700">Bot: ' + response + '</p>');
+                $('#chat-container').scrollTop($('#chat-container')[0].scrollHeight);
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.error("AJAX error:", textStatus, errorThrown); // Debug
+            });
+            $('#message-input').val('');
+        } else {
+            alert("Por favor, selecciona un usuario y escribe un mensaje.");
+        }
+    });
+
+    $('#message-input').keypress(function(e) {
+        if (e.which == 13) $('#send-button').click();
+    });
+});
     </script>
 </body>
-
 </html>

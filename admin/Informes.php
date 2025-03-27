@@ -33,7 +33,7 @@
             </a>
 
             <a href="catalogo.php" class="text-xl">
-            <i class="fa-solid fa-file-import"></i> </a>
+                <i class="fa-solid fa-file-import"></i> </a>
 
             <i class="fas fa-cog text-xl">
             </i>
