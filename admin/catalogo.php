@@ -52,10 +52,10 @@
                     <div class="h-48 bg-gray-700 rounded-lg mb-4">
                         <img src="../assets//img/Rin.png" alt="Rin de Hierro" class="w-full h-full object-cover rounded-lg">
                     </div>
-                    <h2 class="text-xl font-semibold text-white">Rin de Hierro</h2>
+                    <h2 class="text-xl font-semibold text-white">Guardar Productos</h2>
                     <p class="text-gray-400">Rin de alta resistencia, diseño moderno.</p>
-                    <button class="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700" onclick="window.open('../Catalogo/Rines.php', '_blank')">Cargar Información</button>
-                    <button class="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">Descargar Informacion</button>
+                    <button class="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700" onclick="window.open('../Catalogo/GuardarProductos.php', '_blank')">Cargar Información</button>
+                    <button class="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">Buscar Informacion</button>
                 </div>
 
                 <!-- Card 2: Llanta -->
