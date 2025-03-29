@@ -1,0 +1,239 @@
+CREATE DATABASE automuelles;
+
+USE automuelles;
+
+
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('user', 'admin') DEFAULT 'user',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+ALTER TABLE users
+MODIFY COLUMN role ENUM('user', 'admin', 'facturacion', 'bodega', 'mensajeria', 'despachos', 'cartera', 'tesoreria', 'jefeBodega', 'Vendedor', 'JefeCedi', 'Compras') DEFAULT 'user';
+
+CREATE TABLE active_sessions (
+    session_id VARCHAR(255) PRIMARY KEY,
+    user_id INT NOT NULL,
+    user_name VARCHAR(255) NOT NULL,
+    login_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+ CREATE TABLE IF NOT EXISTS factura (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            IntTransaccion INT NOT NULL,
+            IntDocumento INT NOT NULL,
+            estado VARCHAR(50) DEFAULT 'pendiente',
+            fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE (IntTransaccion, IntDocumento)
+        );
+
+
+
+   CREATE TABLE factura_gestionada (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    factura_id INT NOT NULL,
+    user_id INT NOT NULL,
+    user_name VARCHAR(255),
+    estado VARCHAR(50) DEFAULT 'gestionado',
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (factura_id) REFERENCES factura(id) ON DELETE CASCADE
+);
+
+
+
+CREATE TABLE IF NOT EXISTS estado (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    factura_id INT NOT NULL,
+    user_id INT NOT NULL,
+    estado VARCHAR(50) DEFAULT 'gestionado',
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    user_name VARCHAR(255)
+);
+
+CREATE TABLE IF NOT EXISTS tareas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_name VARCHAR(255) NOT NULL,
+    solicitud_tarea VARCHAR(255) NOT NULL,
+    especificar_solicitud VARCHAR(255),
+    ubicacion VARCHAR(255) NOT NULL,
+    referencia VARCHAR(255) NOT NULL,
+    descripcion TEXT NOT NULL,
+    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE NovedadesMensajeria (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    recogida VARCHAR(255) NOT NULL,
+    parqueadero VARCHAR(255) NOT NULL,
+    vendedor INT NOT NULL,
+    cliente VARCHAR(255) NOT NULL,
+    fecha DATETIME NOT NULL,
+    user_name VARCHAR(255) NOT NULL,
+    foto VARCHAR(255) DEFAULT NULL
+);
+
+CREATE TABLE IF NOT EXISTS Novedades_Bodega (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    factura_id INT NOT NULL,
+    user_id INT NOT NULL,
+    estado VARCHAR(50) DEFAULT 'sin gestion',
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    novedad VARCHAR(255) NOT NULL,
+    descripcion TEXT
+);
+
+CREATE TABLE IF NOT EXISTS Novedades_Finales (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    inttransaccion INT NOT NULL,
+    intdocumento INT NOT NULL,
+    user_id INT NOT NULL,
+    estado VARCHAR(50) DEFAULT 'sin gestion',
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    novedad VARCHAR(255) NOT NULL,
+    descripcion TEXT
+);
+
+CREATE TABLE IF NOT EXISTS Novedades_Despachos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    inttransaccion INT NOT NULL,
+    intdocumento INT NOT NULL,
+    user_id INT NOT NULL,
+    estado VARCHAR(50) DEFAULT 'sin gestion',
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    novedad VARCHAR(255) NOT NULL,
+    descripcion TEXT
+);
+
+CREATE TABLE IF NOT EXISTS Reporte_pago (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    inttransaccion INT NOT NULL,
+    intdocumento INT NOT NULL,
+    user_id INT NOT NULL,
+    estado VARCHAR(50) DEFAULT 'sin gestion',
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    novedad VARCHAR(255) NOT NULL,
+    descripcion TEXT
+);
+
+ALTER TABLE Reporte_pago 
+ADD COLUMN total_recibido DECIMAL(10, 2) DEFAULT 0;
+
+CREATE TABLE IF NOT EXISTS Reporte_caja (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    inttransaccion INT NOT NULL,
+    intdocumento INT NOT NULL,
+    user_id INT NOT NULL,
+    estado VARCHAR(50) DEFAULT 'sin gestion',
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    novedad VARCHAR(255) NOT NULL,
+    total_recibido DECIMAL(10, 2) DEFAULT 0,
+    descripcion TEXT
+);
+
+
+CREATE TABLE Notas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    tercero VARCHAR(100) NOT NULL,
+    transaccion INT NOT NULL,
+    documento INT NOT NULL,
+    producto VARCHAR(255) NOT NULL,
+    motivo TEXT NOT NULL,
+    usuario VARCHAR(100) NOT NULL,
+    estado VARCHAR(50) DEFAULT 'sin gestión',
+    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE gestiones (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nota_id INT NOT NULL,
+    usuario VARCHAR(100) NOT NULL,
+    comentario TEXT NOT NULL,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (nota_id) REFERENCES notas(id)
+);
+
+ALTER TABLE gestiones ADD COLUMN estado VARCHAR(50);
+
+CREATE TABLE facturas_zonificacion (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    transaccion VARCHAR(50) NOT NULL,
+    documento VARCHAR(50) NOT NULL,
+    zonificacion VARCHAR(50) NOT NULL,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE revision_motocicleta (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    fecha_revision DATE NOT NULL,
+    placa VARCHAR(10) NOT NULL,
+    mensajero VARCHAR(100) NOT NULL,
+    tipo_identificacion VARCHAR(10) NOT NULL,
+    numero_identificacion VARCHAR(20) NOT NULL,
+    kilometraje_inicio INT NOT NULL,
+    salud_cumple TINYINT(1) DEFAULT 0,
+    salud_no_cumple TINYINT(1) DEFAULT 0,
+    licencia_cumple TINYINT(1) DEFAULT 0,
+    licencia_no_cumple TINYINT(1) DEFAULT 0,
+    soat_cumple TINYINT(1) DEFAULT 0,
+    soat_no_cumple TINYINT(1) DEFAULT 0,
+    aceite_cumple TINYINT(1) DEFAULT 0,
+    aceite_no_cumple TINYINT(1) DEFAULT 0,
+    gasolina_cumple TINYINT(1) DEFAULT 0,
+    gasolina_no_cumple TINYINT(1) DEFAULT 0,
+    bateria_cumple TINYINT(1) DEFAULT 0,
+    bateria_no_cumple TINYINT(1) DEFAULT 0,
+    guaya_cumple TINYINT(1) DEFAULT 0,
+    guaya_no_cumple TINYINT(1) DEFAULT 0,
+    freno_del_cumple TINYINT(1) DEFAULT 0,
+    freno_del_no_cumple TINYINT(1) DEFAULT 0,
+    freno_tras_cumple TINYINT(1) DEFAULT 0,
+    freno_tras_no_cumple TINYINT(1) DEFAULT 0,
+    llantas_cumple TINYINT(1) DEFAULT 0,
+    llantas_no_cumple TINYINT(1) DEFAULT 0,
+    manijas_cumple TINYINT(1) DEFAULT 0,
+    manijas_no_cumple TINYINT(1) DEFAULT 0,
+    estribos_cumple TINYINT(1) DEFAULT 0,
+    estribos_no_cumple TINYINT(1) DEFAULT 0,
+    luces_del_cumple TINYINT(1) DEFAULT 0,
+    luces_del_no_cumple TINYINT(1) DEFAULT 0,
+    luz_freno_cumple TINYINT(1) DEFAULT 0,
+    luz_freno_no_cumple TINYINT(1) DEFAULT 0,
+    direcc_del_cumple TINYINT(1) DEFAULT 0,
+    direcc_del_no_cumple TINYINT(1) DEFAULT 0,
+    direcc_tras_cumple TINYINT(1) DEFAULT 0,
+    direcc_tras_no_cumple TINYINT(1) DEFAULT 0,
+    bocina_cumple TINYINT(1) DEFAULT 0,
+    bocina_no_cumple TINYINT(1) DEFAULT 0,
+    espejos_cumple TINYINT(1) DEFAULT 0,
+    espejos_no_cumple TINYINT(1) DEFAULT 0,
+    carroceria_cumple TINYINT(1) DEFAULT 0,
+    carroceria_no_cumple TINYINT(1) DEFAULT 0,
+    epp_cumple TINYINT(1) DEFAULT 0,
+    epp_no_cumple TINYINT(1) DEFAULT 0,
+    encendido_cumple TINYINT(1) DEFAULT 0,
+    encendido_no_cumple TINYINT(1) DEFAULT 0,
+    casco_cumple TINYINT(1) DEFAULT 0,
+    casco_no_cumple TINYINT(1) DEFAULT 0,
+    aseo_cumple TINYINT(1) DEFAULT 0,
+    aseo_no_cumple TINYINT(1) DEFAULT 0,
+    observaciones TEXT,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    usuario_creacion VARCHAR(50)
+);
+
+CREATE TABLE messages (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    sender_id INT NOT NULL,
+    receiver_id INT NOT NULL,
+    message TEXT NOT NULL,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (receiver_id) REFERENCES users(id) ON DELETE CASCADE
+);
