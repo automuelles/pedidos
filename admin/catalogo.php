@@ -55,7 +55,7 @@
                     <h2 class="text-xl font-semibold text-white">Guardar Productos</h2>
                     <p class="text-gray-400">Rin de alta resistencia, diseño moderno.</p>
                     <button class="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700" onclick="window.open('../Catalogo/GuardarProductos.php', '_blank')">Cargar Información</button>
-                    <button class="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">Buscar Informacion</button>
+                    <button class="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700" onclick="window.open('../Catalogo/BuscarProductosGuardados.php', '_blank')">Buscar Información</button>
                 </div>
 
                 <!-- Card 2: Llanta -->
