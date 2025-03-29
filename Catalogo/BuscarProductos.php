@@ -59,9 +59,10 @@ try {
         let searchKeywords = [];
 
         document.getElementById("search").addEventListener("keyup", function(event) {
-            if (event.key === "F4") {
+            let filterText = this.value.trim().toLowerCase();
+
+            if (event.key === "F4" || event.key === "Enter") {
                 event.preventDefault();
-                let filterText = this.value.trim().toLowerCase();
                 if (filterText && !searchKeywords.includes(filterText)) {
                     searchKeywords.push(filterText);
                     this.value = "";
@@ -106,12 +107,12 @@ try {
         }
 
         function selectProduct(codigo, productName) {
-    if (window.opener && !window.opener.closed) {
-        window.opener.document.getElementById("nombre").value = codigo;
-        window.opener.document.getElementById("descripcion").value = productName;
-        window.close();
-    }
-}
+            if (window.opener && !window.opener.closed) {
+                window.opener.document.getElementById("nombre").value = codigo;
+                window.opener.document.getElementById("descripcion").value = productName;
+                window.close();
+            }
+        }
     </script>
 </body>
 

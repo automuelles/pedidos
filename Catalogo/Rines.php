@@ -1,7 +1,4 @@
-<?php
-// Incluir el archivo de conexión a la base de datos
-include('../php/db.php');
-?>
+
 <!DOCTYPE html>
 <html lang="es">
 
