@@ -3,8 +3,8 @@
 include('../php/db.php');
 
 try {
-    $stmt = $conn->query("SELECT StrDescripcion FROM TblProductos ORDER BY StrDescripcion ASC");
-    $productos = $stmt->fetchAll(PDO::FETCH_COLUMN);
+    $stmt = $conn->query("SELECT StrIdProducto, StrDescripcion FROM TblProductos ORDER BY StrDescripcion ASC");
+    $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     echo json_encode(["error" => "Error de conexión: " . $e->getMessage()]);
 }
@@ -26,12 +26,13 @@ try {
         <!-- Contenedor de filtros aplicados -->
         <div id="filter-container" class="mb-4 flex flex-wrap gap-2"></div>
 
-        <input type="text" id="search" class="w-full p-2 mb-4 border rounded-lg" placeholder="Buscar producto...">
+        <input type="text" id="search" class="w-full p-2 mb-4 border rounded-lg" placeholder="Buscar por código o nombre...">
 
         <div class="overflow-y-auto h-64 border rounded-lg">
             <table class="w-full border-collapse border border-gray-300">
                 <thead>
                     <tr class="bg-gray-200">
+                        <th class="border border-gray-300 p-2">Código</th>
                         <th class="border border-gray-300 p-2">Producto</th>
                         <th class="border border-gray-300 p-2">Acción</th>
                     </tr>
@@ -39,10 +40,11 @@ try {
                 <tbody id="product-list">
                     <?php foreach ($productos as $producto) : ?>
                         <tr>
-                            <td class="border border-gray-300 p-2"><?php echo htmlspecialchars($producto); ?></td>
+                            <td class="border border-gray-300 p-2"><?php echo htmlspecialchars($producto['StrIdProducto']); ?></td>
+                            <td class="border border-gray-300 p-2"><?php echo htmlspecialchars($producto['StrDescripcion']); ?></td>
                             <td class="border border-gray-300 p-2 text-center">
                                 <button type="button" class="bg-green-500 text-white px-3 py-1 rounded-lg hover:bg-green-600"
-                                    onclick="selectProduct('<?php echo htmlspecialchars($producto); ?>')">Seleccionar</button>
+                                    onclick="selectProduct('<?php echo htmlspecialchars($producto['StrIdProducto']); ?>', '<?php echo htmlspecialchars($producto['StrDescripcion']); ?>')">Seleccionar</button>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -78,8 +80,9 @@ try {
             let rows = document.querySelectorAll("#product-list tr");
 
             rows.forEach(row => {
-                let text = row.cells[0].textContent.toLowerCase();
-                let isVisible = searchKeywords.every(keyword => text.includes(keyword));
+                let codigo = row.cells[0].textContent.toLowerCase();
+                let descripcion = row.cells[1].textContent.toLowerCase();
+                let isVisible = searchKeywords.every(keyword => codigo.includes(keyword) || descripcion.includes(keyword));
                 row.style.display = isVisible ? "" : "none";
             });
         }
@@ -102,9 +105,10 @@ try {
             filterTable();
         }
 
-        function selectProduct(productName) {
+        function selectProduct(codigo, productName) {
     if (window.opener && !window.opener.closed) {
-        window.opener.document.getElementById("nombre").value = productName;
+        window.opener.document.getElementById("nombre").value = codigo;
+        window.opener.document.getElementById("descripcion").value = productName;
         window.close();
     }
 }
