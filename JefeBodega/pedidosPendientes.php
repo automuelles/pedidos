@@ -151,10 +151,10 @@ $_SESSION['numero_facturas'] = $numeroFacturas;
         }
     };
 
-    // Recargar la página cada 30 segundos
+    // Recargar la página cada 15 segundos
     setInterval(function() {
         location.reload();
-    }, 30000); // 30000 milisegundos = 30 segundos
+    }, 15000); // 15000 milisegundos = 15 segundos
 </script>
 </body>
 

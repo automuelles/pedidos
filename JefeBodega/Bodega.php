@@ -148,11 +148,11 @@ include('../php/validate_session.php');
     <!-- Footer Navigation -->
 
     <script>
-        // Recargar la página cada 30 segundos
-        setInterval(function() {
-            location.reload();
-        }, 30000); // 30000 milisegundos = 30 segundos
-    </script>
+    // Recargar la página cada 15 segundos
+    setInterval(function() {
+        location.reload();
+    }, 15000); // 15000 milisegundos = 15 segundos
+</script>
 </body>
 
 </html>
