@@ -89,16 +89,19 @@ include('../php/validate_session.php');
             </div>
             <div class="neumorphism p-4 text-center">
                 <!-- Icono de Bodega -->
-                <div
-                    class="neumorphism-icon w-10 h-10 bg-purple-400 rounded-full mx-auto mb-2 flex items-center justify-center">
+                <div class="neumorphism-icon w-10 h-10 bg-purple-400 rounded-full mx-auto mb-2 flex items-center justify-center">
                     <i class="fa-solid fa-car text-white"></i>
                 </div>
                 <!-- Etiqueta como enlace -->
-                <a href="#" class="text-sm text-gray-700 hover:underline">#</a>
+                <a href="#"
+                    onclick="window.open('../Catalogo/BuscarProductosGuardados.php', 'ProductosGuardados', 'width=800,height=600,scrollbars=yes'); return false;"
+                    class="text-sm text-gray-700 hover:underline">
+                    Ver Fotos
+                </a>
             </div>
         </div>
-     <!-- Footer Navigation -->
-     <nav class="fixed bottom-0 left-0 right-0 bg-white shadow-lg">
+        <!-- Footer Navigation -->
+        <nav class="fixed bottom-0 left-0 right-0 bg-white shadow-lg">
             <div class="flex justify-around py-2">
                 <a href="../php/logout_index.php" class="text-blue-500 text-center flex flex-col items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
@@ -122,8 +125,8 @@ include('../php/validate_session.php');
         </nav>
     </div>
 
-   <!-- Botón flotante y contenedor del chat -->
-   <div id="chat-widget" class="fixed bottom-16 right-4">
+    <!-- Botón flotante y contenedor del chat -->
+    <div id="chat-widget" class="fixed bottom-16 right-4">
         <button id="chat-toggle" class="neumorphism w-12 h-12 bg-blue-500 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-blue-600 transition">
             <i class="fa-solid fa-comments"></i>
         </button>
@@ -165,36 +168,39 @@ include('../php/validate_session.php');
     </div>
 
     <script>
-   $(document).ready(function() {
-    $('#chat-toggle').click(function() {
-        console.log("Toggle clicked");
-        $('#chat-box').toggleClass('hidden');
-    });
-
-    $('#send-button').click(function() {
-        let user = $('#user-select').val();
-        let message = $('#message-input').val();
-        if (user && message) {
-            let fullMessage = "enviar " + user + " " + message;
-            console.log("Sending:", fullMessage);
-            $('#chat-container').append('<p class="text-right text-blue-600">Tú: ' + message + ' (para ' + user + ')</p>');
-            $.post('../Chat/chat.php', { message: fullMessage }, function(response) {
-                console.log("Response from chat.php:", response); // Debug
-                $('#chat-container').append('<p class="text-left text-gray-700">Bot: ' + response + '</p>');
-                $('#chat-container').scrollTop($('#chat-container')[0].scrollHeight);
-            }).fail(function(jqXHR, textStatus, errorThrown) {
-                console.error("AJAX error:", textStatus, errorThrown); // Debug
+        $(document).ready(function() {
+            $('#chat-toggle').click(function() {
+                console.log("Toggle clicked");
+                $('#chat-box').toggleClass('hidden');
             });
-            $('#message-input').val('');
-        } else {
-            alert("Por favor, selecciona un usuario y escribe un mensaje.");
-        }
-    });
 
-    $('#message-input').keypress(function(e) {
-        if (e.which == 13) $('#send-button').click();
-    });
-});
+            $('#send-button').click(function() {
+                let user = $('#user-select').val();
+                let message = $('#message-input').val();
+                if (user && message) {
+                    let fullMessage = "enviar " + user + " " + message;
+                    console.log("Sending:", fullMessage);
+                    $('#chat-container').append('<p class="text-right text-blue-600">Tú: ' + message + ' (para ' + user + ')</p>');
+                    $.post('../Chat/chat.php', {
+                        message: fullMessage
+                    }, function(response) {
+                        console.log("Response from chat.php:", response); // Debug
+                        $('#chat-container').append('<p class="text-left text-gray-700">Bot: ' + response + '</p>');
+                        $('#chat-container').scrollTop($('#chat-container')[0].scrollHeight);
+                    }).fail(function(jqXHR, textStatus, errorThrown) {
+                        console.error("AJAX error:", textStatus, errorThrown); // Debug
+                    });
+                    $('#message-input').val('');
+                } else {
+                    alert("Por favor, selecciona un usuario y escribe un mensaje.");
+                }
+            });
+
+            $('#message-input').keypress(function(e) {
+                if (e.which == 13) $('#send-button').click();
+            });
+        });
     </script>
 </body>
+
 </html>

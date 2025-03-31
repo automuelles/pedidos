@@ -243,5 +243,5 @@ CREATE TABLE productos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     codigo VARCHAR(50) NOT NULL UNIQUE,
     descripcion TEXT NOT NULL,
-    carpeta_imagenes VARCHAR(255) NOT NULL
+    carpeta_imagenes TEXT NOT NULL
 );

@@ -58,6 +58,8 @@ try {
             </a>
         </div>
     </nav>
+
+    
     <!-- Header -->
     <div class="neumorphism w-full max-w-md p-6 text-center mb-6">
         <h1 class="text-yellow-600 text-2xl font-bold">Bienvenido a Automuelles</h1>
@@ -68,7 +70,11 @@ try {
         <?php endif; ?>
         <h2 class="text-black text-lg font-bold mt-2">Notas Solicitadas</h2>
     </div>
-
+    <form action="VerNotas.php" method="POST">
+    <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 my-4">
+        Ver Notas Gestionadas
+    </button>
+</form>
     <!-- Tabla de Notas -->
     <div class="neumorphism w-full p-6 mb-6 mx-auto overflow-x-auto">
         <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
