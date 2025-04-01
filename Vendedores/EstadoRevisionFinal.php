@@ -104,17 +104,16 @@ if ($transaccion > 0 && $documento > 0) {
         <?php endif; ?>
         <h1 class="text-black-600 text-2xl font-bold">Bodega</h1>
     </div>
-  <!-- Boton de firmar -->
-  <button type="button"
+    <!-- Boton de firmar -->
+    <button type="button"
         class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
         onclick="window.open('Firmar.php?IntTransaccion=<?php echo $transaccion; ?>&IntDocumento=<?php echo $documento; ?>', '_blank')">
         Firmar
-</button>
+    </button>
     <div class="w-full max-w-xs pb-16">
-        <div class="w-full max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md mt-10 pb-24"> <!-- Agregar pb-24 para dar espacio abajo -->
+        <div class="w-full max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md mt-10 pb-24">
             <h1 class="text-2xl font-bold text-gray-800 mb-4">Detalles de la Factura</h1>
 
-  
             <?php
             // Mostrar el número de factura y la transacción
             if (isset($factura['IntTransaccion']) && isset($factura['IntDocumento'])) {
@@ -128,8 +127,8 @@ if ($transaccion > 0 && $documento > 0) {
             // Mostrar los detalles de la factura sin agrupar productos
             if ($results) {
                 foreach ($results as $factura_detail) {
-                    // Mostrar todos los detalles de la factura
-                    echo "<input type='checkbox' name='productos[]' value='" . htmlspecialchars($factura_detail['StrProducto']) . "' class='form-checkbox text-blue-500'>";
+                    // Mostrar todos los detalles de la factura con un checkbox obligatorio
+                    echo "<input type='checkbox' name='productos[]' value='" . htmlspecialchars($factura_detail['StrProducto']) . "' class='form-checkbox text-blue-500 producto-checkbox'>";
                     echo "<p class='text-lg text-gray-700'><strong>Cantidad:</strong> " . number_format((float) $factura_detail['IntCantidad'], 2, '.', '') . "</p>";
                     echo "<p class='text-lg text-gray-700'><strong>Producto:</strong> " . htmlspecialchars($factura_detail['StrProducto']) . "</p>";
                     echo "<p class='text-lg text-gray-700'><strong>Descripcion:</strong> " . htmlspecialchars($factura_detail['StrDescripcion']) . "</p>";
@@ -143,10 +142,10 @@ if ($transaccion > 0 && $documento > 0) {
             }
             ?>
 
-            <button type="button"
+            <button type="button" id="saveButton"
                 class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
                 onclick="updateEstado()">Guardar</button>
-                <?php
+            <?php
             $intTransaccion = htmlspecialchars($factura['IntTransaccion']);
             $intDocumento = htmlspecialchars($factura['IntDocumento']);
             ?>
@@ -182,12 +181,38 @@ if ($transaccion > 0 && $documento > 0) {
     </nav>
     <script>
         function updateEstado() {
+            // Obtener todos los checkboxes
+            const checkboxes = document.querySelectorAll('.producto-checkbox');
+            const totalCheckboxes = checkboxes.length;
+
+            // Si hay más de un checkbox, todos deben estar seleccionados
+            if (totalCheckboxes > 1) {
+                let allChecked = true;
+                checkboxes.forEach(checkbox => {
+                    if (!checkbox.checked) {
+                        allChecked = false;
+                    }
+                });
+
+                // Si no están todos seleccionados, mostrar alerta y detener la ejecución
+                if (!allChecked) {
+                    alert('Por favor, selecciona todos los productos antes de guardar.');
+                    return;
+                }
+            } else if (totalCheckboxes === 1) {
+                // Si solo hay un checkbox, verificar que esté seleccionado
+                if (!checkboxes[0].checked) {
+                    alert('Por favor, selecciona el producto antes de guardar.');
+                    return;
+                }
+            }
+
             // Obtener los parámetros de la URL (IntTransaccion y IntDocumento)
             const urlParams = new URLSearchParams(window.location.search);
             const IntTransaccion = urlParams.get('IntTransaccion');
             const IntDocumento = urlParams.get('IntDocumento');
 
-            // Redirigir a un archivo PHP que maneje la actualización y copia de datos
+            // Redirigir si pasa la validación
             window.location.href = 'actualizar_estadoFinal.php?IntTransaccion=' + IntTransaccion + '&IntDocumento=' + IntDocumento;
         }
     </script>
