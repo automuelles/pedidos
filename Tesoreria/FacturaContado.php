@@ -117,7 +117,7 @@ foreach ($facturas as $factura) {
                                 </a>
                             </td>
                             <td class="px-6 py-4">
-                                <a href="detalle_factura.php?id=<?php echo htmlspecialchars($row['id']); ?>" 
+                                <a href="GuardarObservacion.php?id=<?php echo htmlspecialchars($row['IntTransaccion']); ?>&IntDocumento=<?php echo htmlspecialchars($row['IntDocumento']); ?>" 
                                    class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2">
                                     Guardar
                                 </a>

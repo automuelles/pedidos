@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set('America/Bogota');
 include('../php/db.php');
 include('../php/login.php');
 include('../php/validate_session.php');
