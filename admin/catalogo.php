@@ -30,7 +30,7 @@
             </a>
         </div>
         <!-- Main Content -->
-        <!-- Main Content -->
+      
         <div class="flex-1 p-6">
             <!-- Header -->
             <div class="flex justify-between items-center mb-6">
@@ -61,12 +61,12 @@
                 <!-- Card 2: Llanta -->
                 <div class="bg-gray-800 rounded-lg shadow-lg p-4">
                     <div class="h-48 bg-gray-700 rounded-lg mb-4">
-                        <img src="URL_DE_LA_IMAGEN" alt="Rin de Aluminio" class="w-full h-full object-cover rounded-lg">
+                        <img src="#" alt="Formulario Garantias" class="w-full h-full object-cover rounded-lg">
                     </div>
-                    <h2 class="text-xl font-semibold text-white">Rin de Aluminio</h2>
-                    <p class="text-gray-400">Ideal para caminos difíciles.</p>
-                    <button class="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">Cargar Informacion</button>
-                    <button class="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">Descargar Informacion</button>
+                    <h2 class="text-xl font-semibold text-white">Formulario de Garantias</h2>
+                    <p class="text-gray-400">Rin de alta resistencia, diseño moderno.</p>
+                    <button class="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700" onclick="window.open('../Garantias/Garantias.php', '_blank')">Registrar Información</button>
+                    <button class="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700" onclick="window.open('#', '_blank')">Validar Estado</button>
                 </div>
 
                 <!-- Card 3: Hoja -->
@@ -95,17 +95,6 @@
             </div>
 
         </div>
-
-
-        <div id="chat-container">
-            <div id="chat-header">Chat en Vivo <span id="close-chat">×</span></div>
-            <div id="users-list"></div>
-            <div id="chat-messages"></div>
-            <input type="text" id="chat-input" placeholder="Escribe un mensaje...">
-            <button id="send-btn">Enviar</button>
-        </div>
-        <div id="chat-button">💬</div>
-        <script src="../Chat/chat.js"></script>
 </body>
 
 </html>

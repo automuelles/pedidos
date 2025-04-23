@@ -42,49 +42,49 @@ if ($_SESSION['user_role'] !== 'Vendedor') {
         <h1 class="text-black-600 text-2xl font-bold">Solicitar Nota</h1>
     </div>
     <div class="p-1 pb-1">
-    <form action="VerNotas.php" method="POST">
-    <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 my-4">
-        Ver Notas Gestionadas
-    </button>
-</form>
+        <form action="VerNotas.php" method="POST">
+            <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 my-4">
+                Ver Notas Gestionadas
+            </button>
+        </form>
     </div>
 
     <div class="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md pb-20">
         <h2 class="text-xl font-bold mb-4">Formulario de Reporte de Pago</h2>
-        <form action="guardar_Nota.php" method="post">
+        <form action="guardar_Nota.php" method="post" id="paymentForm" onsubmit="return validateForm()">
             <!-- Campo de Tercero -->
             <div class="mb-4">
                 <label for="tercero" class="block text-gray-700 font-bold mb-2">Tercero:</label>
                 <input type="text" id="tercero" name="tercero" placeholder="Ingrese el nombre del tercero"
-                    class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" required>
             </div>
 
             <!-- Campo de Transacción -->
             <div class="mb-4">
                 <label for="transaccion" class="block text-gray-700 font-bold mb-2">Transacción:</label>
                 <input type="number" id="transaccion" name="transaccion" placeholder="Ingrese la transacción"
-                    class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" required>
             </div>
 
             <!-- Campo de Documento -->
             <div class="mb-4">
                 <label for="documento" class="block text-gray-700 font-bold mb-2">Documento:</label>
                 <input type="number" id="documento" name="documento" placeholder="Ingrese el documento"
-                    class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" required>
             </div>
 
             <!-- Campo de Producto -->
             <div class="mb-4">
                 <label for="producto" class="block text-gray-700 font-bold mb-2">Producto:</label>
                 <input type="text" id="producto" name="producto" placeholder="Ingrese el producto"
-                    class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" required>
             </div>
 
             <!-- Campo de Motivo -->
             <div class="mb-4">
                 <label for="motivo" class="block text-gray-700 font-bold mb-2">Motivo:</label>
                 <textarea id="motivo" name="motivo" rows="3" placeholder="Ingrese el motivo"
-                    class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"></textarea>
+                    class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" required></textarea>
             </div>
 
             <!-- Botón de Envío -->
@@ -117,6 +117,24 @@ if ($_SESSION['user_role'] !== 'Vendedor') {
             </a>
         </div>
     </nav>
+    <script>
+    function validateForm() {
+        // Obtener todos los campos del formulario
+        const tercero = document.getElementById('tercero').value.trim();
+        const transaccion = document.getElementById('transaccion').value.trim();
+        const documento = document.getElementById('documento').value.trim();
+        const producto = document.getElementById('producto').value.trim();
+        const motivo = document.getElementById('motivo').value.trim();
+
+        // Verificar que todos los campos estén llenos
+        if (!tercero || !transaccion || !documento || !producto || !motivo) {
+            alert('Por favor, completa todos los campos antes de enviar el formulario.');
+            return false; // Evita el envío del formulario
+        }
+
+        return true; // Permite el envío del formulario
+    }
+</script>
 </body>
 
 </html>
