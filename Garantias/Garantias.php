@@ -61,90 +61,90 @@ require '../php/db.php';
         <h1 class="text-black-600 text-2xl font-bold">Formulario de Garantias</h1>
     </div>
 
-    <form id="reclamo-form" class="space-y-6">
+    <form id="reclamo-form" class="space-y-6" action="Reclamo.php" method="POST" enctype="multipart/form-data">
             <div>
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="nit-cedula">NIT/CÉDULA</label>
-                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="nit-cedula" type="text" placeholder="NIT/CÉDULA" required>
+                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="nit-cedula" name="nit-cedula" type="text" placeholder="NIT/CÉDULA" required>
             </div>
 
             <div>
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="fecha-venta">FECHA VENTA O NÚMERO DE FACTURA</label>
-                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="fecha-venta" type="text" placeholder="Fecha venta o número de factura" required>
+                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="fecha-venta" name="fecha-venta" type="text" placeholder="Fecha venta o número de factura" required>
             </div>
 
             <div>
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="referencia-producto">REFERENCIA O DESCRIPCIÓN DEL PRODUCTO</label>
-                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="referencia-producto" type="text" placeholder="Referencia o descripción del producto" required>
+                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="referencia-producto" name="referencia-producto" type="text" placeholder="Referencia o descripción del producto" required>
             </div>
 
             <div>
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="fecha-instalacion">FECHA DE INSTALACIÓN</label>
-                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="fecha-instalacion" type="date" required>
+                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="fecha-instalacion" name="fecha-instalacion" type="date" required>
             </div>
 
             <div>
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="fecha-fallo">FECHA DEL FALLO DE LA PIEZA</label>
-                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="fecha-fallo" type="date" required>
+                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="fecha-fallo" name="fecha-fallo" type="date" required>
             </div>
 
             <div>
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="tiempo-instalado">TIEMPO QUE DURÓ LA PIEZA INSTALADA</label>
-                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="tiempo-instalado" type="text" placeholder="Tiempo que duró la pieza instalada" required>
+                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="tiempo-instalado" name="tiempo-instalado" type="text" placeholder="Tiempo que duró la pieza instalada" required>
             </div>
 
             <div>
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="marca-vehiculo">MARCA VEHÍCULO LINEA</label>
-                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="marca-vehiculo" type="text" placeholder="Marca Vehículo LINEA" required>
+                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="marca-vehiculo" name="marca-vehiculo" type="text" placeholder="Marca Vehículo LINEA" required>
             </div>
 
             <div>
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="modelo-vehiculo">MODELO VEHÍCULO</label>
-                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="modelo-vehiculo" type="text" placeholder="Modelo vehículo" required>
+                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="modelo-vehiculo"  name="modelo-vehiculo" type="text" placeholder="Modelo vehículo" required>
             </div>
 
             <div>
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="chasis">NÚMERO DE CHASIS</label>
-                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="chasis" type="text" placeholder="# Chasis" required>
+                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="chasis" name="chasis" type="text" placeholder="# Chasis" required>
             </div>
 
             <div>
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="vin">NÚMERO VIN</label>
-                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="vin" type="text" placeholder="# VIN" required>
+                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="vin" name="vin" type="text" placeholder="# VIN" required>
             </div>
 
             <div>
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="motor">NÚMERO MOTOR</label>
-                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="motor" type="text" placeholder="# Motor" required>
+                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="motor" name="motor" type="text" placeholder="# Motor" required>
             </div>
 
             <div>
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="kms-desplazados">KMS DESPLAZADOS</label>
-                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="kms-desplazados" type="number" placeholder="Kms desplazados" required>
+                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="kms-desplazados" name="kms-desplazados" type="number" placeholder="Kms desplazados" required>
             </div>
 
             <div>
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="tipo-terreno">TIPO DE TERRENO DE DESPLAZAMIENTO</label>
-                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="tipo-terreno" type="text" placeholder="Tipo de Terreno de desplazamiento" required>
+                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="tipo-terreno" name="tipo-terreno" type="text" placeholder="Tipo de Terreno de desplazamiento" required>
             </div>
 
             <div>
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="fecha-remocion">FECHA DE REMOCIÓN</label>
-                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="fecha-remocion" type="date" required>
+                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="fecha-remocion" name="fecha-remocion" type="date" required>
             </div>
 
             <div>
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="detalle-falla">DETALLE ESPECÍFICO DE LA FALLA</label>
-                <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="detalle-falla" placeholder="Detalle específico de la falla" rows="4" required></textarea>
+                <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="detalle-falla" name="detalle-falla" placeholder="Detalle específico de la falla" rows="4" required></textarea>
             </div>
 
             <div>
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="fotos">FOTOS (OPCIONAL)</label>
-                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="fotos" type="file" multiple accept="image/*">
+                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="fotos" name="fotos[]" type="file" multiple accept="image/*">
             </div>
 
             <div>
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="videos">VIDEOS (OPCIONAL)</label>
-                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="videos" type="file" multiple accept="video/*">
+                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="videos" name="videos[]" type="file" multiple accept="video/*">
             </div>
 
             <div class="flex items-center justify-center">
@@ -170,12 +170,11 @@ require '../php/db.php';
             });
 
             if (!allFilled) {
-                alert('Por favor, llena todos los campos obligatorios.');
-                return;
-            }
+    alert('Por favor, llena todos los campos obligatorios.');
+    return;
+}
 
-            alert('Formulario enviado con éxito.');
-            form.reset();
+form.submit(); 
         });
     </script>
 </body>
