@@ -42,7 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $ext = pathinfo($name, PATHINFO_EXTENSION);
                 $new_name = uniqid() . '.' . $ext;
                 $destination = $photos_dir . $new_name;
-                
+
                 if (move_uploaded_file($tmp_name, $destination)) {
                     $photo_paths[] = $destination;
                 }
@@ -58,7 +58,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $ext = pathinfo($name, PATHINFO_EXTENSION);
                 $new_name = uniqid() . '.' . $ext;
                 $destination = $videos_dir . $new_name;
-                
+
                 if (move_uploaded_file($tmp_name, $destination)) {
                     $video_paths[] = $destination;
                 }
@@ -74,16 +74,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             chasis, vin, motor, kms_desplazados, tipo_terreno, 
             fecha_remocion, detalle_falla
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        
+
         $stmt = $pdo->prepare($sql);
         $stmt->execute([
-            $nit_cedula, $fecha_venta, $referencia_producto, $fecha_instalacion,
-            $fecha_fallo, $tiempo_instalado, $marca_vehiculo, $modelo_vehiculo,
-            $chasis, $vin, $motor, $kms_desplazados, $tipo_terreno,
-            $fecha_remocion, $detalle_falla
+            $nit_cedula,
+            $fecha_venta,
+            $referencia_producto,
+            $fecha_instalacion,
+            $fecha_fallo,
+            $tiempo_instalado,
+            $marca_vehiculo,
+            $modelo_vehiculo,
+            $chasis,
+            $vin,
+            $motor,
+            $kms_desplazados,
+            $tipo_terreno,
+            $fecha_remocion,
+            $detalle_falla
         ]);
 
         $reclamo_id = $pdo->lastInsertId();
+
+        // Insertar en estado_reclamo con estado por defecto 'recibido'
+        $sql_estado_reclamo = "INSERT INTO estado_reclamo (reclamo_id, nit_cedula, estado) VALUES (?, ?, ?)";
+        $stmt_estado_reclamo = $pdo->prepare($sql_estado_reclamo);
+        $stmt_estado_reclamo->execute([$reclamo_id, $nit_cedula, 'recibido']);
 
         // Insert photos
         foreach ($photo_paths as $path) {
@@ -100,13 +116,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         // Message and redirection
-    echo "Reclamo registrado exitosamente!";
-    // Redirect to garantias.php after 2 seconds
-    header("Refresh: 2; url=garantias.php");  // Redirects after 2 seconds
+        echo "Reclamo registrado exitosamente!";
+        // Redirect to garantias.php after 2 seconds
+        header("Refresh: 2; url=garantias.php");  // Redirects after 2 seconds
 
-} catch(PDOException $e) {
-    echo "Error: " . $e->getMessage();
-}
+    } catch (PDOException $e) {
+        echo "Error: " . $e->getMessage();
+    }
 }
 $pdo = null;
-?>

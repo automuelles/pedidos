@@ -66,7 +66,7 @@
                     <h2 class="text-xl font-semibold text-white">Formulario de Garantias</h2>
                     <p class="text-gray-400">Rin de alta resistencia, diseño moderno.</p>
                     <button class="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700" onclick="window.open('../Garantias/Garantias.php', '_blank')">Registrar Información</button>
-                    <button class="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700" onclick="window.open('#', '_blank')">Validar Estado</button>
+                    <button class="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700" onclick="window.open('../Garantias/estados.php', '_blank')">Actualizar Estado</button>
                     <button class="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700" onclick="window.open('#', '_blank')">Descargar Informacion Garantia</button>
                 </div>
 

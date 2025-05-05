@@ -279,3 +279,12 @@ CREATE TABLE videos (
     ruta VARCHAR(255) NOT NULL,
     FOREIGN KEY (reclamo_id) REFERENCES reclamos(id) ON DELETE CASCADE
 );
+
+CREATE TABLE estado_reclamo (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    reclamo_id INT NOT NULL,
+    nit_cedula VARCHAR(50) NOT NULL,
+    estado VARCHAR(50) NOT NULL DEFAULT 'recibido',
+    fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (reclamo_id) REFERENCES reclamos(id) ON DELETE CASCADE
+);
