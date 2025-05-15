@@ -138,6 +138,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nit_cedula'])) {
                         <p><strong>Remoción:</strong> <?php echo htmlspecialchars($row['fecha_remocion']); ?></p>
                         <p class="col-span-2"><strong>Detalle Falla:</strong> <?php echo nl2br(htmlspecialchars($row['detalle_falla'])); ?></p>
                         <p class="col-span-2"><strong>Creado:</strong> <?php echo htmlspecialchars($row['created_at']); ?></p>
+                        <p class="col-span-2"><strong>vendedor:</strong> <?php echo htmlspecialchars($row['vendedor']); ?></p>
                     </div>
 
                     <!-- Fotos -->

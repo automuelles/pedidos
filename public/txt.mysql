@@ -263,6 +263,7 @@ CREATE TABLE reclamos (
     tipo_terreno VARCHAR(100) NOT NULL,
     fecha_remocion DATE NOT NULL,
     detalle_falla TEXT NOT NULL,
+    vendedor VARCHAR(100) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

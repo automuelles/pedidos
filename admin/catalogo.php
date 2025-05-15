@@ -67,8 +67,9 @@
                     <p class="text-gray-400">Rin de alta resistencia, diseño moderno.</p>
                     <button class="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700" onclick="window.open('../Garantias/Garantias.php', '_blank')">Registrar Información</button>
                     <button class="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700" onclick="window.open('../Garantias/estados.php', '_blank')">Consultar Informacion Garantia</button>
-                    <button class="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700" onclick="window.open('', '_blank')">Actualizar Estado Garantia</button>
+                    <button class="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700" onclick="window.open('../Garantias/ActualizarEstado.php', '_blank')">Actualizar Estado Garantia</button>
                     <button class="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700" onclick="window.open('../Garantias/Consultar.php', '_blank')">Linea Temporal</button>
+                    <button class="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700" onclick="window.open('../Garantias/HistoricoSolicitudes.php', '_blank')">Historico de Solicitudes</button>
                 </div>
 
                 <!-- Card 3: Hoja -->

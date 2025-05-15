@@ -29,6 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $tipo_terreno = filter_input(INPUT_POST, 'tipo-terreno', FILTER_SANITIZE_STRING);
     $fecha_remocion = filter_input(INPUT_POST, 'fecha-remocion', FILTER_SANITIZE_STRING);
     $detalle_falla = filter_input(INPUT_POST, 'detalle-falla', FILTER_SANITIZE_STRING);
+    $vendedor = filter_input(INPUT_POST, 'vendedor', FILTER_SANITIZE_STRING);
 
     // Handle file uploads
     $photo_paths = [];
@@ -72,8 +73,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             nit_cedula, fecha_venta, referencia_producto, fecha_instalacion, 
             fecha_fallo, tiempo_instalado, marca_vehiculo, modelo_vehiculo, 
             chasis, vin, motor, kms_desplazados, tipo_terreno, 
-            fecha_remocion, detalle_falla
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            fecha_remocion, detalle_falla, vendedor
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         $stmt = $pdo->prepare($sql);
         $stmt->execute([
@@ -91,7 +92,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $kms_desplazados,
             $tipo_terreno,
             $fecha_remocion,
-            $detalle_falla
+            $detalle_falla,
+            $vendedor
         ]);
 
         $reclamo_id = $pdo->lastInsertId();
