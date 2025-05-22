@@ -35,40 +35,15 @@ include('../php/validate_session.php');
         <?php else: ?>
             <h1 class="text-black-600 text-2xl font-bold">No estás autenticado.</h1>
         <?php endif; ?>
-        <h1 class="text-black-600 text-2xl font-bold">Ventas</h1>
+        <h1 class="text-black-600 text-2xl font-bold">Garantias</h1>
     </div>
 
     <!-- Features Section -->
     <div class="w-full max-w-xs  pb-16">
         <h2 class="text-center text-lg font-semibold text-gray-700 mb-4">Modulos</h2>
         <div class="grid grid-cols-3 gap-4">
-            <div class="neumorphism p-4 text-center">
-                <!-- Icono de asignacion de tarea -->
-                <div
-                    class="neumorphism-icon w-10 h-10 bg-yellow-400 rounded-full mx-auto mb-2 flex items-center justify-center">
-                    <i class="fa-solid fa-list-check text-white"></i>
-                </div>
-                <!-- Etiqueta como enlace -->
-                <a href="./Garantias.php" class="text-sm text-gray-700 hover:underline">Garantias</a>
-            </div>
-            <div class="neumorphism p-4 text-center">
-                <!-- Icono de Bodega -->
-                <div
-                    class="neumorphism-icon w-10 h-10 bg-orange-400 rounded-full mx-auto mb-2 flex items-center justify-center">
-                    <i class="fa-solid fa-motorcycle text-white"></i>
-                </div>
-                <!-- Etiqueta como enlace -->
-                <a href="ModificarDomicilio.php" class="text-sm text-gray-700 hover:underline">Modificar Datos del Domicilio</a>
-            </div>
-            <div class="neumorphism p-4 text-center">
-                <!-- Icono de Bodega -->
-                <div
-                    class="neumorphism-icon w-10 h-10 bg-green-400 rounded-full mx-auto mb-2 flex items-center justify-center">
-                    <i class="fa-solid fa-motorcycle text-white"></i>
-                </div>
-                <!-- Etiqueta como enlace -->
-                <a href="pedidosPendientes.php" class="text-sm text-gray-700 hover:underline">Entregar Pedido</a>
-            </div>
+           
+            
             <div class="neumorphism p-4 text-center">
                 <!-- Icono de Bodega -->
                 <div
@@ -76,7 +51,7 @@ include('../php/validate_session.php');
                     <i class="fa-solid fa-lock text-white"></i>
                 </div>
                 <!-- Etiqueta como enlace -->
-                <a href="pedidosGestionados.php" class="text-sm text-gray-700 hover:underline">Historial Facturas</a>
+                <a href="../Garantias/Garantias.php" target="_blank" class="text-sm text-gray-700 hover:underline">Solicitar Garantia</a>
             </div>
             <div class="neumorphism p-4 text-center">
                 <!-- Icono de Bodega -->
@@ -85,21 +60,17 @@ include('../php/validate_session.php');
                     <i class="fa-solid fa-file-invoice text-white"></i>
                 </div>
                 <!-- Etiqueta como enlace -->
-                <a href="Notas.php" class="text-sm text-gray-700 hover:underline">Solictar Nota</a>
+                <a href="../Garantias/HistoricoSolicitudes.php" target="_blank" class="text-sm text-gray-700 hover:underline">Historial</a>
             </div>
             <div class="neumorphism p-4 text-center">
                 <!-- Icono de Bodega -->
-                <div class="neumorphism-icon w-10 h-10 bg-purple-400 rounded-full mx-auto mb-2 flex items-center justify-center">
-                    <i class="fa-solid fa-car text-white"></i>
+                <div
+                    class="neumorphism-icon w-10 h-10 bg-purple-400 rounded-full mx-auto mb-2 flex items-center justify-center">
+                    <i class="fa-solid fa-file-invoice text-white"></i>
                 </div>
                 <!-- Etiqueta como enlace -->
-                <a href="#"
-                    onclick="window.open('../Catalogo/BuscarProductosGuardados.php', 'ProductosGuardados', 'width=800,height=600,scrollbars=yes'); return false;"
-                    class="text-sm text-gray-700 hover:underline">
-                    Ver Fotos
-                </a>
+                <a href="../Garantias/Consultar.php" target="_blank" class="text-sm text-gray-700 hover:underline">Cambios de Estado</a>
             </div>
-            
         </div>
         <!-- Footer Navigation -->
         <nav class="fixed bottom-0 left-0 right-0 bg-white shadow-lg">
