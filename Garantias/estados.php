@@ -10,10 +10,10 @@ foreach ($required_files as $file) {
 $results = [];
 $message = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nit_cedula'])) {
-    $nit_cedula = filter_input(INPUT_POST, 'nit_cedula', FILTER_SANITIZE_STRING);
+    $nit_cedula = trim(filter_input(INPUT_POST, 'nit_cedula', FILTER_SANITIZE_SPECIAL_CHARS));
     if (!empty($nit_cedula)) {
         try {
-            // Consulta principal
+            // Query to search by nit_cedula and fetch associated photos and videos
             $stmt = $pdo->prepare("
                 SELECT 
                     er.id AS estado_id,
@@ -21,7 +21,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nit_cedula'])) {
                     er.nit_cedula,
                     er.estado,
                     er.fecha_actualizacion,
-                    r.*
+                    r.*,
+                    (SELECT GROUP_CONCAT(f.ruta) FROM fotos f WHERE f.reclamo_id = r.id) AS fotos,
+                    (SELECT GROUP_CONCAT(v.ruta) FROM videos v WHERE v.reclamo_id = r.id) AS videos
                 FROM estado_reclamo er
                 INNER JOIN reclamos r ON er.reclamo_id = r.id
                 WHERE er.nit_cedula = ?
@@ -31,18 +33,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nit_cedula'])) {
 
             if (empty($results)) {
                 $message = "<p class='text-red-500'>No se encontraron registros para el NIT o cédula proporcionado.</p>";
-            } else {
-                // Obtener fotos y videos para cada reclamo
-                foreach ($results as &$row) {
-                    $stmtFotos = $pdo->prepare("SELECT ruta FROM fotos WHERE reclamo_id = ?");
-                    $stmtFotos->execute([$row['reclamo_id']]);
-                    $row['fotos'] = $stmtFotos->fetchAll(PDO::FETCH_COLUMN);
-
-                    $stmtVideos = $pdo->prepare("SELECT ruta FROM videos WHERE reclamo_id = ?");
-                    $stmtVideos->execute([$row['reclamo_id']]);
-                    $row['videos'] = $stmtVideos->fetchAll(PDO::FETCH_COLUMN);
-                }
-                unset($row); // buena práctica
             }
         } catch (PDOException $e) {
             $message = "<p class='text-red-500'>Error en la consulta: " . htmlspecialchars($e->getMessage()) . "</p>";
@@ -78,12 +68,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nit_cedula'])) {
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12h18M9 5l7 7-7 7" />
                 </svg>
                 <span class="text-xs">Salir</span>
-            </a>
-            <a href="#" id="openModal" class="text-gray-500 text-center flex flex-col items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-                <span class="text-xs">Apps</span>
             </a>
         </div>
     </nav>
@@ -124,21 +108,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nit_cedula'])) {
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700">
                         <p><strong>Estado:</strong> <?php echo htmlspecialchars($row['estado']); ?></p>
                         <p><strong>Actualización:</strong> <?php echo htmlspecialchars($row['fecha_actualizacion']); ?></p>
-                        <p><strong>Fecha Venta:</strong> <?php echo htmlspecialchars($row['fecha_venta']); ?></p>
                         <p><strong>Referencia Producto:</strong> <?php echo htmlspecialchars($row['referencia_producto']); ?></p>
                         <p><strong>Instalación:</strong> <?php echo htmlspecialchars($row['fecha_instalacion']); ?></p>
                         <p><strong>Falla:</strong> <?php echo htmlspecialchars($row['fecha_fallo']); ?></p>
-                        <p><strong>Tiempo Instalado:</strong> <?php echo htmlspecialchars($row['tiempo_instalado']); ?></p>
                         <p><strong>Vehículo:</strong> <?php echo htmlspecialchars($row['marca_vehiculo'] . ' ' . $row['modelo_vehiculo']); ?></p>
                         <p><strong>Chasis:</strong> <?php echo htmlspecialchars($row['chasis']); ?></p>
                         <p><strong>VIN:</strong> <?php echo htmlspecialchars($row['vin']); ?></p>
                         <p><strong>Motor:</strong> <?php echo htmlspecialchars($row['motor']); ?></p>
                         <p><strong>Kilómetros:</strong> <?php echo htmlspecialchars($row['kms_desplazados']); ?> km</p>
                         <p><strong>Terreno:</strong> <?php echo htmlspecialchars($row['tipo_terreno']); ?></p>
-                        <p><strong>Remoción:</strong> <?php echo htmlspecialchars($row['fecha_remocion']); ?></p>
                         <p class="col-span-2"><strong>Detalle Falla:</strong> <?php echo nl2br(htmlspecialchars($row['detalle_falla'])); ?></p>
-                        <p class="col-span-2"><strong>Creado:</strong> <?php echo htmlspecialchars($row['created_at']); ?></p>
-                        <p class="col-span-2"><strong>vendedor:</strong> <?php echo htmlspecialchars($row['vendedor']); ?></p>
                     </div>
 
                     <!-- Fotos -->
@@ -146,7 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nit_cedula'])) {
                         <div>
                             <h4 class="text-lg font-semibold text-gray-800 mb-2">Fotos:</h4>
                             <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                <?php foreach ($row['fotos'] as $foto): ?>
+                                <?php foreach (explode(',', $row['fotos']) as $foto): ?>
                                     <div class="rounded overflow-hidden border border-gray-300">
                                         <img src="<?php echo htmlspecialchars($foto); ?>" class="object-cover w-full h-40">
                                         <div class="p-2 text-center">
@@ -163,7 +142,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nit_cedula'])) {
                         <div>
                             <h4 class="text-lg font-semibold text-gray-800 mb-2 mt-4">Videos:</h4>
                             <div class="space-y-4">
-                                <?php foreach ($row['videos'] as $video): ?>
+                                <?php foreach (explode(',', $row['videos']) as $video): ?>
                                     <div class="rounded border border-gray-300 p-2 bg-gray-50">
                                         <video controls class="w-full rounded">
                                             <source src="<?php echo htmlspecialchars($video); ?>" type="video/mp4">
@@ -178,28 +157,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nit_cedula'])) {
                         </div>
                     <?php endif; ?>
                 </div>
+            <?php endforeach; ?>
         </div>
-    <?php endforeach; ?>
-    </div>
-<?php endif; ?>
-
-<!-- Modal -->
-<div id="modal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden">
-    <div class="bg-white p-6 rounded-lg shadow-lg">
-        <h2 class="text-xl font-bold mb-4">Aplicaciones</h2>
-        <p>Lista de aplicaciones disponibles.</p>
-        <button id="closeModal" class="mt-4 bg-red-500 text-white p-2 rounded-md">Cerrar</button>
-    </div>
-</div>
-
-<script>
-    document.getElementById('openModal').addEventListener('click', () => {
-        document.getElementById('modal').classList.remove('hidden');
-    });
-    document.getElementById('closeModal').addEventListener('click', () => {
-        document.getElementById('modal').classList.add('hidden');
-    });
-</script>
+    <?php endif; ?>
 </body>
 
 </html>

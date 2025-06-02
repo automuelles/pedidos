@@ -3,13 +3,18 @@ include('../php/login.php');
 include('../php/validate_session.php');
 require '../php/db.php';
 
-// Fetch all records from reclamos with the latest estado
+// Fetch all records from reclamos with their associated estado_reclamo
 try {
     $stmt = $pdo->prepare("
-        SELECT r.*, er.estado
+        SELECT 
+            r.*, 
+            er.estado, 
+            er.fecha_actualizacion,
+            (SELECT GROUP_CONCAT(f.ruta) FROM fotos f WHERE f.reclamo_id = r.id) AS fotos,
+            (SELECT GROUP_CONCAT(v.ruta) FROM videos v WHERE v.reclamo_id = r.id) AS videos
         FROM reclamos r
         LEFT JOIN (
-            SELECT reclamo_id, estado
+            SELECT reclamo_id, estado, fecha_actualizacion
             FROM estado_reclamo
             WHERE (reclamo_id, fecha_actualizacion) IN (
                 SELECT reclamo_id, MAX(fecha_actualizacion)
@@ -77,7 +82,7 @@ try {
     <!-- Header -->
     <div class="neumorphism w-full max-w-xs p-6 text-center mb-6 mt-16">
         <h1 class="text-yellow-600 text-2xl font-bold">Bienvenido to Automuelles</h1>
-        <?php if(isset($_SESSION['user_name'])): ?>
+        <?php if (isset($_SESSION['user_name'])): ?>
             <h1 class="text-black-600 text-2xl font-bold">
                 <?php echo htmlspecialchars($_SESSION['user_name']); ?>!
             </h1>
@@ -93,12 +98,11 @@ try {
             <thead class="bg-gray-100 sticky top-0">
                 <tr>
                     <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">NIT/Cédula</th>
+                    <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Nombre Cliente</th>
                     <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Vendedor</th>
-                    <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Fecha Venta</th>
                     <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Referencia Producto</th>
                     <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Fecha Instalación</th>
                     <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Fecha Fallo</th>
-                    <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Tiempo Instalado</th>
                     <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Marca Vehículo</th>
                     <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Modelo Vehículo</th>
                     <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Chasis</th>
@@ -106,23 +110,21 @@ try {
                     <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Motor</th>
                     <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Kms Desplazados</th>
                     <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Tipo Terreno</th>
-                    <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Fecha Remoción</th>
                     <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Detalle Falla</th>
                     <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Estado</th>
                     <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Creado</th>
                 </tr>
             </thead>
             <tbody>
-                <?php if(!empty($reclamos)): ?>
-                    <?php foreach($reclamos as $reclamo): ?>
+                <?php if (!empty($reclamos)): ?>
+                    <?php foreach ($reclamos as $reclamo): ?>
                         <tr class="border-b">
                             <td class="py-2 px-4 text-sm text-gray-600"><?php echo htmlspecialchars($reclamo['nit_cedula']); ?></td>
+                            <td class="py-2 px-4 text-sm text-gray-600"><?php echo htmlspecialchars($reclamo['nombre_cliente']); ?></td>
                             <td class="py-2 px-4 text-sm text-gray-600"><?php echo htmlspecialchars($reclamo['vendedor']); ?></td>
-                            <td class="py-2 px-4 text-sm text-gray-600"><?php echo htmlspecialchars($reclamo['fecha_venta']); ?></td>
                             <td class="py-2 px-4 text-sm text-gray-600"><?php echo htmlspecialchars($reclamo['referencia_producto']); ?></td>
                             <td class="py-2 px-4 text-sm text-gray-600"><?php echo htmlspecialchars($reclamo['fecha_instalacion']); ?></td>
                             <td class="py-2 px-4 text-sm text-gray-600"><?php echo htmlspecialchars($reclamo['fecha_fallo']); ?></td>
-                            <td class="py-2 px-4 text-sm text-gray-600"><?php echo htmlspecialchars($reclamo['tiempo_instalado']); ?></td>
                             <td class="py-2 px-4 text-sm text-gray-600"><?php echo htmlspecialchars($reclamo['marca_vehiculo']); ?></td>
                             <td class="py-2 px-4 text-sm text-gray-600"><?php echo htmlspecialchars($reclamo['modelo_vehiculo']); ?></td>
                             <td class="py-2 px-4 text-sm text-gray-600"><?php echo htmlspecialchars($reclamo['chasis']); ?></td>
@@ -130,7 +132,6 @@ try {
                             <td class="py-2 px-4 text-sm text-gray-600"><?php echo htmlspecialchars($reclamo['motor']); ?></td>
                             <td class="py-2 px-4 text-sm text-gray-600"><?php echo htmlspecialchars($reclamo['kms_desplazados']); ?></td>
                             <td class="py-2 px-4 text-sm text-gray-600"><?php echo htmlspecialchars($reclamo['tipo_terreno']); ?></td>
-                            <td class="py-2 px-4 text-sm text-gray-600"><?php echo htmlspecialchars($reclamo['fecha_remocion']); ?></td>
                             <td class="py-2 px-4 text-sm text-gray-600"><?php echo htmlspecialchars($reclamo['detalle_falla']); ?></td>
                             <td class="py-2 px-4 text-sm text-gray-600"><?php echo htmlspecialchars($reclamo['estado'] ?? 'Sin estado'); ?></td>
                             <td class="py-2 px-4 text-sm text-gray-600"><?php echo htmlspecialchars($reclamo['created_at']); ?></td>

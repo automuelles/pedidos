@@ -68,8 +68,8 @@ require '../php/db.php';
         </div>
 
         <div>
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="fecha-venta">FECHA VENTA O NÚMERO DE FACTURA</label>
-            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="fecha-venta" name="fecha-venta" type="text" placeholder="Fecha venta o número de factura" required>
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="nombre-cliente">NOMBRE DEL CLIENTE</label>
+            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="nombre-cliente" name="nombre-cliente" type="text" placeholder="Nombre del cliente" required>
         </div>
 
         <div>
@@ -100,11 +100,6 @@ require '../php/db.php';
         <div>
             <label class="block text-gray-700 text-sm font-bold mb-2" for="fecha-fallo">FECHA DEL FALLO DE LA PIEZA</label>
             <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="fecha-fallo" name="fecha-fallo" type="date" required>
-        </div>
-
-        <div>
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="tiempo-instalado">TIEMPO QUE DURÓ LA PIEZA INSTALADA</label>
-            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="tiempo-instalado" name="tiempo-instalado" type="text" placeholder="Tiempo que duró la pieza instalada" required>
         </div>
 
         <div>
@@ -143,22 +138,17 @@ require '../php/db.php';
         </div>
 
         <div>
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="fecha-remocion">FECHA DE REMOCIÓN</label>
-            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="fecha-remocion" name="fecha-remocion" type="date" required>
-        </div>
-
-        <div>
             <label class="block text-gray-700 text-sm font-bold mb-2" for="detalle-falla">DETALLE ESPECÍFICO DE LA FALLA</label>
             <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="detalle-falla" name="detalle-falla" placeholder="Detalle específico de la falla" rows="4" required></textarea>
         </div>
 
         <div>
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="fotos">FOTOS (OPCIONAL)</label>
-            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="fotos" name="fotos[]" type="file" multiple accept="image/*">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="fotos">FOTOS</label>
+            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="fotos" name="fotos[]" type="file" multiple accept="image/*" required>
         </div>
 
         <div>
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="videos">VIDEOS (OPCIONAL)</label>
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="videos">VIDEOS</label>
             <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="videos" name="videos[]" type="file" multiple accept="video/*">
         </div>
 
@@ -169,29 +159,39 @@ require '../php/db.php';
     </div>
 
     <script>
-        document.getElementById('reclamo-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const form = event.target;
-            const inputs = form.querySelectorAll('input[required], textarea[required]');
-            let allFilled = true;
+    document.getElementById('reclamo-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const form = event.target;
+        const inputs = form.querySelectorAll('input[required], textarea[required]');
+        const fotosInput = document.getElementById('fotos');
+        let allFilled = true;
 
-            inputs.forEach(input => {
-                if (!input.value.trim()) {
-                    allFilled = false;
-                    input.classList.add('border-red-500');
-                } else {
-                    input.classList.remove('border-red-500');
-                }
-            });
-
-            if (!allFilled) {
-                alert('Por favor, llena todos los campos obligatorios.');
-                return;
+        // Validate all required fields except "VIDEOS"
+        inputs.forEach(input => {
+            if (!input.value.trim() && input.type !== 'file') {
+                allFilled = false;
+                input.classList.add('border-red-500');
+            } else {
+                input.classList.remove('border-red-500');
             }
-
-            form.submit();
         });
-    </script>
+
+        // Check if at least one file is selected for "FOTOS"
+        if (fotosInput.files.length === 0) {
+            allFilled = false;
+            fotosInput.classList.add('border-red-500');
+        } else {
+            fotosInput.classList.remove('border-red-500');
+        }
+
+        if (!allFilled) {
+            alert('Por favor, llena todos los campos obligatorios.');
+            return;
+        }
+
+        form.submit();
+    });
+</script>
 </body>
 
 </html>

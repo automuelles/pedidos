@@ -249,11 +249,11 @@ CREATE TABLE productos (
 CREATE TABLE reclamos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nit_cedula VARCHAR(50) NOT NULL,
-    fecha_venta VARCHAR(100) NOT NULL,
+    nombre_cliente VARCHAR(100) NOT NULL,
+    vendedor VARCHAR(100) NOT NULL,
     referencia_producto VARCHAR(100) NOT NULL,
     fecha_instalacion DATE NOT NULL,
     fecha_fallo DATE NOT NULL,
-    tiempo_instalado VARCHAR(50) NOT NULL,
     marca_vehiculo VARCHAR(50) NOT NULL,
     modelo_vehiculo VARCHAR(50) NOT NULL,
     chasis VARCHAR(50) NOT NULL,
@@ -261,9 +261,7 @@ CREATE TABLE reclamos (
     motor VARCHAR(50) NOT NULL,
     kms_desplazados INT NOT NULL,
     tipo_terreno VARCHAR(100) NOT NULL,
-    fecha_remocion DATE NOT NULL,
     detalle_falla TEXT NOT NULL,
-    vendedor VARCHAR(100) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
